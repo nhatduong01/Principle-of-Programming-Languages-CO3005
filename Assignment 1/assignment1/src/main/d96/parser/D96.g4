@@ -1,5 +1,5 @@
 grammar D96;
-
+// 1952638
 @lexer::header {
 from lexererr import *
 }
@@ -14,10 +14,15 @@ mptype: INTTYPE | VOIDTYPE;
 
 body: funcall SEMI;
 
-exp: funcall | INTLIT;
+exp: exp| funcall | INTLIT;
 
 funcall: ID LB exp? RB;
 
+assignment: ID ASSIGN exp;
+
+condition: NEGATE exp
+         | exp AND exp
+         | exp OR exp;
 
 
 
@@ -53,11 +58,15 @@ CONSTRUCTOR: 'Constructor';
 DESTRUCTOR: 'Destructor';
 NEW: 'New';
 BY: 'By';
+SELF: 'Self';
 DOLLAR: '$';
 // Comment skipping
+UNTERMINATED_COMMENT:  '##' ('#' ~'/' | ~'#')*? EOF;
+
 BlockComment 
     : '##' .*? '##' -> skip
     ;
+
 
 // Operators
 PLUS: '+';
@@ -91,8 +100,9 @@ VOIDTYPE: 'void';
 
 // Literal
 //float
-fragment DECIMALPART: '.'[0-9_]*;
-fragment EXPONENTPART: [eE][+-]?[1-9]+[0-9_]*;
+fragment DECIMALPART: '.'[0-9]+[0-9_]*;
+fragment EXPONENTPART: [eE][+-]?[1-9]+[0-9_]*
+                     | [Ee][+-]?[0];
 //FLOATLIT: ('0'|([1-9]+[0-9_]*))?(DECIMALPART |EXPONENTPART | (DECIMALPART EXPONENTPART)) {self.text = self.text.replace("_","")};
 FLOATLIT: DEC DECIMALPART EXPONENTPART{self.text = self.text.replace("_","")}
         | DEC EXPONENTPART {self.text = self.text.replace("_","")}
@@ -110,10 +120,11 @@ WS: [ \t\r\n]+ -> skip; // skip spaces, tabs, newlines
 // Boolean
 BOOLEANLIT: ('False'| 'True');
 // String
-fragment EscapeSequence: ('\b'|'\f'|'\r'|'\n'|'\t'|'\''|'\\'| '\'"');
+ILLEGAL_ESCAPE: '"' ('\\' ~[btnfr"'\\] | ~'\\')*{raise IllegalEscape(self.text)};
+fragment EscapeSequence: ('\\b'|'\\f'|'\\r'|'\\n'|'\\t'|'\\\''|'\\\\'| '\'"');
 STRINGLIT: '"'(EscapeSequence |~["])*'"';
+UNCLOSE_STRING: '"'(EscapeSequence |~["])* EOF {raise UncloseString(self.text[1:])};
 ID: [a-zA-Z_]+[a-zA-Z0-9_]*;
 DOT: '.';
-ERROR_CHAR: .;
-UNCLOSE_STRING: .;
-ILLEGAL_ESCAPE: .;
+ERROR_CHAR: . {raise ErrorToken(self.text)};
+//{raise UncloseString(self.text[1:])}

@@ -1,1 +1,1 @@
-aAsVN3
+"This is a string containing tab 	" "He asked me: '"Where is John?'"" "abc\\h def""abc\h def"

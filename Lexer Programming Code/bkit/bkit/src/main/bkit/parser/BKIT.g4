@@ -11,7 +11,7 @@ options{
 program  : EOF ;
 // UNDERSCORE : '_' -> skip ; 
 PHPNUM: [0]
-	  | [1-9]+([0-9]| '_')*;
+	  | [1-9]+([0-9]| '_')* {self.text = self.text.replace("_","")};
 
 
 

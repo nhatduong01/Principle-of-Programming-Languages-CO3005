@@ -1,4 +1,4 @@
-# Generated from /Users/duytran/Desktop/212/ppl/assignment/initial/src/main/d96/parser/D96.g4 by ANTLR 4.8
+# Generated from c:\Users\ADMIN\Desktop\Learning\Principle of Programming Languages\Code\Code\Assignment 1\assignment1\src\main\d96\parser\D96.g4 by ANTLR 4.8
 # encoding: utf-8
 from antlr4 import *
 from io import StringIO
@@ -11,20 +11,20 @@ else:
 
 def serializedATN():
     with StringIO() as buf:
-        buf.write("\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\20")
+        buf.write("\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3>")
         buf.write("(\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\3\2\3\2\3\2")
         buf.write("\3\2\3\2\3\2\5\2\23\n\2\3\2\3\2\3\2\3\3\3\3\3\4\3\4\3")
         buf.write("\4\3\5\3\5\5\5\37\n\5\3\6\3\6\3\6\5\6$\n\6\3\6\3\6\3\6")
-        buf.write("\2\2\7\2\4\6\b\n\2\3\3\2\4\5\2%\2\f\3\2\2\2\4\27\3\2\2")
-        buf.write("\2\6\31\3\2\2\2\b\36\3\2\2\2\n \3\2\2\2\f\r\5\4\3\2\r")
-        buf.write("\16\7\3\2\2\16\17\7\b\2\2\17\20\7\t\2\2\20\22\7\n\2\2")
-        buf.write("\21\23\5\6\4\2\22\21\3\2\2\2\22\23\3\2\2\2\23\24\3\2\2")
-        buf.write("\2\24\25\7\13\2\2\25\26\7\2\2\3\26\3\3\2\2\2\27\30\t\2")
-        buf.write("\2\2\30\5\3\2\2\2\31\32\5\n\6\2\32\33\7\f\2\2\33\7\3\2")
-        buf.write("\2\2\34\37\5\n\6\2\35\37\7\7\2\2\36\34\3\2\2\2\36\35\3")
-        buf.write("\2\2\2\37\t\3\2\2\2 !\7\6\2\2!#\7\b\2\2\"$\5\b\5\2#\"")
-        buf.write("\3\2\2\2#$\3\2\2\2$%\3\2\2\2%&\7\t\2\2&\13\3\2\2\2\5\22")
-        buf.write("\36#")
+        buf.write("\2\2\7\2\4\6\b\n\2\3\4\2//\64\64\2%\2\f\3\2\2\2\4\27\3")
+        buf.write("\2\2\2\6\31\3\2\2\2\b\36\3\2\2\2\n \3\2\2\2\f\r\5\4\3")
+        buf.write("\2\r\16\7\3\2\2\16\17\7\4\2\2\17\20\7\5\2\2\20\22\7\6")
+        buf.write("\2\2\21\23\5\6\4\2\22\21\3\2\2\2\22\23\3\2\2\2\23\24\3")
+        buf.write("\2\2\2\24\25\7\7\2\2\25\26\7\2\2\3\26\3\3\2\2\2\27\30")
+        buf.write("\t\2\2\2\30\5\3\2\2\2\31\32\5\n\6\2\32\33\7\b\2\2\33\7")
+        buf.write("\3\2\2\2\34\37\5\n\6\2\35\37\7\66\2\2\36\34\3\2\2\2\36")
+        buf.write("\35\3\2\2\2\37\t\3\2\2\2 !\7:\2\2!#\7\4\2\2\"$\5\b\5\2")
+        buf.write("#\"\3\2\2\2#$\3\2\2\2$%\3\2\2\2%&\7\5\2\2&\13\3\2\2\2")
+        buf.write("\5\22\36#")
         return buf.getvalue()
 
 
@@ -38,12 +38,30 @@ class D96Parser ( Parser ):
 
     sharedContextCache = PredictionContextCache()
 
-    literalNames = [ "<INVALID>", "'main'", "'int'", "'void'", "<INVALID>", 
-                     "<INVALID>", "'('", "')'", "'{'", "'}'", "';'" ]
+    literalNames = [ "<INVALID>", "'main'", "'('", "')'", "'{'", "'}'", 
+                     "';'", "','", "':'", "'Break'", "'Continue'", "'If'", 
+                     "'Elseif'", "'Else'", "'Foreach'", "'In'", "'Return'", 
+                     "'Null'", "'Class'", "'Val'", "'Var'", "'Constructor'", 
+                     "'Destructor'", "'New'", "'By'", "'$'", "<INVALID>", 
+                     "'+'", "'-'", "'*'", "'/'", "'%'", "'!'", "'&&'", "'||'", 
+                     "'=='", "'='", "'!='", "'>'", "'<='", "'<'", "'>='", 
+                     "'==.'", "'+.'", "'::'", "'Int'", "'Float'", "'String'", 
+                     "'Boolean'", "'Array'", "'void'", "<INVALID>", "<INVALID>", 
+                     "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
+                     "'.'" ]
 
-    symbolicNames = [ "<INVALID>", "<INVALID>", "INTTYPE", "VOIDTYPE", "ID", 
-                      "INTLIT", "LB", "RB", "LP", "RP", "SEMI", "WS", "ERROR_CHAR", 
-                      "UNCLOSE_STRING", "ILLEGAL_ESCAPE" ]
+    symbolicNames = [ "<INVALID>", "<INVALID>", "LB", "RB", "LP", "RP", 
+                      "SEMI", "COMMA", "COLON", "BREAK", "CONTINUE", "IF", 
+                      "ELSEIF", "ELSE", "FOREACH", "IN", "RETURN", "NULL", 
+                      "CLASS", "VAL", "VAR", "CONSTRUCTOR", "DESTRUCTOR", 
+                      "NEW", "BY", "DOLLAR", "BlockComment", "PLUS", "MINUS", 
+                      "MULTIPLY", "DIVIDE", "MODULO", "NEGATE", "AND", "OR", 
+                      "EQUAL", "ASSIGN", "DIFFERENT", "GREATER", "LESSTHANEQUAL", 
+                      "LESSER", "GREATERTHANEQUAL", "STRINGCOMPARE", "STRINCONCAT", 
+                      "STATIC_ACCESS", "INTTYPE", "FLOATTYPE", "STRINGTYPE", 
+                      "BOOLEANTYPE", "ARRAYTYPE", "VOIDTYPE", "FLOATLIT", 
+                      "INTLIT", "WS", "BOOLEANLIT", "STRINGLIT", "ID", "DOT", 
+                      "ERROR_CHAR", "UNCLOSE_STRING", "ILLEGAL_ESCAPE" ]
 
     RULE_program = 0
     RULE_mptype = 1
@@ -55,19 +73,65 @@ class D96Parser ( Parser ):
 
     EOF = Token.EOF
     T__0=1
-    INTTYPE=2
-    VOIDTYPE=3
-    ID=4
-    INTLIT=5
-    LB=6
-    RB=7
-    LP=8
-    RP=9
-    SEMI=10
-    WS=11
-    ERROR_CHAR=12
-    UNCLOSE_STRING=13
-    ILLEGAL_ESCAPE=14
+    LB=2
+    RB=3
+    LP=4
+    RP=5
+    SEMI=6
+    COMMA=7
+    COLON=8
+    BREAK=9
+    CONTINUE=10
+    IF=11
+    ELSEIF=12
+    ELSE=13
+    FOREACH=14
+    IN=15
+    RETURN=16
+    NULL=17
+    CLASS=18
+    VAL=19
+    VAR=20
+    CONSTRUCTOR=21
+    DESTRUCTOR=22
+    NEW=23
+    BY=24
+    DOLLAR=25
+    BlockComment=26
+    PLUS=27
+    MINUS=28
+    MULTIPLY=29
+    DIVIDE=30
+    MODULO=31
+    NEGATE=32
+    AND=33
+    OR=34
+    EQUAL=35
+    ASSIGN=36
+    DIFFERENT=37
+    GREATER=38
+    LESSTHANEQUAL=39
+    LESSER=40
+    GREATERTHANEQUAL=41
+    STRINGCOMPARE=42
+    STRINCONCAT=43
+    STATIC_ACCESS=44
+    INTTYPE=45
+    FLOATTYPE=46
+    STRINGTYPE=47
+    BOOLEANTYPE=48
+    ARRAYTYPE=49
+    VOIDTYPE=50
+    FLOATLIT=51
+    INTLIT=52
+    WS=53
+    BOOLEANLIT=54
+    STRINGLIT=55
+    ID=56
+    DOT=57
+    ERROR_CHAR=58
+    UNCLOSE_STRING=59
+    ILLEGAL_ESCAPE=60
 
     def __init__(self, input:TokenStream, output:TextIO = sys.stdout):
         super().__init__(input, output)
@@ -318,7 +382,7 @@ class D96Parser ( Parser ):
             self.state = 33
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if _la==D96Parser.ID or _la==D96Parser.INTLIT:
+            if _la==D96Parser.INTLIT or _la==D96Parser.ID:
                 self.state = 32
                 self.exp()
 
