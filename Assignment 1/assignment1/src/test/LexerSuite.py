@@ -15,9 +15,9 @@ class LexerSuite(unittest.TestCase):
         """test integers"""
         self.assertTrue(TestLexer.test("Var Break Class Var True == && Continue If","Var,Break,Class,Var,True,==,&&,Continue,If,<EOF>",104))
     def test_comment(self):
-        self.assertTrue(TestLexer.test("##This is a comment##  ##\"Another Co\\mment\"##Var $x, $y : Int = 0,0","Var,$,x,,,$,y,:,Int,=,0,,,0,<EOF>",105))
+        self.assertTrue(TestLexer.test("##This is a comment##  ##\"Another Co\\mment\"##Var $x, $y : Int = 0,0","Var,$x,,,$y,:,Int,=,0,,,0,<EOF>",105))
     def test_long_programm1(self):
-        self.assertTrue(TestLexer.test("Class Program { main () { Out.printInt(Shape::$numOfShape);##I want to print the how many shapes##}}","Class,Program,{,main,(,),{,Out,.,printInt,(,Shape,::,$,numOfShape,),;,},},<EOF>",106))
+        self.assertTrue(TestLexer.test("Class Program { main () { Out.printInt(Shape::$numOfShape);##I want to print the how many shapes##}}","Class,Program,{,main,(,),{,Out,.,printInt,(,Shape,::,$numOfShape,),;,},},<EOF>",106))
     def test_sepecial_float(self):
         self.assertTrue(TestLexer.test("123e-56 .123e-12 123.45 123_56.895e-200 0.0 0 0123 123_561","123e-56,.123e-12,123.45,12356.895e-200,0.0,0,0123,123561,<EOF>", 107))
     def test_long_programm2(self):
@@ -25,7 +25,7 @@ class LexerSuite(unittest.TestCase):
         $getNumofShape() {
             this.lenght = 200_5000e-1123;
             Return $numOfShape;
-        }""","Class,Shape,{,Val,$,numOfShape,:,Int,=,0,;,Val,immutableAttribute,:,Int,=,0,;,Var,length,,,width,:,Int,;,},$,getNumofShape,(,),{,this,.,lenght,=,2005000e-1123,;,Return,$,numOfShape,;,},<EOF>",108))
+        }""","Class,Shape,{,Val,$numOfShape,:,Int,=,0,;,Val,immutableAttribute,:,Int,=,0,;,Var,length,,,width,:,Int,;,},$getNumofShape,(,),{,this,.,lenght,=,2005000e-1123,;,Return,$numOfShape,;,},<EOF>",108))
     def test_float1(self):
         self.assertTrue(TestLexer.test("0.27  2.73  0.1  2.  1e1  1e0  1.e10  20.e+22","0.27,2.73,0.1,2.,1e1,1e0,1.e10,20.e+22,<EOF>",109))
     def test_float2(self):
@@ -60,7 +60,7 @@ class LexerSuite(unittest.TestCase):
             Var name: String;
         }
         """
-        self.assertTrue(TestLexer.test(string_test,'Class,Person,{,Var,$,numPeople,:,Int,=,0,;,Var,name,:,String,;,},<EOF>', 120))
+        self.assertTrue(TestLexer.test(string_test,'Class,Person,{,Var,$numPeople,:,Int,=,0,;,Var,name,:,String,;,},<EOF>', 120))
     def test_long_program3(self):
         string_test = """Class Program
         {
@@ -101,7 +101,7 @@ class LexerSuite(unittest.TestCase):
                 Out.printInt(number); 
             }
         }""" 
-        string_expected = """Class,Program,{,main,(,),{,Var,name,:,String,=,Hello How are you \\n,;,Var,answer,:,String,=,I am fine \\\\ Thank you \\',Var,$,radisu,:,Float,=,123456.e-23,Val,number,:,Int,=,10,;,Var,new_string,:,String,=,Illegal Escape In String: I am newww \d"""
+        string_expected = """Class,Program,{,main,(,),{,Var,name,:,String,=,Hello How are you \\n,;,Var,answer,:,String,=,I am fine \\\\ Thank you \\',Var,$radisu,:,Float,=,123456.e-23,Val,number,:,Int,=,10,;,Var,new_string,:,String,=,Illegal Escape In String: I am newww \d"""
         self.assertTrue(TestLexer.test(string_test, string_expected, 123))
     def test_unclosed_string (self):
         string_test = """
@@ -117,7 +117,7 @@ class LexerSuite(unittest.TestCase):
         }
         Var new_string: String = "I am newww \\n
         """ 
-        string_expected = """Class,Program,{,main,(,),{,Var,$,radisu,:,Float,=,123456.e-23,Val,number,:,Int,=,10,;,Out,.,printInt,(,number,),;,},},Var,new_string,:,String,=,Unclosed String: I am newww \\n
+        string_expected = """Class,Program,{,main,(,),{,Var,$radisu,:,Float,=,123456.e-23,Val,number,:,Int,=,10,;,Out,.,printInt,(,number,),;,},},Var,new_string,:,String,=,Unclosed String: I am newww \\n
 
         """
         self.assertTrue(TestLexer.test(string_test, string_expected, 124))

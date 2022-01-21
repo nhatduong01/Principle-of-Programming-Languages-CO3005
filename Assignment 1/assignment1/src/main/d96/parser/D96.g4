@@ -7,22 +7,177 @@ from lexererr import *
 options {
 	language = Python3;
 }
+// Default setting
+program: class_declaration+ EOF;
 
-program: mptype 'main' LB RB LP body? RP EOF;
 
-mptype: INTTYPE | VOIDTYPE;
 
-body: funcall SEMI;
 
-exp: funcall | INTLIT;
 
-funcall: ID LB exp? RB;
+// Expression 
 
+exp: relational_operations string_operators relational_operations | relational_operations ;
+
+relational_operations: logical_operations relational_operators logical_operations | logical_operations;
+
+logical_operations: logical_operations logical_and_or adding_operations | adding_operations;
+
+adding_operations: adding_operations adding_operators multiplying_operations | multiplying_operations;
+
+multiplying_operations: multiplying_operations multiplying_operators logical_negate_operation | logical_negate_operation;
+
+logical_negate_operation: NEGATE logical_negate_operation | sign_operations;
+
+sign_operations: MINUS sign_operations | index_operations;
+
+index_operations: index_operations index_operators | member_access_operarion;
+
+member_access_operarion: member_access_operarion DOT object_create_operation
+                       | member_access_operarion STATIC_ACCESS  object_create_operation
+                       | member_access_operarion DOT object_create_operation LB expList RB
+                       | member_access_operarion STATIC_ACCESS  object_create_operation LB expList RB
+                       | object_create_operation;
+
+
+object_create_operation: NEW object_create_operation LB expList RB| parenthesis_operations;
+
+parenthesis_operations: LB exp RB
+                      |INTLIT | STRINGLIT | BOOLEANLIT | FLOATLIT | ID | array_lit | DOLLARID; 
+
+// ArrayLIT dau
+
+
+string_operators: STRINGCOMPARE | STRINGCONCAT;
+
+relational_operators: EQUAL | DIFFERENT | LESSER | LESSTHANEQUAL | GREATER | GREATERTHANEQUAL;
+
+logical_and_or: AND | OR;
+
+adding_operators: PLUS | MINUS;
+
+multiplying_operators: MULTIPLY | DIVIDE | MODULO;
+
+element_expression : exp index_operators;
+
+index_operators : '[' exp ']'
+                | '[' exp ']' index_operators;
+
+// Array Literature
+array_lit: ARRAYTYPE LB expList RB;
+
+
+
+// If statement
+
+if_statements: IF LB exp RB block_statements else_ifList? else_statements?;
+
+else_ifList:  else_if the_rest_else_if;
+
+the_rest_else_if: else_if the_rest_else_if |;
+
+else_if: ELSEIF LB exp RB block_statements; 
+
+else_statements: ELSE block_statements;
+
+// Assignment statement;
+
+assignment_statements: (ID | element_expression) ASSIGN exp SEMI;
+
+// For/In
+
+foreach_statements: FOREACH LB ID IN  exp '..' exp (BY exp)? RB block_statements;
+
+// break statements
+
+break_statements: BREAK SEMI;
+
+// Continue statements
+
+continue_statements: CONTINUE SEMI;
+
+// return statements
+
+return_statements: RETURN exp SEMI;
+
+// Method invocation
+
+method_invocations: ID STATIC_ACCESS DOLLARID LB RB SEMI;
+
+block_statements: LP  list_statement RP;
+
+list_statement: single_statement the_rest_statements |;
+
+the_rest_statements: single_statement the_rest_statements |;
+
+// Variable and Constant Declaration Statement
+variable_constant_declaration: (VAR | VAL) variableList COLON primitive_type ( ASSIGN expList)? SEMI;
+
+variableList:ID iDlist;
+
+single_statement: if_statements 
+                | assignment_statements 
+                | foreach_statements 
+                | break_statements 
+                | continue_statements 
+                | return_statements
+                | method_invocations
+                | variable_constant_declaration;
+
+
+
+
+
+
+
+
+
+
+// class declaration
+class_declaration:CLASS  ID (COLON ID)? LP  attributes_methods_declarations RP;
+
+attributes_methods_declarations: attribute_declaration the_rest_attributes_methods_declarations
+                               | method_declaration the_rest_attributes_methods_declarations
+                               |;
+
+the_rest_attributes_methods_declarations: attribute_declaration the_rest_attributes_methods_declarations
+                                        | method_declaration the_rest_attributes_methods_declarations
+                                        |;
+/// the IDlist's length is not equal to the assignment list
+arrayDeclaration: ARRAYTYPE  '[' primitive_type COMMA INTLIT ']';
+
+attribute_declaration: (VAR | VAL) attributesList COLON primitive_type ( ASSIGN expList)? SEMI;
 // assignment: ID ASSIGN exp;
+attributesList: (DOLLARID| ID) iDlist;
 
-// condition: NEGATE exp
-//          | exp AND exp
-//          | exp OR exp;
+iDlist: COMMA (DOLLARID | ID) iDlist |;
+
+expList: exp theRestExp;
+
+theRestExp: COMMA exp theRestExp |;
+
+primitive_type: BOOLEANTYPE | INTTYPE| FLOATTYPE | STRINGTYPE | arrayDeclaration;
+
+method_declaration: (DOLLARID | ID) LB list_parameters RB  block_statements
+                  | constructor
+                  | destructor;
+
+
+list_parameters: parameters_declaration the_rest_parameters_declarations |;
+
+the_rest_parameters_declarations: SEMI parameters_declaration the_rest_parameters_declarations |;
+
+parameters_declaration: same_type_parameters primitive_type;
+
+same_type_parameters: ID the_rest_ID |;
+
+the_rest_ID: COMMA ID the_rest_ID |;
+
+constructor: CONSTRUCTOR LB list_parameters RB block_statements;
+
+destructor: DESTRUCTOR LB RB block_statements;
+
+
+
 
 
 
@@ -59,7 +214,6 @@ DESTRUCTOR: 'Destructor';
 NEW: 'New';
 BY: 'By';
 SELF: 'Self';
-DOLLAR: '$';
 // Comment skipping
 UNTERMINATED_COMMENT:  '##' ('#' ~'#' | ~'#')*? EOF;
 
@@ -85,7 +239,7 @@ LESSTHANEQUAL: '<=';
 LESSER: '<';
 GREATERTHANEQUAL: '>=';
 STRINGCOMPARE: '==.';
-STRINCONCAT: '+.';
+STRINGCONCAT: '+.';
 STATIC_ACCESS: '::';
 DOT: '.';
 // Primitive type
@@ -125,6 +279,7 @@ ILLEGAL_ESCAPE: '"'(~[\\'"]| EscapeSequence)*('\\' ~[btnfr'\\] | '\'' ~'"') {rai
 fragment EscapeSequence: ('\\b'|'\\f'|'\\r'|'\\n'|'\\t'|'\\\''|'\\\\'| '\'"');
 STRINGLIT: '"'(EscapeSequence |~[\\'"])*'"' {self.text = self.text[1:-1]};
 UNCLOSE_STRING: '"'(EscapeSequence |~[\\'"])* EOF {raise UncloseString(self.text[1:])};
+DOLLARID: '$'[a-zA-Z_]+[a-zA-Z0-9_]*;
 ID: [a-zA-Z_]+[a-zA-Z0-9_]*;
 ERROR_CHAR: . {raise ErrorToken(self.text)};
 //{raise UncloseString(self.text[1:])}
