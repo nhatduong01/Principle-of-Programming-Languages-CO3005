@@ -133,58 +133,65 @@ class LexerSuite(unittest.TestCase):
         string_test = """0b0000""" 
         string_expected = """0b0000,<EOF>"""
         self.assertTrue(TestLexer.test(string_test, string_expected, 127))
-    def test10 (self):
+    def test_10 (self):
         string_test = """True""" 
         string_expected = """True,<EOF>"""
         self.assertTrue(TestLexer.test(string_test, string_expected, 128))
-    def test11 (self):
+    def test_11 (self):
         string_test = """true""" 
         string_expected = """true,<EOF>"""
         self.assertTrue(TestLexer.test(string_test, string_expected, 129))
-    def test12 (self):
+    def test_12 (self):
         string_test = """0B0_0""" 
         string_expected = """0B00,<EOF>"""
         self.assertTrue(TestLexer.test(string_test, string_expected, 130))
-    def test13 (self):
+    def test_13 (self):
         string_test = """12e01""" 
         string_expected = """12e0,1,<EOF>"""
         self.assertTrue(TestLexer.test(string_test, string_expected, 131))
-    def test14 (self):
+    def test_14 (self):
         string_test = """0B00_""" 
         string_expected = """0B00,_,<EOF>"""
         self.assertTrue(TestLexer.test(string_test, string_expected, 132))
-    def test15 (self):
+    def test_15 (self):
         string_test = """0b_00""" 
         string_expected = """0,b_00,<EOF>"""
         self.assertTrue(TestLexer.test(string_test, string_expected, 133))
-    def test16 (self):
+    def test_16 (self):
         string_test = """0_b00""" 
         string_expected = """0,_b00,<EOF>"""
         self.assertTrue(TestLexer.test(string_test, string_expected, 134))
-    def test17 (self):
+    def test_17 (self):
         string_test = """1_.23""" 
         string_expected = """1,_,.,23,<EOF>"""
         self.assertTrue(TestLexer.test(string_test, string_expected, 135))
-    def test18 (self):
+    def test_18 (self):
         string_test = """12e01""" 
         string_expected = """12e0,1,<EOF>"""
         self.assertTrue(TestLexer.test(string_test, string_expected, 136))
-    def test19 (self):
+    def test_19 (self):
         string_test = """0x0123_456_789_ABC_DEF""" 
         string_expected = """0x0123456789ABCDEF,<EOF>"""
         self.assertTrue(TestLexer.test(string_test, string_expected, 137))
-    # def test20 (self):
-    #     string_test = """""" 
-    #     string_expected = """"""
-    #     self.assertTrue(TestLexer.test(string_test, string_expected, 138))
-    # def test21 (self):
-    #     string_test = """""" 
-    #     string_expected = """"""
-    #     self.assertTrue(TestLexer.test(string_test, string_expected, 139))
-    # def test22 (self):
-    #     string_test = """""" 
-    #     string_expected = """"""
-    #     self.assertTrue(TestLexer.test(string_test, string_expected, 140))
+    def test_20 (self):
+        string_test = """\"bao \\q\"""" 
+        string_expected = """Illegal Escape In String: bao \q"""
+        self.assertTrue(TestLexer.test(string_test, string_expected, 138))
+    def test_21 (self):
+        string_test = """\"\\n\"""" 
+        string_expected = """\\n,<EOF>"""
+        self.assertTrue(TestLexer.test(string_test, string_expected, 139))
+    def test_22 (self):
+        string_test = """
+        Class Program
+        {
+            main()
+            {
+                a::$foo();
+            }
+        }""" 
+        string_expected = """"""
+        self.assertTrue(TestLexer.test(string_test, string_expected, 140))
     # def test23 (self):
     #     string_test = """""" 
     #     string_expected = """"""

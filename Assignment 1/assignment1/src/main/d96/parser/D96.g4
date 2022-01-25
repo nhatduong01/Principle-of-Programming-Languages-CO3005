@@ -30,19 +30,21 @@ logical_negate_operation: NEGATE logical_negate_operation | sign_operations;
 
 sign_operations: MINUS sign_operations | index_operations;
 
-index_operations: index_operations index_operators | member_access_operarion;
+index_operations: index_operations index_operators | intance_access_operarion;
 
-member_access_operarion: member_access_operarion DOT object_create_operation
-                       | member_access_operarion STATIC_ACCESS  object_create_operation
-                       | member_access_operarion DOT object_create_operation LB expList RB
-                       | member_access_operarion STATIC_ACCESS  object_create_operation LB expList RB
+intance_access_operarion: intance_access_operarion DOT static_access_operation
+                       | intance_access_operarion DOT static_access_operation LB expList? RB
+                       | static_access_operation;
+
+static_access_operation: object_create_operation STATIC_ACCESS  object_create_operation LB expList? RB
+                       | object_create_operation STATIC_ACCESS  object_create_operation
                        | object_create_operation;
 
 
-object_create_operation: NEW object_create_operation LB expList RB| parenthesis_operations;
+object_create_operation: NEW object_create_operation LB expList? RB| parenthesis_operations;
 
 parenthesis_operations: LB exp RB
-                      |INTLIT | STRINGLIT | BOOLEANLIT | FLOATLIT | ID | array_lit | DOLLARID; 
+                      |INTLIT | STRINGLIT | BOOLEANLIT | FLOATLIT | ID | array_lit | DOLLARID | SELF; 
 
 // ArrayLIT dau
 
@@ -81,11 +83,17 @@ else_statements: ELSE block_statements;
 
 // Assignment statement;
 
-assignment_statements: (ID | element_expression) ASSIGN exp SEMI;
+assignment_statements: lhs ASSIGN exp SEMI;
 
+lhs: lhs DOT assignment_static_access
+   | assignment_static_access;
+
+assignment_static_access: (ID | element_expression| SELF) STATIC_ACCESS (ID| element_expression)
+                        | ID | element_expression | SELF;
 // For/In
 
 foreach_statements: FOREACH LB ID IN  exp '..' exp (BY exp)? RB block_statements;
+
 
 // break statements
 
@@ -97,11 +105,15 @@ continue_statements: CONTINUE SEMI;
 
 // return statements
 
-return_statements: RETURN exp SEMI;
+return_statements: RETURN exp? SEMI;
 
 // Method invocation
 
-method_invocations: ID STATIC_ACCESS DOLLARID LB RB SEMI;
+method_invocations: exp DOT ID SEMI
+                  | ID STATIC_ACCESS DOLLARID SEMI
+                  | exp DOT ID LB expList? RB SEMI
+                  | ID STATIC_ACCESS DOLLARID LB expList? RB SEMI;
+
 
 block_statements: LP  list_statement RP;
 
@@ -166,7 +178,7 @@ list_parameters: parameters_declaration the_rest_parameters_declarations |;
 
 the_rest_parameters_declarations: SEMI parameters_declaration the_rest_parameters_declarations |;
 
-parameters_declaration: same_type_parameters primitive_type;
+parameters_declaration: same_type_parameters COLON primitive_type;
 
 same_type_parameters: ID the_rest_ID |;
 
