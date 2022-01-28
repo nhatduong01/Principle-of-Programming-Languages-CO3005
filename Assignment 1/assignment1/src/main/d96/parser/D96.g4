@@ -44,7 +44,7 @@ static_access_operation: object_create_operation STATIC_ACCESS  object_create_op
 object_create_operation: NEW object_create_operation LB expList? RB| parenthesis_operations;
 
 parenthesis_operations: LB exp RB
-                      |INTLIT | STRINGLIT | BOOLEANLIT | FLOATLIT | ID | array_lit | DOLLARID | SELF; 
+                      |INTLIT | STRINGLIT | BOOLEANLIT | FLOATLIT | ID | array_lit | DOLLARID | SELF | NULL; 
 
 // ArrayLIT dau
 
@@ -88,11 +88,11 @@ assignment_statements: lhs ASSIGN exp SEMI;
 lhs: lhs DOT assignment_static_access
    | assignment_static_access;
 
-assignment_static_access: (ID | element_expression| SELF) STATIC_ACCESS (ID| element_expression)
+assignment_static_access: (ID | element_expression| SELF) STATIC_ACCESS DOLLARID
                         | ID | element_expression | SELF;
 // For/In
 
-foreach_statements: FOREACH LB ID IN  exp '..' exp (BY exp)? RB block_statements;
+foreach_statements: FOREACH LB lhs IN  exp '..' exp (BY exp)? RB  block_statements;
 
 
 // break statements
@@ -133,7 +133,27 @@ single_statement: if_statements
                 | continue_statements 
                 | return_statements
                 | method_invocations
-                | variable_constant_declaration;
+                | variable_constant_declaration
+                | continue_statements
+                | break_statements;
+
+
+// for_each_single_statement: if_statements 
+//                          | assignment_statements 
+//                          | foreach_statements 
+//                          | break_statements 
+//                          | continue_statements 
+//                          | return_statements
+//                          | method_invocations
+//                          | variable_constant_declaration
+//                          | break_statements
+//                          | continue_statements;
+
+// for_each_block: LP for_each_list_statements RP;
+
+// for_each_list_statements: for_each_single_statement the_rest_for_each_statements   |;
+
+// the_rest_for_each_statements: for_each_single_statement the_rest_for_each_statements |;
 
 
 
@@ -167,7 +187,7 @@ expList: exp theRestExp;
 
 theRestExp: COMMA exp theRestExp |;
 
-primitive_type: BOOLEANTYPE | INTTYPE| FLOATTYPE | STRINGTYPE | arrayDeclaration;
+primitive_type: BOOLEANTYPE | INTTYPE| FLOATTYPE | STRINGTYPE | arrayDeclaration | ID;
 
 method_declaration: (DOLLARID | ID) LB list_parameters RB  block_statements
                   | constructor
@@ -227,7 +247,7 @@ NEW: 'New';
 BY: 'By';
 SELF: 'Self';
 // Comment skipping
-UNTERMINATED_COMMENT:  '##' ('#' ~'#' | ~'#')*? EOF;
+//UNTERMINATED_COMMENT:  '##' ('#' ~'#' | ~'#')*? EOF;
 
 BlockComment 
     : '##' .*? '##' -> skip
@@ -266,19 +286,23 @@ VOIDTYPE: 'Void';
 
 // Literal
 //float
-fragment DECIMALPART: '.'[0-9]?([0-9]|'_'[0-9])*;
-fragment EXPONENTPART: [eE][+-]?[1-9]+([0-9]|'_'[0-9])*
-                     | [Ee][+-]?[0];
+fragment DECIMALPART: '.'[0-9]*;
+// fragment EXPONENTPART: [eE][+-]?[1-9]+([0-9])*
+//                      | [Ee][+-]?[0];
+fragment EXPONENTPART: [eE][+-]?[0-9]+;
 //FLOATLIT: ('0'|([1-9]+[0-9_]*))?(DECIMALPART |EXPONENTPART | (DECIMALPART EXPONENTPART)) {self.text = self.text.replace("_","")};
 FLOATLIT: DEC DECIMALPART EXPONENTPART{self.text = self.text.replace("_","")}
         | DEC EXPONENTPART {self.text = self.text.replace("_","")}
-        | DECIMALPART EXPONENTPART {self.text = self.text.replace("_","")}
+        | DECIMALPART EXPONENTPART 
         | DEC DECIMALPART {self.text = self.text.replace("_","")};
 // Int
 // hai gach lien tiep
-fragment OCT: '0'[1-7]([0-7]|'_'[1-7])*;
-fragment HEX: ('0x'|'0X')[0-9A-Z]([0-9A-Z]|'_'[0-9A-Z])*;
-fragment BIN: ('0b'|'0B')[01]([01]|'_'[01])*;
+fragment OCT: '0'[1-7]([0-7]|'_'[1-7])*
+            | '0'[0];
+fragment HEX: ('0x'|'0X')[1-9A-F]([0-9A-F]|'_'[0-9A-F])*
+            | ('0x'|'0X')[0];
+fragment BIN: ('0b'|'0B')[1]([01]|'_'[01])*
+            | ('0b'|'0B')[0];
 fragment DEC: '0'|[1-9]([0-9]|'_'[0-9])*;
 // ([1-9]+([0-9]|'_'[0-9]))
 INTLIT: (OCT|HEX|BIN|DEC) {self.text = self.text.replace("_", "")};
@@ -287,10 +311,10 @@ WS: [ \t\r\n]+ -> skip; // skip spaces, tabs, newlines
 // Boolean
 BOOLEANLIT: ('False'| 'True');
 // String
-ILLEGAL_ESCAPE: '"'(~[\\'"]| EscapeSequence)*('\\' ~[btnfr'\\] | '\'' ~'"') {raise IllegalEscape(self.text[1:])};
+ILLEGAL_ESCAPE: '"'(~[\\"]| EscapeSequence)*('\\' ~[btnfr'\\] | '\'' ~'"') {raise IllegalEscape(self.text[1:])};
 fragment EscapeSequence: ('\\b'|'\\f'|'\\r'|'\\n'|'\\t'|'\\\''|'\\\\'| '\'"');
-STRINGLIT: '"'(EscapeSequence |~[\\'"])*'"' {self.text = self.text[1:-1]};
-UNCLOSE_STRING: '"'(EscapeSequence |~[\\'"])* EOF {raise UncloseString(self.text[1:])};
+STRINGLIT: '"'(EscapeSequence |~[\\"])*'"' {self.text = self.text[1:-1]};
+UNCLOSE_STRING: '"'(EscapeSequence |~[\\"])* EOF {raise UncloseString(self.text[1:])};
 DOLLARID: '$'[a-zA-Z_]+[a-zA-Z0-9_]*;
 ID: [a-zA-Z_]+[a-zA-Z0-9_]*;
 ERROR_CHAR: . {raise ErrorToken(self.text)};

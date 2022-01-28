@@ -2,6 +2,18 @@ import unittest
 from TestUtils import TestParser
 
 class ParserSuite(unittest.TestCase):
+    def test_1_very_simple_program (self):
+        input = """
+        Class Program
+        {
+            main()
+            {
+                System.out.printLn("Hello World");
+            }
+        }
+        """ 
+        expect = """successful"""
+        self.assertTrue(TestParser.test(input,expect,200))
     def test_simple_program(self):
         """Simple program: int main() {} """
         input = """Class main {
@@ -420,7 +432,7 @@ class ParserSuite(unittest.TestCase):
         expect = """successful"""
         self.assertTrue(TestParser.test(input,expect,221))
 
-    def test22 (self):
+    def test_22_wrong (self):
         input = """
         Class Program
         {
@@ -442,28 +454,91 @@ class ParserSuite(unittest.TestCase):
             }
         }
         """ 
-        expect = """"""
+        expect = """Error on line 6 col 39: =="""
         self.assertTrue(TestParser.test(input,expect,222))
 
-    # def test23 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,223))
+    def test_23_for_each (self):
+        input = """
+        Class Program
+        {
+            main()
+            {
+                Val myArray: Array[Int, 5] = Array(1,2,3,4,5);
+                Val sum: Int = 0;
+                Foreach (index In 1 .. 5)
+                {
+                    sum = sum + myArray[index];
+                    If(index == 4)
+                    {
+                        Break;
+                    }
+                }
+            }
+        }""" 
+        expect = """successful"""
+        self.assertTrue(TestParser.test(input,expect,223))
 
-    # def test24 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,224))
+    def test_24_inheritance (self):
+        input = """
+                Class Entity {
+            Var UUID: String;
+            Var $numOfEntities: Int = 0;
+            Constructor() {
+                Entity::$numOfEntities = Entity::$numOfEntities + 1;
+            }
+            Destructor() {
+                Entity::$numOfEntities = Entity::$numOfEntities - 1;
+            }
+        }
+        Class Pig:Entity{
+            Var height: Float = 0.75;
+            Var width: Float = 0.8;
+            Var length: Float = 1.2;
+            ## Where individual liberty is nothing but a daydream ##
+        }
+        Class Creeper:Entity{
+            Var height: Float = 1.75;
+            Var width: Float = 0.8;
+            Var length: Float = 0.8;
+            ## The wine consumed at a banquet should amount to the blood that was spilled ##
+        }""" 
+        expect = """successful"""
+        self.assertTrue(TestParser.test(input,expect,224))
 
-    # def test25 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,225))
+    def test_25_constructor (self):
+        input = """
+        Class BaseClass 
+        {
+            Var $numOfObjs: Int = 0;
+            Constructor() 
+            {
+                BaseClass::$numOfObjs = BaseClass::$numOfObjs + 1;
+            }
+        }""" 
+        expect = """successful"""
+        self.assertTrue(TestParser.test(input,expect,225))
 
-    # def test26 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,226))
+    def test_26_inheritance (self):
+        input = """
+                Class BaseClass {
+            Var $numOfObjs: Int = 0;
+            Constructor() {
+                BaseClass::$numOfObjs = BaseClass::$numOfObjs + 1;
+            }
+            Destructor() {
+                BaseClass::$numOfObjs = BaseClass::$numOfObjs - 1;
+                Out.printLn("Can\'t even be free for a day huh");
+            }
+            $staticMethod() {
+                Out.printLn(Program.gcd(123_456,46*75%3));
+            }
+        }
+        Class DerivedClass : BaseClass {
+            Var UUID: Int;
+        }
+    """ 
+        expect = """successful"""
+        self.assertTrue(TestParser.test(input,expect,226))
 
     def test_27_long_program (self):
         input = """
@@ -527,35 +602,139 @@ class ParserSuite(unittest.TestCase):
         expect = """successful"""
         self.assertTrue(TestParser.test(input,expect,227))
 
-    # def test28 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,228))
+    def test_28_long_main (self):
+        input = """
+        Class Program
+        {
+            main()
+            {
+                Var c: Int = New Creeper();
+                If (c.height < -2.)
+                { ##ALLAHU AKBAR## 
+                    System.out.printLn("Is that a short joke?");
+                }
+                ##CHECK IT GEE##
+                ##UGG##
+                Val dolls: Array[String, 9] = Array("Shanhai","Hourai","France","Holland","Tibet","Kyoto","London","Russia","Orlean");
+                System.out.printLn("But then again, yesterday wasn't all that easy lol "); ##^_^##
+                Var obj: Int = New DerivedClass();
+                Var array: Array[Int, 4] = Array(1,2,3,4);
+                Var darray: Array[Array[Int, 1], 4] = Array(Array(1_12), Array(OxD_2), Array(0776_5_6), Array(0B111));
+                Var exp: Int = (0XDD + (Self.gcd(12, 52) / 6 % 5) * darray[3][1] - BaseClass::$numOfObjs * array[obj.UUID]) / .e0;
+                Var b: Boolean = !Self.megazord();
+                Foreach(array[1] In darray[1][1] .. Self.gcd(4,28) By (c.height * BaseClass::$numOfObjs)) 
+                {
+                    BaseClass::$staticMethod();
+                }
 
-    # def test29 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,229))
+            }
+        }""" 
+        expect = """successful"""
+        self.assertTrue(TestParser.test(input,expect,228))
 
-    # def test30 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,230))
+    def test_29_full_class (self):
+        input = """
+        Class Entity {
+            Var UUID: String;
+            Var $numOfEntities: Int = 0;
+            Constructor() {
+                Entity::$numOfEntities = Entity::$numOfEntities + 1;
+            }
+            Destructor() {
+                Entity::$numOfEntities = Entity::$numOfEntities - 1;
+            }
+        }
+        """ 
+        expect = """successful"""
+        self.assertTrue(TestParser.test(input,expect,229))
 
-    # def test31 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,231))
+    def test_30_many_escape (self):
+        input = r"""
+        Class BaseClass {
+            Var $numOfObjs: Int = 0;
+        }
+        Class DerivedClass : BaseClass {
+            Var UUID: Int;
+        }
+        Class Program {
+            main() {
+                Var obj: Int = New DerivedClass();
+                Var array: Array[Int, 4] = Array(1,2,3,4);
+                Var darray: Array[Array[Int, 1], 4] = Array(Array(1), Array(2), Array(3), Array(4));
+                Var exp: Int = 0XDD + (Self.gcd(12, 52) / 6 % 5) * darray[3][1] - BaseClass::$numOfObjs * array[obj.UUID];
+                Var b: Boolean = !Self.megazord();
+            }
+            megazord() {
+                Val goodAdvice: String = "This is pointless";
+                Return !(!True || False && (goodAdvice ==. "This is pointless\n\t\r\f\b'"\'\\"));
+            }
+            gcd(a, b: Int) {
+                If (a == 0) {Return b;}
+                Return Self.gcd(b % a, a);
+            }
+        }
+        """ 
+        expect = """successful"""
+        self.assertTrue(TestParser.test(input,expect,230))
 
-    # def test32 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,232))
+    def test_31_linked_list (self):
+        input = """
+        Class Program
+        {
+            addNewNode(newNode,head: Int)
+            {
+                newNode.next_node = head;
+                head = new_node;
+            }
+            deleteNode(position,head: Int)
+            {
+                If(head == 0)
+                {
+                    head = head.next_node;
+                }
+                Else
+                {
+                    Var curr: Int = head.next.next;
+                    Var prev: Int = curr;
+                    Foreach(i In 2 .. position)
+                    {
+                        prev = curr;
+                        curr = curr.next_node;
+                    }
+                    prev.next = curr;
+                    head = prev;
+                }
 
-    # def test33 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,233))
+            }
+        }""" 
+        expect = """successful"""
+        self.assertTrue(TestParser.test(input,expect,231))
+
+    def test_32_class_linked_list (self):
+        input = """
+        Class LinkedList
+        {
+            LinkedList()
+            {
+                Self.value = 0;
+                Self.next_node = Null;
+            }
+            LinkedList(new_value: Int; nextNode: Int)
+            {
+                Self.value = new_value;
+                Self.next_node = nextNode;
+            }
+            Val value:Int;
+            Val next_node: Boolean;
+        }""" 
+        expect = """successful"""
+        self.assertTrue(TestParser.test(input,expect,232))
+
+    def test_33_circle_radius (self):
+        input = """
+        Class Circle""" 
+        expect = """"""
+        self.assertTrue(TestParser.test(input,expect,233))
 
     # def test34 (self):
     #     input = """""" 
