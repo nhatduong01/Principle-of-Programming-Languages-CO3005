@@ -732,336 +732,1376 @@ class ParserSuite(unittest.TestCase):
 
     def test_33_circle_radius (self):
         input = """
-        Class Circle""" 
-        expect = """"""
+        Class Circle
+        {
+            Var radius: Float;
+            Circle(radius : Float)
+            {
+                Self.radius = radius;
+            }
+            getArea()
+            {
+                Return Self.radius * Self.radius * pi;
+            }
+        }
+        Class Program
+        {
+            main()
+            {
+                ##Create a circle##
+                Var myCircle: Circle = New Circle();
+                System.Out.printLn(myCircle.getArea());
+            }
+        }""" 
+        expect = """successful"""
         self.assertTrue(TestParser.test(input,expect,233))
 
-    # def test34 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,234))
-
-    # def test35 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,235))
-
-    # def test36 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,236))
-
-    # def test37 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,237))
-
-    # def test38 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,238))
-
-    # def test39 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,239))
-
-    # def test40 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,240))
-
-    # def test41 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,241))
-
-    # def test42 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,242))
-
-    # def test43 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,243))
-
-    # def test44 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,244))
-
-    # def test45 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,245))
-
-    # def test46 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,246))
-
-    # def test47 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,247))
-
-    # def test48 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,248))
-
-    # def test49 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,249))
-
-    # def test50 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,250))
-
-    # def test51 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,251))
-
-    # def test52 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,252))
-
-    # def test53 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,253))
-
-    # def test54 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,254))
-
-    # def test55 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,255))
-
-    # def test56 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,256))
-
-    # def test57 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,257))
-
-    # def test58 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,258))
-
-    # def test59 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,259))
-
-    # def test60 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,260))
-
-    # def test61 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,261))
-
-    # def test62 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,262))
-
-    # def test63 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,263))
-
-    # def test64 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,264))
-
-    # def test65 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,265))
-
-    # def test66 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,266))
-
-    # def test67 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,267))
-
-    # def test68 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,268))
-
-    # def test69 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,269))
-
-    # def test70 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,270))
-
-    # def test71 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,271))
-
-    # def test72 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,272))
-
-    # def test73 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,273))
-
-    # def test74 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,274))
-
-    # def test75 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,275))
-
-    # def test76 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,276))
-
-    # def test77 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,277))
-
-    # def test78 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,278))
-
-    # def test79 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,279))
-
-    # def test80 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,280))
-
-    # def test81 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,281))
-
-    # def test82 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,282))
-
-    # def test83 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,283))
-
-    # def test84 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,284))
-
-    # def test85 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,285))
-
-    # def test86 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,286))
-
-    # def test87 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,287))
-
-    # def test88 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,288))
-
-    # def test89 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,289))
-
-    # def test90 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,290))
-
-    # def test91 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,291))
-
-    # def test92 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,292))
-
-    # def test93 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,293))
-
-    # def test94 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,294))
-
-    # def test95 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,295))
-
-    # def test96 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,296))
-
-    # def test97 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,297))
-
-    # def test98 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,298))
-
-    # def test99 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestParser.test(input,expect,299))
+    def test_34_circle (self):
+        input = """
+        Class Circle
+        {
+            Var radius: Float;
+            Circle(radius : Float)
+            {
+                Self.radius = radius;
+            }
+            getArea()
+            {
+                Return Self.radius * Self.radius * pi;
+            }
+            setRadius(new_radius: Float)
+            {
+                Self.radius = new_radius;
+            }
+        }
+        Class Program
+        {
+            main()
+            {
+                ##Create a circle##
+                Var myCircle: Circle = New Circle();
+                System.Out.printLn(myCircle.getArea());
+                ## Set new radius ##
+                myCircle.setRadius(5.63);
+                System.Out.printLn(myCircle.getArea());
+            }
+        }""" 
+        expect = """successful"""
+        self.assertTrue(TestParser.test(input,expect,234))
+
+    def test_35_error (self):
+        input = """
+        Class Circle
+        {
+            Var radius: Float;
+            Circle(radius : Float)
+            {
+                Self.radius = radius;
+            }
+            getArea()
+            {
+                Return Self.radius * Self.radius * pi;
+            }
+            setRadius(new_radius: Float)
+            {
+                Self.radius = new_radius;
+            }
+        }
+        Class Program
+        {
+            main()
+            {
+                ##Create a circle##
+                Var myCircle: Circle = New Circle();
+                System.Out.printLn(myCircle.getArea());
+                ## Set new radius 
+                myCircle.setRadius(5.63);
+                System.Out.printLn(myCircle.getArea());
+            }
+        }
+        """ 
+        expect = """#"""
+        self.assertTrue(TestParser.test(input,expect,235))
+
+    def test_36_person (self):
+        input = """
+        Class Person
+        {
+            Var name: String;
+            Var height: Float;
+            Var salary: Float;
+            Var $maxHeight: Float = -INT_MAX;
+            Person(_salary, _height : Float; _name: String)
+            {
+                Self.name = _name;
+                Self.height = _height;
+                Self.salary = _salary;
+                If (_height > Person.$maxHeight)
+                {
+                    Person::$maxHeight = _height;
+                }
+                Else
+                {
+                    System.Out.printLn("Sorry you must be higher \\n");
+                }
+            }
+        }""" 
+        expect = """successful"""
+        self.assertTrue(TestParser.test(input,expect,236))
+
+    def test_37_person_error (self):
+        input = """
+        Class Person
+        {
+            Var name: String;
+            Var height: Float;
+            Var salary: Float;
+            Var $maxHeight: Float = -INT_MAX;
+            Person(_salary, _height : Float; _name: String)
+            {
+                Self.name = _name;
+                Self.height = _height;
+                Self.salary = _salary;
+                If (_height > Person.$maxHeight)
+                {
+                    Person::$maxHeight = _height;
+                }
+                Else
+                {
+                    System.Out.printLn("Sorry you must be higher \\j");
+                }
+            }
+        }
+        """ 
+        expect = """Sorry you must be higher \\j"""
+        self.assertTrue(TestParser.test(input,expect,237))
+
+    def test_38_person (self):
+        input = """
+        Class Person
+        {
+            Var name: String;
+            Var height: Float;
+            Var salary: Float;
+            Var $maxHeight: Float = -INT_MAX;
+            Person(_salary, _height : Float; _name: String)
+            {
+                Self.name = _name;
+                Self.height = _height;
+                Self.salary = _salary;
+                If (_height > Person.$maxHeight)
+                {
+                    Person::$maxHeight = _height;
+                }
+                Else
+                {
+                    System.Out.printLn("Sorry you must be higher \\n");
+                }
+            }
+        }
+        Class Program
+        {
+            main()
+            {
+                Var myList: Array[Person, 5] = Array(
+                    New Person ("Duong","185", "3000"),
+                    New Person ("Le","185", "3000"),
+                    New Person ("Nguyen","185", "3000"),
+                    New Person ("Nhat","185", "3000"),
+                    New Person ("Minh","185", "3000")
+                );
+            }
+        }""" 
+        expect = """successful"""
+        self.assertTrue(TestParser.test(input,expect,238))
+
+    def test_39_person (self):
+        input = """
+        Class Person
+        {
+            Var name: String;
+            Var height: Float;
+            Var salary: Float;
+            Var $maxHeight: Float = -INT_MAX;
+            Person(_salary, _height : Float; _name: String)
+            {
+                Self.name = _name;
+                Self.height = _height;
+                Self.salary = _salary;
+                If (_height > Person.$maxHeight)
+                {
+                    Person::$maxHeight = _height;
+                }
+                Else
+                {
+                    System.Out.printLn("Sorry you must be higher \\n");
+                }
+            }
+        }
+        Class Program
+        {
+            maxSalary(myList: Array[Person,5]; maxsalary: Float)
+            {
+                Foreach(myindex In 1 .. 5 )
+                {
+                    If(myList[index] > maxsalary)
+                    {
+                        maxsalary = myList[index];
+                    }
+                }
+            }
+            main()
+            {
+                Var myList: Array[Person, 5] = Array(
+                    New Person ("Duong","185", "3000"),
+                    New Person ("Le","185", "3000"),
+                    New Person ("Nguyen","185", "3000"),
+                    New Person ("Nhat","185", "3000"),
+                    New Person ("Minh","185", "3000")
+                );
+                Var maxsalary: Float = 0.0;
+                maxsalary = Self.maxSalary(myList, maxsalary);
+                System.Out.printLn(maxsalary);
+            }
+        }""" 
+        expect = """successful"""
+        self.assertTrue(TestParser.test(input,expect,239))
+
+    def test_40_error_semicolon (self):
+        input = """
+        Class Program
+        {
+            main()
+            {
+                System.out.printLn("Hiiii")
+            }
+        }""" 
+        expect = """Error on line 7 col 12: }"""
+        self.assertTrue(TestParser.test(input,expect,240))
+
+    def test_41_binary_search (self):
+        input = """
+        Class Program
+        {
+            binarySearch(myArray: Array[Int, 1000]; low, high, target : Int)
+            {
+                If(high < low)
+                {
+                    Return "Sorry We cannot found it";
+                }
+                Var middle: Int = (high + low)/2;
+                If(myArray[middle] > target)
+                {
+                    Return Self.binarySearch(myArray, middle + 1, high);
+                }
+                Elseif(myArray[middle] < target)
+                {
+                    Return Self.binarySearch(myArray, low, middle - 1);
+                }
+                Else
+                {
+                    Return middle;
+                }
+            }
+        }""" 
+        expect = """successful"""
+        self.assertTrue(TestParser.test(input,expect,241))
+
+    def test_42 (self):
+        input = """
+        Class Program
+        {
+            binarySearch(myArray: Array[Int, 1000]; low, high, target : Int)
+            {
+                If(high < low)
+                {
+                    Return "Sorry We cannot found it";
+                }
+                Var middle: Int = (high + low)/2;
+                If(myArray[middle] > target)
+                {
+                    Return Self.binarySearch(myArray, middle + 1, high);
+                }
+                Elseif(myArray[middle] < target)
+                {
+                    Return Self.binarySearch(myArray, low, middle - 1);
+                }
+                Else
+                {
+                    Return middle;
+                }
+            }
+            main()
+            {
+                Val myArray: Array[Int, 10] = 
+                Array(1,2,3,4,5,6,7,8,9,10);
+                Var pos: Int = Self.binarySearch(myArray, 1 , 10 , 9);
+            }
+        }""" 
+        expect = """successful"""
+        self.assertTrue(TestParser.test(input,expect,242))
+
+    def test_43_error (self):
+        input = """
+        Class Program
+        {
+            binarySearch(myArray: Array[Int, 1000]; low, high, target : Int)
+            {
+                If(high < low)
+                {
+                    Return "Sorry We cannot found it";
+                }
+                Var middle: Int = (high + low)/2;
+                If(myArray[middle] > target)
+                {
+                    Return Self.binarySearch(myArray, middle + 1, high);
+                }
+                Elseif(myArray[middle] < target)
+                {
+                    Return binarySearch(myArray, low, middle - 1);
+                }
+                Else
+                {
+                    Return middle;
+                }
+            }
+            main()
+            {
+                Val myArray: Array[Int, 10] = 
+                Array(1,2,3,4,5,6,7,8,9,10);
+                Var pos: Int = Self.binarySearch(myArray, 1 , 10 , 9);
+            }
+        }""" 
+        expect = """Error on line 17 col 39: ("""
+        self.assertTrue(TestParser.test(input,expect,243))
+
+    def test_44_error (self):
+        input = """
+        Class Program
+        {
+            binarySearch(myArray: Array[Int, 1000]; low, high, target : Int)
+            {
+                If(high < low)
+                {
+                    Return "Sorry We cannot found it";
+                }
+                Var middle: Int = (high + low)/2;
+                If(myArray[middle] > target)
+                {
+                    Return Self.binarySearch(myArray, middle + 1, high)
+                }
+                Elseif(myArray[middle] < target)
+                {
+                    Return Self.binarySearch(myArray, low, middle - 1);
+                }
+                Else
+                {
+                    Return middle;
+                }
+            }
+            main()
+            {
+                Val myArray: Array[Int, 10] = 
+                Array(1,2,3,4,5,6,7,8,9,10);
+                Var pos: Int = Self.binarySearch(myArray, 1 , 10 , 9);
+            }
+        }""" 
+        expect = """Error on line 14 col 16: }"""
+        self.assertTrue(TestParser.test(input,expect,244))
+
+    def test_45 (self):
+        input = """
+                Class Diagram{
+                    getArea(){
+                        Return a;
+                    }
+                }
+                Class Program{
+                    main(){
+                        ## Comment something here ##
+                        Var a : Int;
+                        a = 5;
+                        Var b : String;
+                    }
+                }""" 
+        expect = """successful"""
+        self.assertTrue(TestParser.test(input,expect,245))
+
+    def test_46 (self):
+        input = """
+                Class Diagram{
+                    getArea(){
+                        Return a;
+                    }
+                }
+                Class Program{
+                    main(){
+                        ## Comment something here ##
+                        Var a : Int;
+                        a = 5;
+                        Var b : String;
+                    }
+                }""" 
+        expect = """successful"""
+        self.assertTrue(TestParser.test(input,expect,246))
+
+    def test_47 (self):
+        input = """
+                Class Diagram{
+                    getArea(){
+                        Return a;
+                    }
+                }
+                Class Program{
+                    main(){
+                        ## Comment something here ##
+                        Var a : Int;
+                        a = 5;
+                        Var b : String;
+                    }
+                }""" 
+        expect = """successful"""
+        self.assertTrue(TestParser.test(input,expect,247))
+
+    def test_48 (self):
+        input = """
+                Class Diagram{
+                    getArea(){
+                        Return a;
+                    }
+                }
+                Class Program{
+                    main(){
+                        ## Comment something here ##
+                        Var a : Int;
+                        a = 5;
+                        Var b : String;
+                    }
+                }""" 
+        expect = """successful"""
+        self.assertTrue(TestParser.test(input,expect,248))
+
+    def test_49 (self):
+        input = """
+                Class Diagram{
+                    getArea(){
+                        Return a;
+                    }
+                }
+                Class Program{
+                    main(){
+                        ## Comment something here ##
+                        Var a : Int;
+                        a = 5;
+                        Var b : String;
+                    }
+                }""" 
+        expect = """successful"""
+        self.assertTrue(TestParser.test(input,expect,249))
+
+    def test_50 (self):
+        input = """
+                Class Diagram{
+                    getArea(){
+                        Return a;
+                    }
+                }
+                Class Program{
+                    main(){
+                        ## Comment something here ##
+                        Var a : Int;
+                        a = 5;
+                        Var b : String;
+                    }
+                }""" 
+        expect = """successful"""
+        self.assertTrue(TestParser.test(input,expect,250))
+
+    def test_51 (self):
+        input = """
+                Class Diagram{
+                    getArea(){
+                        Return a;
+                    }
+                }
+                Class Program{
+                    main(){
+                        ## Comment something here ##
+                        Var a : Int;
+                        a = 5;
+                        Var b : String;
+                    }
+                }""" 
+        expect = """successful"""
+        self.assertTrue(TestParser.test(input,expect,251))
+
+    def test_52 (self):
+        input = """
+                Class Diagram{
+                    getArea(){
+                        Return a;
+                    }
+                }
+                Class Program{
+                    main(){
+                        ## Comment something here ##
+                        Var a : Int;
+                        a = 5;
+                        Var b : String;
+                    }
+                }""" 
+        expect = """successful"""
+        self.assertTrue(TestParser.test(input,expect,252))
+
+    def test_53 (self):
+        input = """
+                Class Diagram{
+                    getArea(){
+                        Return a;
+                    }
+                }
+                Class Program{
+                    main(){
+                        ## Comment something here ##
+                        Var a : Int;
+                        a = 5;
+                        Var b : String;
+                    }
+                }""" 
+        expect = """successful"""
+        self.assertTrue(TestParser.test(input,expect,253))
+
+    def test_54 (self):
+        input = """
+                Class Diagram{
+                    getArea(){
+                        Return a;
+                    }
+                }
+                Class Program{
+                    main(){
+                        ## Comment something here ##
+                        Var a : Int;
+                        a = 5;
+                        Var b : String;
+                    }
+                }""" 
+        expect = """successful"""
+        self.assertTrue(TestParser.test(input,expect,254))
+
+    def test_55 (self):
+        input = """
+                Class Diagram{
+                    getArea(){
+                        Return a;
+                    }
+                }
+                Class Program{
+                    main(){
+                        ## Comment something here ##
+                        Var a : Int;
+                        a = 5;
+                        Var b : String;
+                    }
+                }""" 
+        expect = """successful"""
+        self.assertTrue(TestParser.test(input,expect,255))
+
+    def test_56 (self):
+        input = """
+                Class Diagram{
+                    getArea(){
+                        Return a;
+                    }
+                }
+                Class Program{
+                    main(){
+                        ## Comment something here ##
+                        Var a : Int;
+                        a = 5;
+                        Var b : String;
+                    }
+                }""" 
+        expect = """successful"""
+        self.assertTrue(TestParser.test(input,expect,256))
+
+    def test_57 (self):
+        input = """
+                Class Diagram{
+                    getArea(){
+                        Return a;
+                    }
+                }
+                Class Program{
+                    main(){
+                        ## Comment something here ##
+                        Var a : Int;
+                        a = 5;
+                        Var b : String;
+                    }
+                }""" 
+        expect = """successful"""
+        self.assertTrue(TestParser.test(input,expect,257))
+
+    def test_58 (self):
+        input = """
+                Class Diagram{
+                    getArea(){
+                        Return a;
+                    }
+                }
+                Class Program{
+                    main(){
+                        ## Comment something here ##
+                        Var a : Int;
+                        a = 5;
+                        Var b : String;
+                    }
+                }""" 
+        expect = """successful"""
+        self.assertTrue(TestParser.test(input,expect,258))
+
+    def test_59 (self):
+        input = """
+                Class Diagram{
+                    getArea(){
+                        Return a;
+                    }
+                }
+                Class Program{
+                    main(){
+                        ## Comment something here ##
+                        Var a : Int;
+                        a = 5;
+                        Var b : String;
+                    }
+                }""" 
+        expect = """successful"""
+        self.assertTrue(TestParser.test(input,expect,259))
+
+    def test_60 (self):
+        input = """
+                Class Diagram{
+                    getArea(){
+                        Return a;
+                    }
+                }
+                Class Program{
+                    main(){
+                        ## Comment something here ##
+                        Var a : Int;
+                        a = 5;
+                        Var b : String;
+                    }
+                }""" 
+        expect = """successful"""
+        self.assertTrue(TestParser.test(input,expect,260))
+
+    def test_61 (self):
+        input = """
+                Class Diagram{
+                    getArea(){
+                        Return a;
+                    }
+                }
+                Class Program{
+                    main(){
+                        ## Comment something here ##
+                        Var a : Int;
+                        a = 5;
+                        Var b : String;
+                    }
+                }""" 
+        expect = """successful"""
+        self.assertTrue(TestParser.test(input,expect,261))
+
+    def test_62 (self):
+        input = """
+                Class Diagram{
+                    getArea(){
+                        Return a;
+                    }
+                }
+                Class Program{
+                    main(){
+                        ## Comment something here ##
+                        Var a : Int;
+                        a = 5;
+                        Var b : String;
+                    }
+                }""" 
+        expect = """successful"""
+        self.assertTrue(TestParser.test(input,expect,262))
+
+    def test_63 (self):
+        input = """
+                Class Diagram{
+                    getArea(){
+                        Return a;
+                    }
+                }
+                Class Program{
+                    main(){
+                        ## Comment something here ##
+                        Var a : Int;
+                        a = 5;
+                        Var b : String;
+                    }
+                }""" 
+        expect = """successful"""
+        self.assertTrue(TestParser.test(input,expect,263))
+
+    def test_64 (self):
+        input = """
+                Class Diagram{
+                    getArea(){
+                        Return a;
+                    }
+                }
+                Class Program{
+                    main(){
+                        ## Comment something here ##
+                        Var a : Int;
+                        a = 5;
+                        Var b : String;
+                    }
+                }""" 
+        expect = """successful"""
+        self.assertTrue(TestParser.test(input,expect,264))
+
+    def test_65 (self):
+        input = """
+                Class Diagram{
+                    getArea(){
+                        Return a;
+                    }
+                }
+                Class Program{
+                    main(){
+                        ## Comment something here ##
+                        Var a : Int;
+                        a = 5;
+                        Var b : String;
+                    }
+                }""" 
+        expect = """successful"""
+        self.assertTrue(TestParser.test(input,expect,265))
+
+    def test_66 (self):
+        input = """
+                Class Diagram{
+                    getArea(){
+                        Return a;
+                    }
+                }
+                Class Program{
+                    main(){
+                        ## Comment something here ##
+                        Var a : Int;
+                        a = 5;
+                        Var b : String;
+                    }
+                }""" 
+        expect = """successful"""
+        self.assertTrue(TestParser.test(input,expect,266))
+
+    def test_67 (self):
+        input = """
+                Class Diagram{
+                    getArea(){
+                        Return a;
+                    }
+                }
+                Class Program{
+                    main(){
+                        ## Comment something here ##
+                        Var a : Int;
+                        a = 5;
+                        Var b : String;
+                    }
+                }""" 
+        expect = """successful"""
+        self.assertTrue(TestParser.test(input,expect,267))
+
+    def test_68 (self):
+        input = """
+                Class Diagram{
+                    getArea(){
+                        Return a;
+                    }
+                }
+                Class Program{
+                    main(){
+                        ## Comment something here ##
+                        Var a : Int;
+                        a = 5;
+                        Var b : String;
+                    }
+                }""" 
+        expect = """successful"""
+        self.assertTrue(TestParser.test(input,expect,268))
+
+    def test_69 (self):
+        input = """
+                Class Diagram{
+                    getArea(){
+                        Return a;
+                    }
+                }
+                Class Program{
+                    main(){
+                        ## Comment something here ##
+                        Var a : Int;
+                        a = 5;
+                        Var b : String;
+                    }
+                }""" 
+        expect = """successful"""
+        self.assertTrue(TestParser.test(input,expect,269))
+
+    def test_70 (self):
+        input = """
+                Class Diagram{
+                    getArea(){
+                        Return a;
+                    }
+                }
+                Class Program{
+                    main(){
+                        ## Comment something here ##
+                        Var a : Int;
+                        a = 5;
+                        Var b : String;
+                    }
+                }""" 
+        expect = """successful"""
+        self.assertTrue(TestParser.test(input,expect,270))
+
+    def test_71 (self):
+        input = """
+                Class Diagram{
+                    getArea(){
+                        Return a;
+                    }
+                }
+                Class Program{
+                    main(){
+                        ## Comment something here ##
+                        Var a : Int;
+                        a = 5;
+                        Var b : String;
+                    }
+                }""" 
+        expect = """successful"""
+        self.assertTrue(TestParser.test(input,expect,271))
+
+    def test_72 (self):
+        input = """
+                Class Diagram{
+                    getArea(){
+                        Return a;
+                    }
+                }
+                Class Program{
+                    main(){
+                        ## Comment something here ##
+                        Var a : Int;
+                        a = 5;
+                        Var b : String;
+                    }
+                }""" 
+        expect = """successful"""
+        self.assertTrue(TestParser.test(input,expect,272))
+
+    def test_73 (self):
+        input = """
+                Class Diagram{
+                    getArea(){
+                        Return a;
+                    }
+                }
+                Class Program{
+                    main(){
+                        ## Comment something here ##
+                        Var a : Int;
+                        a = 5;
+                        Var b : String;
+                    }
+                }""" 
+        expect = """successful"""
+        self.assertTrue(TestParser.test(input,expect,273))
+
+    def test_74 (self):
+        input = """
+                Class Diagram{
+                    getArea(){
+                        Return a;
+                    }
+                }
+                Class Program{
+                    main(){
+                        ## Comment something here ##
+                        Var a : Int;
+                        a = 5;
+                        Var b : String;
+                    }
+                }""" 
+        expect = """successful"""
+        self.assertTrue(TestParser.test(input,expect,274))
+
+    def test_75 (self):
+        input = """
+                Class Diagram{
+                    getArea(){
+                        Return a;
+                    }
+                }
+                Class Program{
+                    main(){
+                        ## Comment something here ##
+                        Var a : Int;
+                        a = 5;
+                        Var b : String;
+                    }
+                }""" 
+        expect = """successful"""
+        self.assertTrue(TestParser.test(input,expect,275))
+
+    def test_76 (self):
+        input = """
+                Class Diagram{
+                    getArea(){
+                        Return a;
+                    }
+                }
+                Class Program{
+                    main(){
+                        ## Comment something here ##
+                        Var a : Int;
+                        a = 5;
+                        Var b : String;
+                    }
+                }""" 
+        expect = """successful"""
+        self.assertTrue(TestParser.test(input,expect,276))
+
+    def test_77 (self):
+        input = """
+                Class Diagram{
+                    getArea(){
+                        Return a;
+                    }
+                }
+                Class Program{
+                    main(){
+                        ## Comment something here ##
+                        Var a : Int;
+                        a = 5;
+                        Var b : String;
+                    }
+                }""" 
+        expect = """successful"""
+        self.assertTrue(TestParser.test(input,expect,277))
+
+    def test_78 (self):
+        input = """
+                Class Diagram{
+                    getArea(){
+                        Return a;
+                    }
+                }
+                Class Program{
+                    main(){
+                        ## Comment something here ##
+                        Var a : Int;
+                        a = 5;
+                        Var b : String;
+                    }
+                }""" 
+        expect = """successful"""
+        self.assertTrue(TestParser.test(input,expect,278))
+
+    def test_79 (self):
+        input = """
+                Class Diagram{
+                    getArea(){
+                        Return a;
+                    }
+                }
+                Class Program{
+                    main(){
+                        ## Comment something here ##
+                        Var a : Int;
+                        a = 5;
+                        Var b : String;
+                    }
+                }""" 
+        expect = """successful"""
+        self.assertTrue(TestParser.test(input,expect,279))
+
+    def test_80 (self):
+        input = """
+                Class Diagram{
+                    getArea(){
+                        Return a;
+                    }
+                }
+                Class Program{
+                    main(){
+                        ## Comment something here ##
+                        Var a : Int;
+                        a = 5;
+                        Var b : String;
+                    }
+                }""" 
+        expect = """successful"""
+        self.assertTrue(TestParser.test(input,expect,280))
+
+    def test_81 (self):
+        input = """
+                Class Diagram{
+                    getArea(){
+                        Return a;
+                    }
+                }
+                Class Program{
+                    main(){
+                        ## Comment something here ##
+                        Var a : Int;
+                        a = 5;
+                        Var b : String;
+                    }
+                }""" 
+        expect = """successful"""
+        self.assertTrue(TestParser.test(input,expect,281))
+
+    def test_82 (self):
+        input = """
+                Class Diagram{
+                    getArea(){
+                        Return a;
+                    }
+                }
+                Class Program{
+                    main(){
+                        ## Comment something here ##
+                        Var a : Int;
+                        a = 5;
+                        Var b : String;
+                    }
+                }""" 
+        expect = """successful"""
+        self.assertTrue(TestParser.test(input,expect,282))
+
+    def test_83 (self):
+        input = """
+                Class Diagram{
+                    getArea(){
+                        Return a;
+                    }
+                }
+                Class Program{
+                    main(){
+                        ## Comment something here ##
+                        Var a : Int;
+                        a = 5;
+                        Var b : String;
+                    }
+                }""" 
+        expect = """successful"""
+        self.assertTrue(TestParser.test(input,expect,283))
+
+    def test_84 (self):
+        input = """
+                Class Diagram{
+                    getArea(){
+                        Return a;
+                    }
+                }
+                Class Program{
+                    main(){
+                        ## Comment something here ##
+                        Var a : Int;
+                        a = 5;
+                        Var b : String;
+                    }
+                }""" 
+        expect = """successful"""
+        self.assertTrue(TestParser.test(input,expect,284))
+
+    def test_85 (self):
+        input = """
+                Class Diagram{
+                    getArea(){
+                        Return a;
+                    }
+                }
+                Class Program{
+                    main(){
+                        ## Comment something here ##
+                        Var a : Int;
+                        a = 5;
+                        Var b : String;
+                    }
+                }""" 
+        expect = """successful"""
+        self.assertTrue(TestParser.test(input,expect,285))
+
+    def test_86 (self):
+        input = """
+                Class Diagram{
+                    getArea(){
+                        Return a;
+                    }
+                }
+                Class Program{
+                    main(){
+                        ## Comment something here ##
+                        Var a : Int;
+                        a = 5;
+                        Var b : String;
+                    }
+                }""" 
+        expect = """successful"""
+        self.assertTrue(TestParser.test(input,expect,286))
+
+    def test_87 (self):
+        input = """
+                Class Diagram{
+                    getArea(){
+                        Return a;
+                    }
+                }
+                Class Program{
+                    main(){
+                        ## Comment something here ##
+                        Var a : Int;
+                        a = 5;
+                        Var b : String;
+                    }
+                }""" 
+        expect = """successful"""
+        self.assertTrue(TestParser.test(input,expect,287))
+
+    def test_88 (self):
+        input = """
+                Class Diagram{
+                    getArea(){
+                        Return a;
+                    }
+                }
+                Class Program{
+                    main(){
+                        ## Comment something here ##
+                        Var a : Int;
+                        a = 5;
+                        Var b : String;
+                    }
+                }""" 
+        expect = """successful"""
+        self.assertTrue(TestParser.test(input,expect,288))
+
+    def test_89 (self):
+        input = """
+                Class Diagram{
+                    getArea(){
+                        Return a;
+                    }
+                }
+                Class Program{
+                    main(){
+                        ## Comment something here ##
+                        Var a : Int;
+                        a = 5;
+                        Var b : String;
+                    }
+                }""" 
+        expect = """successful"""
+        self.assertTrue(TestParser.test(input,expect,289))
+
+    def test_90 (self):
+        input = """
+                Class Diagram{
+                    getArea(){
+                        Return a;
+                    }
+                }
+                Class Program{
+                    main(){
+                        ## Comment something here ##
+                        Var a : Int;
+                        a = 5;
+                        Var b : String;
+                    }
+                }""" 
+        expect = """successful"""
+        self.assertTrue(TestParser.test(input,expect,290))
+
+    def test_91 (self):
+        input = """
+                Class Diagram{
+                    getArea(){
+                        Return a;
+                    }
+                }
+                Class Program{
+                    main(){
+                        ## Comment something here ##
+                        Var a : Int;
+                        a = 5;
+                        Var b : String;
+                    }
+                }""" 
+        expect = """successful"""
+        self.assertTrue(TestParser.test(input,expect,291))
+
+    def test_92 (self):
+        input = """
+                Class Diagram{
+                    getArea(){
+                        Return a;
+                    }
+                }
+                Class Program{
+                    main(){
+                        ## Comment something here ##
+                        Var a : Int;
+                        a = 5;
+                        Var b : String;
+                    }
+                }""" 
+        expect = """successful"""
+        self.assertTrue(TestParser.test(input,expect,292))
+
+    def test_93 (self):
+        input = """
+                Class Diagram{
+                    getArea(){
+                        Return a;
+                    }
+                }
+                Class Program{
+                    main(){
+                        ## Comment something here ##
+                        Var a : Int;
+                        a = 5;
+                        Var b : String;
+                    }
+                }""" 
+        expect = """successful"""
+        self.assertTrue(TestParser.test(input,expect,293))
+
+    def test_94 (self):
+        input = """
+                Class Diagram{
+                    getArea(){
+                        Return a;
+                    }
+                }
+                Class Program{
+                    main(){
+                        ## Comment something here ##
+                        Var a : Int;
+                        a = 5;
+                        Var b : String;
+                    }
+                }""" 
+        expect = """successful"""
+        self.assertTrue(TestParser.test(input,expect,294))
+
+    def test_95 (self):
+        input = """
+                Class Diagram{
+                    getArea(){
+                        Return a;
+                    }
+                }
+                Class Program{
+                    main(){
+                        ## Comment something here ##
+                        Var a : Int;
+                        a = 5;
+                        Var b : String;
+                    }
+                }""" 
+        expect = """successful"""
+        self.assertTrue(TestParser.test(input,expect,295))
+
+    def test_96 (self):
+        input = """
+                Class Diagram{
+                    getArea(){
+                        Return a;
+                    }
+                }
+                Class Program{
+                    main(){
+                        ## Comment something here ##
+                        Var a : Int;
+                        a = 5;
+                        Var b : String;
+                    }
+                }""" 
+        expect = """successful"""
+        self.assertTrue(TestParser.test(input,expect,296))
+
+    def test_97 (self):
+        input = """
+                Class Shape {
+                    GetFunc(a,b : Int ; c : Float) {
+                        Val num1: Int = 1;
+                        Val num1, num2: Int = 1,2;
+                    }
+                }
+                Class Program{
+                    main(){
+                        something = (True == (!False));
+                    }
+                }""" 
+        expect = """successful"""
+        self.assertTrue(TestParser.test(input,expect,297))
+
+    def test_98 (self):
+        input = """
+                Class Diagram{
+                    getArea(){
+                        Return a;
+                    }
+                }
+                Class Program{
+                    main(){
+                        ## Comment something here ##
+                        Var a : Int;
+                        a = 5;
+                        Var b : String;
+                    }
+                }""" 
+        expect = """successful"""
+        self.assertTrue(TestParser.test(input,expect,298))
+
+    def test_99 (self):
+        input = """
+            Class Program{
+                main(){
+                    ## Comment something here ##
+                    Var a : Int;
+                    a = 5;
+                    ## Comment something here ##
+                    Var b : String; 
+                    Val c, d, acc: String = "Here is another string","asd","Another string";
+                    Foreach(a In 12_3.0 .. 13 By 2+1){
+                        Self.callMe(asdhfjk);
+                    }
+                    Foreach(a In 1 .. 2){
+                        Var a: Int;
+                        If(a ==1){
+                            a = 2 * Self.call(aladin);
+                            Break;
+                            Invocation::$id();
+                        }
+                    }
+                    Return;
+                }
+            }""" 
+        expect = """successful"""
+        self.assertTrue(TestParser.test(input,expect,299))
