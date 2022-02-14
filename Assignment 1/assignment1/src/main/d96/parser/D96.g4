@@ -36,15 +36,15 @@ intance_access_operarion: intance_access_operarion DOT static_access_operation
                        | intance_access_operarion DOT static_access_operation LB expList? RB
                        | static_access_operation;
 
-static_access_operation: object_create_operation STATIC_ACCESS  object_create_operation LB expList? RB
-                       | object_create_operation STATIC_ACCESS  object_create_operation
+static_access_operation: object_create_operation STATIC_ACCESS  DOLLARID LB expList? RB
+                       | object_create_operation STATIC_ACCESS  DOLLARID
                        | object_create_operation;
 
 
 object_create_operation: NEW object_create_operation LB expList? RB| parenthesis_operations;
 
 parenthesis_operations: LB exp RB
-                      |INTLIT | STRINGLIT | BOOLEANLIT | FLOATLIT | ID | array_lit | DOLLARID | SELF | NULL; 
+                      |INTLIT | STRINGLIT | BOOLEANLIT | FLOATLIT | ID | array_lit  | SELF | NULL; 
 
 // ArrayLIT dau
 

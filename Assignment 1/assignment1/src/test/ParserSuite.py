@@ -69,7 +69,7 @@ class ParserSuite(unittest.TestCase):
             Var length, width: Int;
             
             $getNumOfShape() {
-                Return $numOfShape;
+                Return Shape::$numOfShape;
             }
         }
         
@@ -100,7 +100,7 @@ class ParserSuite(unittest.TestCase):
             Var length, width: Int;
             
             $getNumOfShape() {
-                Return $numOfShape;
+                Return Shape::$numOfShape;
             }
         }
         
@@ -213,7 +213,7 @@ class ParserSuite(unittest.TestCase):
             Val arr: Array[Array[Int, 2], 1] = Array(Array(1,2));
             
             $getNumOfShape() {
-                Return $numOfShape;
+                Return Shape::$numOfShape;
             }
             
             getArr() {
@@ -238,7 +238,7 @@ class ParserSuite(unittest.TestCase):
                     Array(Array(1,7,8), Array(1,9,10))
                 );
 
-                Var b: Int = a[1+5*9][0][Self.$getValue()];
+                Var b: Int = a[1+5*9][0][Self::$getValue()];
             }
         }""" 
         expect = """successful"""
@@ -366,7 +366,7 @@ class ParserSuite(unittest.TestCase):
                 a.$foo();
             }
         }""" 
-        expect = """Error on line 6 col 24: ;"""
+        expect = """Error on line 6 col 18: $foo"""
         self.assertTrue(TestParser.test(input,expect,218))
 
     def test_19_circle (self):
@@ -549,7 +549,7 @@ class ParserSuite(unittest.TestCase):
             Val arr: Array[Array[Int, 2], 1] = Array(Array(1,2));
             
             $getNumOfShape() {
-                Return $numOfShape;
+                Return Shape::$numOfShape;
             }
             
             getArr() {
@@ -836,7 +836,7 @@ class ParserSuite(unittest.TestCase):
                 Self.name = _name;
                 Self.height = _height;
                 Self.salary = _salary;
-                If (_height > Person.$maxHeight)
+                If (_height > Person::$maxHeight)
                 {
                     Person::$maxHeight = _height;
                 }
@@ -862,7 +862,7 @@ class ParserSuite(unittest.TestCase):
                 Self.name = _name;
                 Self.height = _height;
                 Self.salary = _salary;
-                If (_height > Person.$maxHeight)
+                If (_height > Person::$maxHeight)
                 {
                     Person::$maxHeight = _height;
                 }
@@ -889,7 +889,7 @@ class ParserSuite(unittest.TestCase):
                 Self.name = _name;
                 Self.height = _height;
                 Self.salary = _salary;
-                If (_height > Person.$maxHeight)
+                If (_height > Person::$maxHeight)
                 {
                     Person::$maxHeight = _height;
                 }
@@ -928,7 +928,7 @@ class ParserSuite(unittest.TestCase):
                 Self.name = _name;
                 Self.height = _height;
                 Self.salary = _salary;
-                If (_height > Person.$maxHeight)
+                If (_height > Person::$maxHeight)
                 {
                     Person::$maxHeight = _height;
                 }
@@ -1849,19 +1849,13 @@ class ParserSuite(unittest.TestCase):
 
     def test_86 (self):
         input = """
-                Class Diagram{
-                    getArea(){
-                        Return a;
-                    }
-                }
-                Class Program{
-                    main(){
-                        ## Comment something here ##
-                        Var a : Int;
-                        a = 5;
-                        Var b : String;
-                    }
-                }""" 
+        Class Program{
+            main(){
+                Val k : Int = 10;
+                arr[2+7/2] = k;
+                arr[1] = 1;
+            }
+        }""" 
         expect = """successful"""
         self.assertTrue(TestParser.test(input,expect,286))
 
@@ -1903,19 +1897,18 @@ class ParserSuite(unittest.TestCase):
 
     def test_89 (self):
         input = """
-                Class Diagram{
-                    getArea(){
-                        Return a;
-                    }
+            Class Main{
+                Var v : Boolean;
+                setIsValue(isSaved:Boolean){
+                    v = isSaved;
                 }
-                Class Program{
-                    main(){
-                        ## Comment something here ##
-                        Var a : Int;
-                        a = 5;
-                        Var b : String;
-                    }
-                }""" 
+            }
+            Class Program{
+                main(){
+                    Var x : Main = New Main();
+                    x.setIsValue(True);
+                }
+            }""" 
         expect = """successful"""
         self.assertTrue(TestParser.test(input,expect,289))
 
@@ -1939,19 +1932,30 @@ class ParserSuite(unittest.TestCase):
 
     def test_91 (self):
         input = """
-                Class Diagram{
-                    getArea(){
-                        Return a;
-                    }
-                }
-                Class Program{
-                    main(){
-                        ## Comment something here ##
-                        Var a : Int;
-                        a = 5;
-                        Var b : String;
-                    }
-                }""" 
+        Class Program 
+        {
+
+            Val a, b: Array[Int, 5];
+            Var c: Array[String, 10_0];
+            main() 
+            {
+                a = 1;
+                b = 2;
+                d = Array("1", "2", "3");
+                e = Array(Array(1 + 2, 2 * 5, 3), Array(4, 5, 6));
+                f.callFunc();
+                d.callSomething();
+                c = a + b;
+                c = (a > b) < c;
+                Val d: Int = f.callFunc() - g::$something(a, b);
+                e = g::$somethingElse;
+                f = g.someValue();
+                Val abc: String = f.something();
+                Var c: Float = ((a - b) * (c / d)) + (e + f) % 5;
+                d = "Something";
+                Return;
+            }
+        }""" 
         expect = """successful"""
         self.assertTrue(TestParser.test(input,expect,291))
 
@@ -1975,20 +1979,14 @@ class ParserSuite(unittest.TestCase):
 
     def test_93 (self):
         input = """
-                Class Diagram{
-                    getArea(){
-                        Return a;
-                    }
-                }
-                Class Program{
-                    main(){
-                        ## Comment something here ##
-                        Var a : Int;
-                        a = 5;
-                        Var b : String;
-                    }
-                }""" 
-        expect = """successful"""
+        Class Program
+        { 
+            main()
+            {
+            Var a, b : Array[String,-4];
+            }
+        }""" 
+        expect = """Error on line 6 col 36: -"""
         self.assertTrue(TestParser.test(input,expect,293))
 
     def test_94 (self):
@@ -2011,19 +2009,32 @@ class ParserSuite(unittest.TestCase):
 
     def test_95 (self):
         input = """
-                Class Diagram{
-                    getArea(){
-                        Return a;
-                    }
+        Class Account {
+                Var userName : String;
+                Var password : String;
+                Var pin : Int;
+                    
+                Constructor(name:String; pw:String; pin:Int){
+                    userName = name;
+                    password = pw;
+                    Self.pin = pin;
                 }
-                Class Program{
-                    main(){
-                        ## Comment something here ##
-                        Var a : Int;
-                        a = 5;
-                        Var b : String;
-                    }
-                }""" 
+                    
+                getInfo(){
+                    Out.printString(username,password,pin);
+                }
+                    
+                Destructor(){
+                    Out.printString("Account is deleted");
+                }
+            }
+            
+            Class Program {
+                main(){
+                    Val userAccount : Account = New Account("truc.nguyenHCMUT", "truc123", 123456);
+                    userAccount.getInfo();
+                }
+            }""" 
         expect = """successful"""
         self.assertTrue(TestParser.test(input,expect,295))
 
