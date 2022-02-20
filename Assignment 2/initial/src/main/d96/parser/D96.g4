@@ -59,10 +59,10 @@ adding_operators: PLUS | MINUS;
 
 multiplying_operators: MULTIPLY | DIVIDE | MODULO;
 
-element_expression : exp index_operators;
+element_expression : exp index_operators; //
 
 index_operators : '[' exp ']'
-                | '[' exp ']' index_operators;
+                | '[' exp ']' index_operators;//
 
 // Array Literature
 array_lit: ARRAYTYPE LB expList RB;
@@ -83,48 +83,48 @@ else_statements: ELSE block_statements;
 
 // Assignment statement;
 
-assignment_statements: lhs ASSIGN exp SEMI;
+assignment_statements: lhs ASSIGN exp SEMI;//
 
 lhs: lhs DOT assignment_static_access
    | assignment_static_access;
 
 assignment_static_access: (ID | element_expression| SELF) STATIC_ACCESS DOLLARID
-                        | ID | element_expression | SELF;
+                        | ID | element_expression | SELF;//
 // For/In
 
-foreach_statements: FOREACH LB lhs IN  exp '..' exp (BY exp)? RB  block_statements;
+foreach_statements: FOREACH LB ID IN  exp '..' exp (BY exp)? RB  block_statements;//
 
 
 // break statements
 
-break_statements: BREAK SEMI;
+break_statements: BREAK SEMI;//
 
 // Continue statements
 
-continue_statements: CONTINUE SEMI;
+continue_statements: CONTINUE SEMI;//
 
 // return statements
 
-return_statements: RETURN exp? SEMI;
+return_statements: RETURN exp? SEMI;//
 
 // Method invocation
 
 method_invocations: exp DOT ID SEMI
                   | ID STATIC_ACCESS DOLLARID SEMI
                   | exp DOT ID LB expList? RB SEMI
-                  | ID STATIC_ACCESS DOLLARID LB expList? RB SEMI;
+                  | ID STATIC_ACCESS DOLLARID LB expList? RB SEMI; //
 
 
-block_statements: LP  list_statement RP;
+block_statements: LP  list_statement RP; //
 
-list_statement: single_statement the_rest_statements |;
+list_statement: single_statement the_rest_statements |;//
 
-the_rest_statements: single_statement the_rest_statements |;
+the_rest_statements: single_statement the_rest_statements |;//
 
 // Variable and Constant Declaration Statement
-variable_constant_declaration: (VAR | VAL) variableList COLON primitive_type ( ASSIGN expList)? SEMI;
+variable_constant_declaration: (VAR | VAL) variableList COLON primitive_type ( ASSIGN expList)? SEMI;//
 
-variableList:ID iDlist;
+variableList:ID iDlist; //
 
 single_statement: if_statements 
                 | assignment_statements 
@@ -133,27 +133,7 @@ single_statement: if_statements
                 | continue_statements 
                 | return_statements
                 | method_invocations
-                | variable_constant_declaration
-                | continue_statements
-                | break_statements;
-
-
-// for_each_single_statement: if_statements 
-//                          | assignment_statements 
-//                          | foreach_statements 
-//                          | break_statements 
-//                          | continue_statements 
-//                          | return_statements
-//                          | method_invocations
-//                          | variable_constant_declaration
-//                          | break_statements
-//                          | continue_statements;
-
-// for_each_block: LP for_each_list_statements RP;
-
-// for_each_list_statements: for_each_single_statement the_rest_for_each_statements   |;
-
-// the_rest_for_each_statements: for_each_single_statement the_rest_for_each_statements |;
+                | variable_constant_declaration; //
 
 
 
@@ -165,44 +145,44 @@ single_statement: if_statements
 
 
 // class declaration
-class_declaration:CLASS  ID (COLON ID)? LP  attributes_methods_declarations RP;
+class_declaration:CLASS  ID (COLON ID)? LP  attributes_methods_declarations RP;//
 
 attributes_methods_declarations: attribute_declaration the_rest_attributes_methods_declarations
                                | method_declaration the_rest_attributes_methods_declarations
-                               |;
+                               |;//
 
 the_rest_attributes_methods_declarations: attribute_declaration the_rest_attributes_methods_declarations
                                         | method_declaration the_rest_attributes_methods_declarations
-                                        |;
+                                        |;//
 /// the IDlist's length is not equal to the assignment list
-arrayDeclaration: ARRAYTYPE  '[' primitive_type COMMA INTLIT ']';
+arrayDeclaration: ARRAYTYPE  '[' primitive_type COMMA INTLIT ']'; //
 
-attribute_declaration: (VAR | VAL) attributesList COLON primitive_type ( ASSIGN expList)? SEMI;
+attribute_declaration: (VAR | VAL) attributesList COLON primitive_type ( ASSIGN expList)? SEMI;//
 // assignment: ID ASSIGN exp;
-attributesList: (DOLLARID| ID) iDlist;
+attributesList: (DOLLARID| ID) iDlist;//
 
-iDlist: COMMA (DOLLARID | ID) iDlist |;
+iDlist: COMMA (DOLLARID | ID) iDlist |;//
 
-expList: exp theRestExp;
+expList: exp theRestExp;//
 
-theRestExp: COMMA exp theRestExp |;
+theRestExp: COMMA exp theRestExp |;//
 
-primitive_type: BOOLEANTYPE | INTTYPE| FLOATTYPE | STRINGTYPE | arrayDeclaration | ID;
+primitive_type: BOOLEANTYPE | INTTYPE| FLOATTYPE | STRINGTYPE | arrayDeclaration | ID;//
 
 method_declaration: (DOLLARID | ID) LB list_parameters RB  block_statements
                   | constructor
-                  | destructor;
+                  | destructor;//
 
 
-list_parameters: parameters_declaration the_rest_parameters_declarations |;
+list_parameters: parameters_declaration the_rest_parameters_declarations |;//
 
-the_rest_parameters_declarations: SEMI parameters_declaration the_rest_parameters_declarations |;
+the_rest_parameters_declarations: SEMI parameters_declaration the_rest_parameters_declarations |;//
 
-parameters_declaration: same_type_parameters COLON primitive_type;
+parameters_declaration: same_type_parameters COLON primitive_type;//
 
-same_type_parameters: ID the_rest_ID |;
+same_type_parameters: ID the_rest_ID |;//
 
-the_rest_ID: COMMA ID the_rest_ID |;
+the_rest_ID: COMMA ID the_rest_ID |;//
 
 constructor: CONSTRUCTOR LB list_parameters RB block_statements;
 

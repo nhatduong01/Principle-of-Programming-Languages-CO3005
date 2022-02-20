@@ -3,6 +3,7 @@ import subprocess
 import unittest
 from antlr4 import *
 
+
 for path in ['./test/','./main/d96/parser/','./main/d96/utils/','./main/d96/astgen/','./main/d96/checker/','./main/d96/codegen/']:
 	sys.path.append(path)
 ANTLR_JAR = os.environ.get('ANTLR_JAR')
