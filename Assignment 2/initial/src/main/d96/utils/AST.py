@@ -366,7 +366,6 @@ class VoidType(Type):
 @dataclass
 class Program(AST):
     decl: List[ClassDecl]
-
     def __str__(self):
         return "Program([" + ','.join(str(i) for i in self.decl) + "])"
 

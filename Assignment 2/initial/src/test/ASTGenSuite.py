@@ -10,11 +10,11 @@ class ASTGenSuite(unittest.TestCase):
         {
             main()
             {
-
+                
             }
         }
         """
-        expect = str(Program(ClassDecl(Id("main"),[])))
+        expect = "aada"
         self.assertTrue(TestAST.test(input,expect,300))
 
    

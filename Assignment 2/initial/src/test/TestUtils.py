@@ -1,6 +1,9 @@
 import sys,os
 from antlr4 import *
 from antlr4.error.ErrorListener import ConsoleErrorListener,ErrorListener
+
+from main.d96.astgen.ASTGeneration import ASTGeneration
+
 if not './main/d96/parser/' in sys.path:
     sys.path.append('./main/d96/parser/')
 if os.path.isdir('../target/main/d96/parser') and not '../target/main/d96/parser/' in sys.path:

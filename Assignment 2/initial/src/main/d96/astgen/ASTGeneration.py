@@ -1,7 +1,6 @@
-import re
 from D96Visitor import D96Visitor
 from D96Parser import D96Parser
-from utils.AST import *
+from AST import *
 
 ### TODO:
 """
@@ -10,20 +9,20 @@ from utils.AST import *
 
 class ASTGeneration(D96Visitor):
     def visitProgram(self, ctx: D96Parser.ProgramContext):
-        classList = []
-        for eachClass in ctx.class_declaration():
-            processed_class = self.visitClass_declaration(eachClass)
-            classList.append(processed_class)
-        return Program(classList)
-
+        # classList = []
+        # for eachClass in ctx.class_declaration():
+        #     processed_class = self.visit(eachClass)
+        #     classList.append(processed_class)
+        # return Program(classList)
+        return Program([self.visit(x) for x in ctx.class_declaration()])
     def visitClass_declaration(self, ctx: D96Parser.Class_declarationContext):
         classID = Id(ctx.ID(0).getText())
-        parentClass = Id(ctx.ID(1).getText()) if len(ctx.ID() == 2) else None
+        parentClass = Id(ctx.ID(1).getText()) if len(ctx.ID()) == 2 else None
         memberList = self.visit(ctx.attributes_methods_declarations())
         return ClassDecl(classID, memberList, parentClass)
 
     def visitAttributes_methods_declarations(self,ctx: D96Parser.Attributes_methods_declarationsContext):
-        memberList : List[MemDecl]
+        memberList : List[MemDecl] = []
         if (ctx.attribute_declaration()):
             memberList.append(self.visit(ctx.attribute_declaration()))
             return memberList + self.visit(ctx.the_rest_attributes_methods_declarations())
@@ -32,7 +31,7 @@ class ASTGeneration(D96Visitor):
             return memberList + self.visit(ctx.the_rest_attributes_methods_declarations())
 
     def visitThe_rest_attributes_methods_declarations(self,ctx: D96Parser.The_rest_attributes_methods_declarationsContext):
-        memberList : List[MemDecl]
+        memberList : List[MemDecl] = []
         if (ctx.attribute_declaration()):
             memberList.append(self.visit(ctx.attribute_declaration()))
             return memberList + self.visit(ctx.the_rest_attributes_methods_declarations())
@@ -80,7 +79,7 @@ class ASTGeneration(D96Visitor):
     def visitDestructor(self, ctx: D96Parser.DestructorContext):
         pass
     
-    def visitConstructor(self, ctx: D96Parser.constructorContext):
+    def visitConstructor(self, ctx: D96Parser.ConstructorContext):
         pass
     
     def visitList_parameters(self, ctx: D96Parser.List_parametersContext):
