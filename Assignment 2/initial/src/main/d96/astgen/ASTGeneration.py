@@ -29,37 +29,39 @@ class ASTGeneration(D96Visitor):
         elif (ctx.method_declaration()):
             memberList.append(self.visit(ctx.method_declaration()))
             return memberList + self.visit(ctx.the_rest_attributes_methods_declarations())
+        return memberList
 
     def visitThe_rest_attributes_methods_declarations(self,ctx: D96Parser.The_rest_attributes_methods_declarationsContext):
         memberList : List[MemDecl] = []
         if (ctx.attribute_declaration()):
-            memberList.append(self.visit(ctx.attribute_declaration()))
+            memberList + self.visit(ctx.attribute_declaration())
             return memberList + self.visit(ctx.the_rest_attributes_methods_declarations())
         elif (ctx.method_declaration()):
             memberList.append(self.visit(ctx.method_declaration()))
             return memberList + self.visit(ctx.the_rest_attributes_methods_declarations())
+        return []
 
     def visitAttribute_declaration(self, ctx: D96Parser.Attribute_declarationContext):
-        decl = self.visit(ctx.getChild(0))
-        kind = self.visit(ctx.attributesList())
-        return AttributeDecl(kind, decl)
-    
+        attribList = self.visit(ctx.attributesList())
+        expList = self.visit(ctx.expList()) if ctx.expList() else [None] * len(attribList)
+        mytype = self.visit(ctx.primitive_type())
+        constList = [(name, mytype, value) for name, value in zip (attribList, expList)]
+        if ctx.VAL():
+            return [AttributeDecl(Instance(), ConstDecl(myId, myType, myValue)) if myId[0] !='$' else 
+                    AttributeDecl(Static(), ConstDecl(myId, myType, myValue)) for myId, myType, myValue in constList]
+        elif ctx.VAR():
+            return [AttributeDecl(Instance(), VarDecl(myId, myType, myValue)) if myId[0] !='$' else 
+                    AttributeDecl(Static(), VarDecl(myId, myType, myValue)) for myId, myType, myValue in constList]
     def visitAttributesList(self, ctx: D96Parser.AttributesListContext):
-        ### NOTE #### : We are mixing Static and instance attribute here
+        ### NOTE #### : Do we keep dollar sign
         attributelist = []
-        if ctx.getChild(0).getText()[0] == '$':
-            attributelist.append(Static(ctx.getChild(0)))
-        else:
-            attributelist.append(Instance(ctx.getChild(0)))
+        attributelist + [Id(ctx.getChild(0).getText())]
         return attributelist + self.visit(ctx.iDlist())
     
     def visitIDlist(self, ctx: D96Parser.IDlistContext):
         if ctx.getChildCount() == 3:
             attributelist = []
-            if ctx.getChild(1).getText()[0] == '$':
-                attributelist.append(Static(ctx.getChild(1)))
-            else:
-                attributelist.append(Instance(ctx.getChild(1)))
+            attributelist + [Id(ctx.getChild(1).getText())]
             return attributelist + self.visit(ctx.iDlist())
         else: return []
     
