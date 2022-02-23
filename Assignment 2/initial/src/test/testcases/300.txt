@@ -1,9 +1,5 @@
 
         Class Duong
         {
-            main()
-            {
-                
-            }
         }
         

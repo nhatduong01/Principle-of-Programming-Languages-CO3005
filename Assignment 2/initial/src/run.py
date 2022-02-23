@@ -3,12 +3,11 @@ import subprocess
 import unittest
 from antlr4 import *
 
-
 for path in ['./test/','./main/d96/parser/','./main/d96/utils/','./main/d96/astgen/','./main/d96/checker/','./main/d96/codegen/']:
 	sys.path.append(path)
 ANTLR_JAR = os.environ.get('ANTLR_JAR')
 TARGET_DIR = '../target'
-GENERATE_DIR = 'main/d96/parser'
+GENERATE_DIR = '../target'
 
 def main(argv):
     if len(argv) < 1:

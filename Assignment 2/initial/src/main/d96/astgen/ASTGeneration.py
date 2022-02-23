@@ -2,18 +2,10 @@ from D96Visitor import D96Visitor
 from D96Parser import D96Parser
 from AST import *
 
-### TODO:
-"""
-1) SIKind is ID ?
-"""
+
 
 class ASTGeneration(D96Visitor):
     def visitProgram(self, ctx: D96Parser.ProgramContext):
-        # classList = []
-        # for eachClass in ctx.class_declaration():
-        #     processed_class = self.visit(eachClass)
-        #     classList.append(processed_class)
-        # return Program(classList)
         return Program([self.visit(x) for x in ctx.class_declaration()])
     def visitClass_declaration(self, ctx: D96Parser.Class_declarationContext):
         classID = Id(ctx.ID(0).getText())
@@ -47,10 +39,11 @@ class ASTGeneration(D96Visitor):
         mytype = self.visit(ctx.primitive_type())
         constList = [(name, mytype, value) for name, value in zip (attribList, expList)]
         if ctx.VAL():
-            return [AttributeDecl(Instance(), ConstDecl(myId, myType, myValue)) if myId[0] !='$' else 
+            # NOTE: IF there is no exp what is the kind of error
+            return [AttributeDecl(Instance(), ConstDecl(myId, myType, myValue)) if str(myId)[3] !='$' else 
                     AttributeDecl(Static(), ConstDecl(myId, myType, myValue)) for myId, myType, myValue in constList]
         elif ctx.VAR():
-            return [AttributeDecl(Instance(), VarDecl(myId, myType, myValue)) if myId[0] !='$' else 
+            return [AttributeDecl(Instance(), VarDecl(myId, myType, myValue)) if str(myId)[3] !='$' else 
                     AttributeDecl(Static(), VarDecl(myId, myType, myValue)) for myId, myType, myValue in constList]
     def visitAttributesList(self, ctx: D96Parser.AttributesListContext):
         ### NOTE #### : Do we keep dollar sign
@@ -67,7 +60,7 @@ class ASTGeneration(D96Visitor):
     
     def visitMethod_declaration(self,ctx: D96Parser.Method_declarationContext):
         if ctx.getChildCount() == 5:
-            kind = Static(ctx.getChild(0)) if ctx.getChild(0).getText()[0] == '$' else Instance(ctx.getChild(0))
+            kind = Static() if ctx.getChild(0).getText()[0] == '$' else Instance() 
             name = Id(ctx.getChild(0).getText())
             param = self.visit(ctx.list_parameters())
             body = self.visit(ctx.block_statements())
@@ -79,22 +72,28 @@ class ASTGeneration(D96Visitor):
                 return self.visit(ctx.destructor())
     
     def visitDestructor(self, ctx: D96Parser.DestructorContext):
-        pass
+        myID = Id('Destructor')
+        param = []
+        body = self.visit(ctx.block_statements())
+        return MethodDecl(Static(),myID, param, body)
     
     def visitConstructor(self, ctx: D96Parser.ConstructorContext):
-        pass
+            name = Id("Constructor")
+            param = self.visit(ctx.list_parameters())
+            body = self.visit(ctx.block_statements())
+            return MethodDecl(Static(), name, param, body)
     
     def visitList_parameters(self, ctx: D96Parser.List_parametersContext):
         if ctx.getChildCount() == 2:
             paraList = []
-            paraList.append(self.visit(ctx.parameters_declaration()))
+            paraList + self.visit(ctx.parameters_declaration())
             return paraList + self.visit(ctx.the_rest_parameters_declarations())
         else: return []
 
     def visitThe_rest_parameters_declarations(self, ctx: D96Parser.The_rest_parameters_declarationsContext):
         if ctx.getChildCount() == 4:
             paraList = []
-            paraList.append(self.visit(ctx.parameters_declaration()))
+            paraList + self.visit(ctx.parameters_declaration())
             return paraList + self.visit(ctx.the_rest_parameters_declarations())
         else: return []
     
@@ -143,8 +142,8 @@ class ASTGeneration(D96Visitor):
         return ArrayType(size, eleType)
     
     def visitBlock_statements(self,ctx: D96Parser.Block_statementsContext):
-        lstStm  = []
-        return lstStm + self.visit(ctx.list_statement())
+        lstStm  = self.visit(ctx.list_statement())
+        return Block(lstStm)
     
     def visitList_statement(self, ctx: D96Parser.List_statementContext):
         if ctx.getChildCount() == 2:
@@ -237,13 +236,12 @@ class ASTGeneration(D96Visitor):
             return expList + self.visit(ctx.index_operators())
 
     def visitForeach_statements(self, ctx: D96Parser.Foreach_statementsContext):
-        # NOTE: Where is the BY expression
         id = Id(ctx.ID().getText())
         expr1 = ctx.exp(0)
         expr2 = ctx.exp(1)
-        up = None  # TODO: Fix this problem
-        loop = ctx.block_statements()
-        return For(id, expr1, expr2, up, loop)
+        expr3 = ctx.exp(2)
+        loop = ctx.block_statements() # NOTE: A single statement or a block
+        return For(id, expr1, expr2, loop, expr3)
     
     def visitBreak_statements(self, ctx: D96Parser.Break_statementsContext):
         # NOTE: DO we need to use CTX
