@@ -61,8 +61,8 @@ multiplying_operators: MULTIPLY | DIVIDE | MODULO;
 
 element_expression : exp index_operators; //
 
-index_operators : '[' exp ']'
-                | '[' exp ']' index_operators;//
+index_operators : '[' exp ']' index_operators
+                | '[' exp ']';//
 
 // Array Literature
 array_lit: ARRAYTYPE LB expList RB;

@@ -1,0 +1,12 @@
+
+        Class Circle
+        {
+            Val radius: Float;
+        }
+        Class Program
+        {
+            main()
+            {
+
+            }
+        }

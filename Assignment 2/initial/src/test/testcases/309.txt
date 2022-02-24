@@ -1,5 +1,5 @@
 
         Class A {
-            foo(a,b:Int;c:Float){}
+            Var a:Int;
         }
         

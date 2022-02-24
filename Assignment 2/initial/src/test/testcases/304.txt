@@ -1,0 +1,5 @@
+
+        Class Student
+        {
+            Var $maxHeight: Float = 0;
+        }

@@ -1,0 +1,9 @@
+
+        Class Student
+        {
+            Var $maxHeight: Float = 0;
+            $getMaxHeight()
+            {
+                Return Student::$maxHeight;
+            }
+        }

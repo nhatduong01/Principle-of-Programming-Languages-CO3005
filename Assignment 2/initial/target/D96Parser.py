@@ -143,9 +143,9 @@ def serializedATN():
         buf.write("\2\2\u0108\u0109\t\6\2\2\u0109%\3\2\2\2\u010a\u010b\5")
         buf.write("\4\3\2\u010b\u010c\5(\25\2\u010c\'\3\2\2\2\u010d\u010e")
         buf.write("\7\3\2\2\u010e\u010f\5\4\3\2\u010f\u0110\7\4\2\2\u0110")
-        buf.write("\u0117\3\2\2\2\u0111\u0112\7\3\2\2\u0112\u0113\5\4\3\2")
-        buf.write("\u0113\u0114\7\4\2\2\u0114\u0115\5(\25\2\u0115\u0117\3")
-        buf.write("\2\2\2\u0116\u010d\3\2\2\2\u0116\u0111\3\2\2\2\u0117)")
+        buf.write("\u0111\5(\25\2\u0111\u0117\3\2\2\2\u0112\u0113\7\3\2\2")
+        buf.write("\u0113\u0114\5\4\3\2\u0114\u0115\7\4\2\2\u0115\u0117\3")
+        buf.write("\2\2\2\u0116\u010d\3\2\2\2\u0116\u0112\3\2\2\2\u0117)")
         buf.write("\3\2\2\2\u0118\u0119\7\66\2\2\u0119\u011a\7\6\2\2\u011a")
         buf.write("\u011b\5`\61\2\u011b\u011c\7\7\2\2\u011c+\3\2\2\2\u011d")
         buf.write("\u011e\7\17\2\2\u011e\u011f\7\6\2\2\u011f\u0120\5\4\3")
@@ -1820,18 +1820,18 @@ class D96Parser ( Parser ):
                 self.exp()
                 self.state = 269
                 self.match(D96Parser.T__1)
+                self.state = 270
+                self.index_operators()
                 pass
 
             elif la_ == 2:
                 self.enterOuterAlt(localctx, 2)
-                self.state = 271
-                self.match(D96Parser.T__0)
                 self.state = 272
-                self.exp()
+                self.match(D96Parser.T__0)
                 self.state = 273
-                self.match(D96Parser.T__1)
+                self.exp()
                 self.state = 274
-                self.index_operators()
+                self.match(D96Parser.T__1)
                 pass
 
 

@@ -1,0 +1,10 @@
+
+        Class Shape
+        {
+            Val radius: Float;
+            getArea()
+            {
+                Val pi: Float = 3.14;
+                Return Self.radius * Self.radius * pi;
+            }
+        }

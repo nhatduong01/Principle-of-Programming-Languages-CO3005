@@ -16,7 +16,7 @@ class ASTGeneration(D96Visitor):
     def visitAttributes_methods_declarations(self,ctx: D96Parser.Attributes_methods_declarationsContext):
         memberList : List[MemDecl] = []
         if (ctx.attribute_declaration()):
-            memberList.append(self.visit(ctx.attribute_declaration()))
+            memberList = memberList + self.visit(ctx.attribute_declaration())
             return memberList + self.visit(ctx.the_rest_attributes_methods_declarations())
         elif (ctx.method_declaration()):
             memberList.append(self.visit(ctx.method_declaration()))
@@ -26,7 +26,7 @@ class ASTGeneration(D96Visitor):
     def visitThe_rest_attributes_methods_declarations(self,ctx: D96Parser.The_rest_attributes_methods_declarationsContext):
         memberList : List[MemDecl] = []
         if (ctx.attribute_declaration()):
-            memberList + self.visit(ctx.attribute_declaration())
+            memberList = memberList + self.visit(ctx.attribute_declaration())
             return memberList + self.visit(ctx.the_rest_attributes_methods_declarations())
         elif (ctx.method_declaration()):
             memberList.append(self.visit(ctx.method_declaration()))
@@ -34,6 +34,7 @@ class ASTGeneration(D96Visitor):
         return []
 
     def visitAttribute_declaration(self, ctx: D96Parser.Attribute_declarationContext):
+        # NOTE: If number of exps is not equal to the attribute list, then what???
         attribList = self.visit(ctx.attributesList())
         expList = self.visit(ctx.expList()) if ctx.expList() else [None] * len(attribList)
         mytype = self.visit(ctx.primitive_type())
@@ -47,14 +48,12 @@ class ASTGeneration(D96Visitor):
                     AttributeDecl(Static(), VarDecl(myId, myType, myValue)) for myId, myType, myValue in constList]
     def visitAttributesList(self, ctx: D96Parser.AttributesListContext):
         ### NOTE #### : Do we keep dollar sign
-        attributelist = []
-        attributelist + [Id(ctx.getChild(0).getText())]
+        attributelist = [Id(ctx.getChild(0).getText())]
         return attributelist + self.visit(ctx.iDlist())
     
     def visitIDlist(self, ctx: D96Parser.IDlistContext):
         if ctx.getChildCount() == 3:
-            attributelist = []
-            attributelist + [Id(ctx.getChild(1).getText())]
+            attributelist = [Id(ctx.getChild(1).getText())]
             return attributelist + self.visit(ctx.iDlist())
         else: return []
     
@@ -85,15 +84,13 @@ class ASTGeneration(D96Visitor):
     
     def visitList_parameters(self, ctx: D96Parser.List_parametersContext):
         if ctx.getChildCount() == 2:
-            paraList = []
-            paraList + self.visit(ctx.parameters_declaration())
+            paraList =  self.visit(ctx.parameters_declaration())
             return paraList + self.visit(ctx.the_rest_parameters_declarations())
         else: return []
 
     def visitThe_rest_parameters_declarations(self, ctx: D96Parser.The_rest_parameters_declarationsContext):
-        if ctx.getChildCount() == 4:
-            paraList = []
-            paraList + self.visit(ctx.parameters_declaration())
+        if ctx.getChildCount() == 3:
+            paraList = self.visit(ctx.parameters_declaration())
             return paraList + self.visit(ctx.the_rest_parameters_declarations())
         else: return []
     
@@ -148,7 +145,11 @@ class ASTGeneration(D96Visitor):
     def visitList_statement(self, ctx: D96Parser.List_statementContext):
         if ctx.getChildCount() == 2:
             lstStm = []
-            lstStm.append(self.visit(ctx.single_statement()))
+            newEle = self.visit(ctx.single_statement())
+            if isinstance(newEle, list):
+                lstStm = newEle
+            else:
+                lstStm.append(newEle)
             return lstStm + self.visit(ctx.the_rest_statements())
         else:
             return []
@@ -223,13 +224,13 @@ class ASTGeneration(D96Visitor):
                 return SelfLiteral()
     
     def visitElement_expression(self, ctx: D96Parser.Element_expressionContext):
-        exp = ctx.exp()
+        exp = self.vist(ctx.exp())
         idx = self.visit(ctx.index_operators())
         return ArrayCell(exp, idx)
     
     def visitIndex_operators(self, ctx: D96Parser.Index_operatorsContext):
         if ctx.getChildCount() == 3:
-            return ctx.visit(ctx.exp())
+            return [self.visit(ctx.exp())]
         else:
             expList = []
             expList.append(self.visit(ctx.exp()))
@@ -384,14 +385,14 @@ class ASTGeneration(D96Visitor):
     
     def visitMultiplying_operations(self, ctx: D96Parser.Multiplying_operationsContext):
         if ctx.getChildCount() == 3:
-            leff = self.visit(ctx.multiplying_operations())
+            left = self.visit(ctx.multiplying_operations())
             right = self.visit(ctx.logical_negate_operation())
             op = self.visit(ctx.multiplying_operators())
-            return BinaryOp(op, leff, right)
+            return BinaryOp(op, left, right)
         elif ctx.getChildCount() == 1:
             return self.visit(ctx.logical_negate_operation())
     
-    def visitMultiplying_operator(self, ctx: D96Parser.Multiplying_operatorsContext):
+    def visitMultiplying_operators(self, ctx: D96Parser.Multiplying_operatorsContext):
         if ctx.MULTIPLY():
             return ctx.MULTIPLY().getText()
         elif ctx.DIVIDE():
@@ -419,7 +420,7 @@ class ASTGeneration(D96Visitor):
         if ctx.getChildCount() == 2:
             body = self.visit(ctx.index_operations())
             op = self.visit(ctx.index_operators())
-            return UnaryOp(op, body)
+            return ArrayCell(body, op)
         elif ctx.getChildCount() == 1:
             return self.visit(ctx.intance_access_operarion())
     
@@ -439,7 +440,7 @@ class ASTGeneration(D96Visitor):
     def visitStatic_access_operation(self, ctx : D96Parser.Static_access_operationContext):
         if ctx.getChildCount() == 3:
             obj = self.visit(ctx.object_create_operation())
-            fieldName = self.visit(ctx.DOLLARID().getText())
+            fieldName = ctx.DOLLARID().getText()
             return FieldAccess(obj,Id(fieldName))
         elif ctx.LB():
             obj = self.visit(ctx.object_create_operation())

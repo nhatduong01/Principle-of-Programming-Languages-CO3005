@@ -1,0 +1,6 @@
+
+        Class Student
+        {
+            Var $maxHeight: Float = 0;
+            Var name, class: String;
+        }
