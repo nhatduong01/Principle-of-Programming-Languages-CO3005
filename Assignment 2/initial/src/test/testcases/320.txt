@@ -1,0 +1,9 @@
+
+        Class Program {
+            Var a : Float;
+            Var $b : Array[String, 10];
+            mainA () {
+                Self.getIntLn();
+            }
+        }
+        

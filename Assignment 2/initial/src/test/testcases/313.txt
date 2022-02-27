@@ -1,0 +1,8 @@
+
+        Class Program
+        {
+            main()
+            {
+                Var a,b : Int = 123_56, 5689_89;
+            }
+        }

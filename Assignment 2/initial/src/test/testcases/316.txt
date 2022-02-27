@@ -1,0 +1,16 @@
+
+        Class Program
+        {
+            main()
+            {
+                Var a: Int = 5;
+                If(a == 5)
+                {
+                    System.print(a);
+                }
+                Else
+                {
+                    System.print(a);
+                }
+            }
+        }

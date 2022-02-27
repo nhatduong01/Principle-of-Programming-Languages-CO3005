@@ -1,0 +1,9 @@
+
+        Class Program
+        {
+            main()
+            {
+                Val a: Float = 4.5e-45;
+                Var b: Int = 13533_13;
+            }
+        }

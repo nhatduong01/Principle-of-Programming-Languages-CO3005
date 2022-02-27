@@ -71,15 +71,15 @@ array_lit: ARRAYTYPE LB expList RB;
 
 // If statement
 
-if_statements: IF LB exp RB block_statements else_ifList? else_statements?;
+if_statements: IF LB exp RB block_statements else_ifList? else_statements?;//
 
-else_ifList:  else_if the_rest_else_if;
+else_ifList:  else_if the_rest_else_if;//
 
-the_rest_else_if: else_if the_rest_else_if |;
+the_rest_else_if: else_if the_rest_else_if |;//
 
-else_if: ELSEIF LB exp RB block_statements; 
+else_if: ELSEIF LB exp RB block_statements; //
 
-else_statements: ELSE block_statements;
+else_statements: ELSE block_statements;//
 
 // Assignment statement;
 
@@ -133,9 +133,10 @@ single_statement: if_statements
                 | continue_statements 
                 | return_statements
                 | method_invocations
-                | variable_constant_declaration; //
+                | variable_constant_declaration
+                | block_statements; //
 
-
+// NOTE: block in block
 
 
 

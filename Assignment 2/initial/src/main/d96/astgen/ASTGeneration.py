@@ -1,3 +1,4 @@
+from functools import reduce
 from D96Visitor import D96Visitor
 from D96Parser import D96Parser
 from AST import *
@@ -40,7 +41,7 @@ class ASTGeneration(D96Visitor):
         mytype = self.visit(ctx.primitive_type())
         constList = [(name, mytype, value) for name, value in zip (attribList, expList)]
         if ctx.VAL():
-            # NOTE: IF there is no exp what is the kind of error
+
             return [AttributeDecl(Instance(), ConstDecl(myId, myType, myValue)) if str(myId)[3] !='$' else 
                     AttributeDecl(Static(), ConstDecl(myId, myType, myValue)) for myId, myType, myValue in constList]
         elif ctx.VAR():
@@ -157,7 +158,11 @@ class ASTGeneration(D96Visitor):
     def visitThe_rest_statements(self, ctx: D96Parser.The_rest_statementsContext):
         if ctx.getChildCount() == 2:
             lstStm = []
-            lstStm.append(self.visit(ctx.single_statement()))
+            newEle = self.visit(ctx.single_statement())
+            if isinstance(newEle, list):
+                lstStm = newEle
+            else:
+                lstStm.append(newEle)
             return lstStm + self.visit(ctx.the_rest_statements())
         else:
             return []
@@ -166,7 +171,7 @@ class ASTGeneration(D96Visitor):
         if ctx.if_statements():
             return self.visit(ctx.if_statements())
         elif ctx.assignment_statements():
-            return self.vist(ctx.assignment_statements())
+            return self.visit(ctx.assignment_statements())
         elif ctx.foreach_statements():
             return self.visit(ctx.foreach_statements())
         elif ctx.break_statements():
@@ -179,15 +184,39 @@ class ASTGeneration(D96Visitor):
             return self.visit(ctx.method_invocations())
         elif ctx.variable_constant_declaration():
             return self.visit(ctx.variable_constant_declaration())
+        elif ctx.block_statements():
+            return self.visit(ctx.block_statements())
     
     def visitIf_statements(self, ctx : D96Parser.If_statementsContext):
-        # NOTE: After If is a block statements not a single statement
         expr  = self.visit(ctx.exp())
-        # NOTE: Where is ELSEIF STATEMENT
         thenStmt = self.visit(ctx.block_statements())
-        elseStmt = self.visitArrayDeclaration(ctx.else_statements()) if ctx.else_statements() else None
-        return If(expr, thenStmt, elseStmt)
+        if ctx.else_ifList():
+            elseifList = self.visit(ctx.else_ifList())
+            initValue = self.visit(ctx.else_statements()) if ctx.else_statements() else None
+            elseifList[-1].elseStmt = initValue
+            for i in range(len(elseifList) -2, -1, -1):
+                elseifList[i].elseStmt = elseifList[i+1]
+            return If(expr, thenStmt, elseifList[0])
+        else:
+            elseStmt = self.visit(ctx.else_statements()) if ctx.else_statements() else None
+            return If(expr, thenStmt, elseStmt)
+
+    def visitElse_ifList(self, ctx: D96Parser.Else_ifListContext):
+        return [self.visit(ctx.else_if())] + self.visit(ctx.the_rest_else_if())
+
+    def visitThe_rest_else_if(self, ctx: D96Parser.The_rest_else_ifContext):
+        if ctx.getChildCount() == 0:
+            return []
+        else:
+            return [self.visit(ctx.else_if())] + self.visit(ctx.the_rest_else_if())
     
+    def visitElse_if(self, ctx: D96Parser.Else_ifContext):
+        exp = self.visit(ctx.exp())
+        thenStmt = self.visit(ctx.block_statements())
+        return If(exp, thenStmt, None)
+
+    def visitElse_statements(self, ctx: D96Parser.Else_statementsContext):
+        return self.visit(ctx.block_statements())
     def visitAssignment_statements(self, ctx: D96Parser.Assignment_statementsContext):
         lhs = self.visit(ctx.lhs())
         exp = self.visit(ctx.exp())
@@ -238,10 +267,10 @@ class ASTGeneration(D96Visitor):
 
     def visitForeach_statements(self, ctx: D96Parser.Foreach_statementsContext):
         id = Id(ctx.ID().getText())
-        expr1 = ctx.exp(0)
-        expr2 = ctx.exp(1)
-        expr3 = ctx.exp(2)
-        loop = ctx.block_statements() # NOTE: A single statement or a block
+        expr1 = self.visit(ctx.exp(0))
+        expr2 = self.visit(ctx.exp(1))
+        expr3 = self.visit(ctx.exp(2))
+        loop = self.visit(ctx.block_statements()) # NOTE: A single statement or a block
         return For(id, expr1, expr2, loop, expr3)
     
     def visitBreak_statements(self, ctx: D96Parser.Break_statementsContext):
