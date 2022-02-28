@@ -1,0 +1,6 @@
+
+        Class Program 
+        {
+            Val a, b, c : Int = 1 + 1, 2 * 2, 3 / 3;
+            Var a : Array[Int, 5] = Array(1 * 2 / 3, 3 + 3 / 3, 10 - -9, 100 * 3, 100 % 10);
+        }

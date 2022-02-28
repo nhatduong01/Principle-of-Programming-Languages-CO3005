@@ -1,0 +1,9 @@
+
+        Class Program : ABCMeta 
+        {
+            Val a, b : Int = 1, 1;
+            Var c : Boolean = a > b;
+            Var d : Boolean = a < b;
+            Var e, f, g, h : Boolean = a == b, a != b, a >= b, a <= b;
+            Var i, j, k, l : Boolean = 1 <= 2, 2 != 3, 3.0 == 4.0, 4.5 > 4.0;
+        }

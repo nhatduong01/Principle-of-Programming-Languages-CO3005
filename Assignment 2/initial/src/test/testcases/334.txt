@@ -1,0 +1,29 @@
+
+        Class Program
+        {
+            main()
+            {
+                Val my_array: Array[Int, 6] = Array(2,3,1,4,5,6,7,8);
+                Var my_sum_odd : Int = 0;
+                Var my_sum_even: Int = 0;
+                Foreach (my_index In 1 .. 8)
+                {
+                    If(my_array[my_index] % 2 == 0)
+                    {
+                        my_sum_even  = my_sum_even + my_array[my_index];
+                    }
+                    Else
+                    {
+                        my_sum_odd  = my_sum_odd + my_array[my_index];
+                    }
+                }
+                If (my_sum_even > my_sum_odd)
+                {
+                    Return True;
+                }
+                Else
+                {
+                    Return False;
+                }
+            }
+        }

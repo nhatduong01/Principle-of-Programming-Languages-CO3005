@@ -1,0 +1,7 @@
+
+        Class Program : ABC 
+        {
+            Val a : Float = 0.0;
+            Var b : SomeMeta = Null;
+            Val c : Delta = Self;
+        }

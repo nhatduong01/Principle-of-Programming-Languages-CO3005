@@ -1,4 +1,5 @@
 from functools import reduce
+from gettext import gettext
 from D96Visitor import D96Visitor
 from D96Parser import D96Parser
 from AST import *
@@ -234,15 +235,15 @@ class ASTGeneration(D96Visitor):
         if ctx.getChildCount() == 3:
             if ctx.element_expression():
                 obj = self.visit(ctx.element_expression())
-                fieldName = Id(ctx.DOLLARID().getText)
+                fieldName = Id(ctx.DOLLARID().getText())
                 return FieldAccess(obj, fieldName)
             elif ctx.ID():
                 obj = Id(ctx.ID().getText())
-                fieldName = Id(ctx.DOLLARID().getText)
+                fieldName = Id(ctx.DOLLARID().getText())
                 return FieldAccess(obj, fieldName)
             elif ctx.SELF():
                 obj = SelfLiteral()
-                fieldName = Id(ctx.DOLLARID().getText)
+                fieldName = Id(ctx.DOLLARID().getText())
                 return FieldAccess(obj, fieldName)
         else:
             if ctx.element_expression():
@@ -269,7 +270,7 @@ class ASTGeneration(D96Visitor):
         id = Id(ctx.ID().getText())
         expr1 = self.visit(ctx.exp(0))
         expr2 = self.visit(ctx.exp(1))
-        expr3 = self.visit(ctx.exp(2))
+        expr3 = self.visit(ctx.exp(2)) if len(ctx.exp()) == 3 else IntLiteral(1)
         loop = self.visit(ctx.block_statements()) # NOTE: A single statement or a block
         return For(id, expr1, expr2, loop, expr3)
     
@@ -481,7 +482,7 @@ class ASTGeneration(D96Visitor):
     
     def visitObject_create_operation(self, ctx: D96Parser.Object_create_operationContext):
         if ctx.NEW():
-            className = self.visit(ctx.object_create_operation())
+            className = Id(ctx.ID().getText())
             idx = self.visit(ctx.expList()) if ctx.expList() else []
             return NewExpr(className, idx)
         elif ctx.parenthesis_operations():

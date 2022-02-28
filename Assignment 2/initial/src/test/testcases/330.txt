@@ -1,0 +1,8 @@
+
+        Class Program : Facebook 
+        {
+            Val a, b : String = "Hello", "World";
+            Var c : String = a +. b;
+            Var d : String = ("Hello" +. " ") +. "World";
+            Var e : Boolean = c ==. d;
+        }

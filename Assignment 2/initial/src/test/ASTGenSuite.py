@@ -349,88 +349,280 @@ class ASTGenSuite(unittest.TestCase):
         self.assertTrue(TestAST.test(input,expect,322))
         
 
-    # def test_24 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestAST.test(input,expect,323))
+    def test_24 (self):
+        input = """Class Program { notmain(a,b:Int; c:String) {Val a,b:Int = 2,3;}notmain2(a:Int) {Val a:Int = 2;}}"""
+        expect = str(Program([ClassDecl(Id("Program"),[MethodDecl(Instance(),Id("notmain"),[VarDecl(Id("a"),IntType()),VarDecl(Id("b"),IntType()),VarDecl(Id("c"),StringType())],Block([ConstDecl(Id('a'), IntType(), IntLiteral(2)),ConstDecl(Id('b'), IntType(), IntLiteral(3))])), MethodDecl(Instance(),Id("notmain2"),[VarDecl(Id("a"),IntType())],Block([ConstDecl(Id('a'), IntType(), IntLiteral(2))]))])]))
+        self.assertTrue(TestAST.test(input,expect,323))
         
 
-    # def test_25 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestAST.test(input,expect,324))
+    def test_25 (self):
+        input = """
+        Class Rectangle
+        {
+            Var height: Float;
+            Var width: Float;
+            Constructor(height, width: Float)
+            {
+                Self.height = height;
+                Self.width = width;
+            }
+        }
+        """ 
+        expect = """Program([ClassDecl(Id(Rectangle),[AttributeDecl(Instance,VarDecl(Id(height),FloatType)),AttributeDecl(Instance,VarDecl(Id(width),FloatType)),MethodDecl(Id(Constructor),Static,[param(Id(height),FloatType),param(Id(width),FloatType)],Block([AssignStmt(FieldAccess(Self(),Id(height)),Id(height)),AssignStmt(FieldAccess(Self(),Id(width)),Id(width))]))])])"""
+        self.assertTrue(TestAST.test(input,expect,324))
+        
+    def test_26 (self):
+        input = """
+        Class Rectangle
+        {
+            Var height: Float;
+            Var width: Float;
+            Constructor(height, width: Float)
+            {
+                Self.height = height;
+                Self.width = width;
+            }
+            getArea()
+            {
+                Return Self.height * Self.width;
+            }
+        }
+        """ 
+        expect = """Program([ClassDecl(Id(Rectangle),[AttributeDecl(Instance,VarDecl(Id(height),FloatType)),AttributeDecl(Instance,VarDecl(Id(width),FloatType)),MethodDecl(Id(Constructor),Static,[param(Id(height),FloatType),param(Id(width),FloatType)],Block([AssignStmt(FieldAccess(Self(),Id(height)),Id(height)),AssignStmt(FieldAccess(Self(),Id(width)),Id(width))])),MethodDecl(Id(getArea),Instance,[],Block([Return(BinaryOp(*,FieldAccess(Self(),Id(height)),FieldAccess(Self(),Id(width))))]))])])"""
+        self.assertTrue(TestAST.test(input,expect,325))
         
 
-    # def test_26 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestAST.test(input,expect,325))
+    def test_27 (self):
+        input = """
+        Class Rectangle
+        {
+            Var height: Float;
+            Var width: Float;
+            Constructor(height, width: Float)
+            {
+                Self.height = height;
+                Self.width = width;
+            }
+            getArea()
+            {
+                Return Self.height * Self.width;
+            }
+        }
+        Class Program
+        {
+            main()
+            {
+                Var myShape: Rectangle = New Rectangle(5,6);
+                System.print(myShape.getArea());
+            }
+        }
+        """ 
+        expect = """Program([ClassDecl(Id(Rectangle),[AttributeDecl(Instance,VarDecl(Id(height),FloatType)),AttributeDecl(Instance,VarDecl(Id(width),FloatType)),MethodDecl(Id(Constructor),Static,[param(Id(height),FloatType),param(Id(width),FloatType)],Block([AssignStmt(FieldAccess(Self(),Id(height)),Id(height)),AssignStmt(FieldAccess(Self(),Id(width)),Id(width))])),MethodDecl(Id(getArea),Instance,[],Block([Return(BinaryOp(*,FieldAccess(Self(),Id(height)),FieldAccess(Self(),Id(width))))]))]),ClassDecl(Id(Program),[MethodDecl(Id(main),Instance,[],Block([VarDecl(Id(myShape),ClassType(Id(Rectangle)),NewExpr(Id(Rectangle),[IntLit(5),IntLit(6)])),Call(Id(System),Id(print),[CallExpr(Id(myShape),Id(getArea),[])])]))])])"""
+        self.assertTrue(TestAST.test(input,expect,326))
         
 
-    # def test_27 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestAST.test(input,expect,326))
+    def test_28 (self):
+        input = """
+        Class Program : ABC 
+        {
+            Val a : Float = 0.0;
+            Var b : SomeMeta = Null;
+            Val c : Delta = Self;
+        }"""
+        expect = "Program([ClassDecl(Id(Program),Id(ABC),[AttributeDecl(Instance,ConstDecl(Id(a),FloatType,FloatLit(0.0))),AttributeDecl(Instance,VarDecl(Id(b),ClassType(Id(SomeMeta)),NullLiteral())),AttributeDecl(Instance,ConstDecl(Id(c),ClassType(Id(Delta)),Self()))])])"
+        self.assertTrue(TestAST.test(input,expect,327))
         
 
-    # def test_28 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestAST.test(input,expect,327))
+    def test_29 (self):
+        input = """
+        Class Program 
+        {
+            Val a, b, c : Int = 1 + 1, 2 * 2, 3 / 3;
+            Var a : Array[Int, 5] = Array(1 * 2 / 3, 3 + 3 / 3, 10 - -9, 100 * 3, 100 % 10);
+        }"""
+        expect = "Program([ClassDecl(Id(Program),[AttributeDecl(Instance,ConstDecl(Id(a),IntType,BinaryOp(+,IntLit(1),IntLit(1)))),AttributeDecl(Instance,ConstDecl(Id(b),IntType,BinaryOp(*,IntLit(2),IntLit(2)))),AttributeDecl(Instance,ConstDecl(Id(c),IntType,BinaryOp(/,IntLit(3),IntLit(3)))),AttributeDecl(Instance,VarDecl(Id(a),ArrayType(5,IntType),[BinaryOp(/,BinaryOp(*,IntLit(1),IntLit(2)),IntLit(3)),BinaryOp(+,IntLit(3),BinaryOp(/,IntLit(3),IntLit(3))),BinaryOp(-,IntLit(10),UnaryOp(-,IntLit(9))),BinaryOp(*,IntLit(100),IntLit(3)),BinaryOp(%,IntLit(100),IntLit(10))]))])])"
+        self.assertTrue(TestAST.test(input,expect,328))
         
 
-    # def test_29 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestAST.test(input,expect,328))
+    def test_30 (self):
+        input = """
+        Class Program {
+            a() 
+            {
+                If (a == b) 
+                {
+                    Self.print("Hurray");
+                } 
+                Elseif (a > b) 
+                {
+                    Self.print("Greater");
+                } 
+                Elseif (a < b) 
+                {
+                    Self.print("Less");
+                }
+            }    
+        }"""
+        expect = "Program([ClassDecl(Id(Program),[MethodDecl(Id(a),Instance,[],Block([If(BinaryOp(==,Id(a),Id(b)),Block([Call(Self(),Id(print),[StringLit(Hurray)])]),If(BinaryOp(>,Id(a),Id(b)),Block([Call(Self(),Id(print),[StringLit(Greater)])]),If(BinaryOp(<,Id(a),Id(b)),Block([Call(Self(),Id(print),[StringLit(Less)])]))))]))])])"
+        self.assertTrue(TestAST.test(input,expect,329))
         
 
-    # def test_30 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestAST.test(input,expect,329))
+    def test_31 (self):
+        """String operator"""
+        input = """
+        Class Program : Facebook 
+        {
+            Val a, b : String = "Hello", "World";
+            Var c : String = a +. b;
+            Var d : String = ("Hello" +. " ") +. "World";
+            Var e : Boolean = c ==. d;
+        }"""
+        expect = "Program([ClassDecl(Id(Program),Id(Facebook),[AttributeDecl(Instance,ConstDecl(Id(a),StringType,StringLit(Hello))),AttributeDecl(Instance,ConstDecl(Id(b),StringType,StringLit(World))),AttributeDecl(Instance,VarDecl(Id(c),StringType,BinaryOp(+.,Id(a),Id(b)))),AttributeDecl(Instance,VarDecl(Id(d),StringType,BinaryOp(+.,BinaryOp(+.,StringLit(Hello),StringLit( )),StringLit(World)))),AttributeDecl(Instance,VarDecl(Id(e),BoolType,BinaryOp(==.,Id(c),Id(d))))])])"
+        self.assertTrue(TestAST.test(input,expect,330))
         
 
-    # def test_31 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestAST.test(input,expect,330))
+    def test_32 (self):
+        input = """
+        Class Program : ABCMeta 
+        {
+            Val a, b : Int = 1, 1;
+            Var c : Boolean = a > b;
+            Var d : Boolean = a < b;
+            Var e, f, g, h : Boolean = a == b, a != b, a >= b, a <= b;
+            Var i, j, k, l : Boolean = 1 <= 2, 2 != 3, 3.0 == 4.0, 4.5 > 4.0;
+        }"""
+        expect = "Program([ClassDecl(Id(Program),Id(ABCMeta),[AttributeDecl(Instance,ConstDecl(Id(a),IntType,IntLit(1))),AttributeDecl(Instance,ConstDecl(Id(b),IntType,IntLit(1))),AttributeDecl(Instance,VarDecl(Id(c),BoolType,BinaryOp(>,Id(a),Id(b)))),AttributeDecl(Instance,VarDecl(Id(d),BoolType,BinaryOp(<,Id(a),Id(b)))),AttributeDecl(Instance,VarDecl(Id(e),BoolType,BinaryOp(==,Id(a),Id(b)))),AttributeDecl(Instance,VarDecl(Id(f),BoolType,BinaryOp(!=,Id(a),Id(b)))),AttributeDecl(Instance,VarDecl(Id(g),BoolType,BinaryOp(>=,Id(a),Id(b)))),AttributeDecl(Instance,VarDecl(Id(h),BoolType,BinaryOp(<=,Id(a),Id(b)))),AttributeDecl(Instance,VarDecl(Id(i),BoolType,BinaryOp(<=,IntLit(1),IntLit(2)))),AttributeDecl(Instance,VarDecl(Id(j),BoolType,BinaryOp(!=,IntLit(2),IntLit(3)))),AttributeDecl(Instance,VarDecl(Id(k),BoolType,BinaryOp(==,FloatLit(3.0),FloatLit(4.0)))),AttributeDecl(Instance,VarDecl(Id(l),BoolType,BinaryOp(>,FloatLit(4.5),FloatLit(4.0))))])])"
+        self.assertTrue(TestAST.test(input,expect,331))
         
 
-    # def test_32 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestAST.test(input,expect,331))
+    def test_33 (self):
+        input = """
+        Class Program
+        {
+            recursion(a:Int)
+            {
+                If((a == 0) || (a== 1))
+                    {
+                        Return 1;
+                    }
+                Else
+                    {
+                        Return Self.recursion(a - 1);
+                    }
+            }
+            main()
+            {
+                Var a: Int = Self.recursion(6);
+                System.out.printLn(a);
+            }
+        }
+        """ 
+        expect = """Program([ClassDecl(Id(Program),[MethodDecl(Id(recursion),Instance,[param(Id(a),IntType)],Block([If(BinaryOp(||,BinaryOp(==,Id(a),IntLit(0)),BinaryOp(==,Id(a),IntLit(1))),Block([Return(IntLit(1))]),Block([Return(CallExpr(Self(),Id(recursion),[BinaryOp(-,Id(a),IntLit(1))]))]))])),MethodDecl(Id(main),Instance,[],Block([VarDecl(Id(a),IntType,CallExpr(Self(),Id(recursion),[IntLit(6)])),Call(FieldAccess(Id(System),Id(out)),Id(printLn),[Id(a)])]))])])"""
+        self.assertTrue(TestAST.test(input,expect,332))
+        
+    def test_34 (self):
+        input = """
+        Class Program
+        {
+            main()
+            {
+                ##Val my_array: Array[Int, 6] = Array(2,3,1,4,5,6,7,8);
+                Var my_sum : Int = 0;##
+                Foreach (my_index In 1 .. 8)
+                    {
+                        my_sum = my_sum + my_array[my_index];
+                    }
+                    Return my_sum;
+            }
+        }""" 
+        expect = """Program([ClassDecl(Id(Program),[MethodDecl(Id(main),Instance,[],Block([For(Id(my_index),IntLit(1),IntLit(8),IntLit(1),Block([AssignStmt(Id(my_sum),BinaryOp(+,Id(my_sum),ArrayCell(Id(my_array),[Id(my_index)])))])]),Return(Id(my_sum))]))])])"""
+        self.assertTrue(TestAST.test(input,expect,333))
         
 
-    # def test_33 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestAST.test(input,expect,332))
+    def test_35 (self):
+        input = """
+        Class Program
+        {
+            main()
+            {
+                Val my_array: Array[Int, 6] = Array(2,3,1,4,5,6,7,8);
+                Var my_sum_odd : Int = 0;
+                Var my_sum_even: Int = 0;
+                Foreach (my_index In 1 .. 8)
+                {
+                    If(my_array[my_index] % 2 == 0)
+                    {
+                        my_sum_even  = my_sum_even + my_array[my_index];
+                    }
+                    Else
+                    {
+                        my_sum_odd  = my_sum_odd + my_array[my_index];
+                    }
+                }
+                If (my_sum_even > my_sum_odd)
+                {
+                    Return True;
+                }
+                Else
+                {
+                    Return False;
+                }
+            }
+        }""" 
+        expect = """Program([ClassDecl(Id(Program),[MethodDecl(Id(main),Instance,[],Block([ConstDecl(Id(my_array),ArrayType(6,IntType),[IntLit(2),IntLit(3),IntLit(1),IntLit(4),IntLit(5),IntLit(6),IntLit(7),IntLit(8)]),VarDecl(Id(my_sum_odd),IntType,IntLit(0)),VarDecl(Id(my_sum_even),IntType,IntLit(0)),For(Id(my_index),IntLit(1),IntLit(8),IntLit(1),Block([If(BinaryOp(==,BinaryOp(%,ArrayCell(Id(my_array),[Id(my_index)]),IntLit(2)),IntLit(0)),Block([AssignStmt(Id(my_sum_even),BinaryOp(+,Id(my_sum_even),ArrayCell(Id(my_array),[Id(my_index)])))]),Block([AssignStmt(Id(my_sum_odd),BinaryOp(+,Id(my_sum_odd),ArrayCell(Id(my_array),[Id(my_index)])))]))])]),If(BinaryOp(>,Id(my_sum_even),Id(my_sum_odd)),Block([Return(BooleanLit(True))]),Block([Return(BooleanLit(False))]))]))])])"""
+        self.assertTrue(TestAST.test(input,expect,334))
         
 
-    # def test_34 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestAST.test(input,expect,333))
+    def test_36 (self):
+        input = """
+        Class Program
+        {
+            fibonacci(myNum:Int)
+            {
+                If((myNum == 0) || (myNum == 1))
+                    {
+                        Return 1;
+                    }
+                Else
+                {
+                    Return Self.fibonacci(myNum - 1) + Self.fibonacci(myNum - 1);
+                }
+            }
+            main ()
+            {
+                Val my_num : Int = Self.fibonacci(10);
+                System.Out.printLn(my_num);
+            }
+        }"""
+        expect = """Program([ClassDecl(Id(Program),[MethodDecl(Id(fibonacci),Instance,[param(Id(myNum),IntType)],Block([If(BinaryOp(||,BinaryOp(==,Id(myNum),IntLit(0)),BinaryOp(==,Id(myNum),IntLit(1))),Block([Return(IntLit(1))]),Block([Return(BinaryOp(+,CallExpr(Self(),Id(fibonacci),[BinaryOp(-,Id(myNum),IntLit(1))]),CallExpr(Self(),Id(fibonacci),[BinaryOp(-,Id(myNum),IntLit(1))])))]))])),MethodDecl(Id(main),Instance,[],Block([ConstDecl(Id(my_num),IntType,CallExpr(Self(),Id(fibonacci),[IntLit(10)])),Call(FieldAccess(Id(System),Id(Out)),Id(printLn),[Id(my_num)])]))])])"""
+        self.assertTrue(TestAST.test(input,expect,335))
         
 
-    # def test_35 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestAST.test(input,expect,334))
-        
-
-    # def test_36 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestAST.test(input,expect,335))
-        
-
-    # def test_37 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestAST.test(input,expect,336))
+    def test_37 (self):
+        # This testcase is error-prone your result may be different due to priority of * operator anf % operator
+        input = """
+        Class BaseClass 
+        {
+            Var $numOfObjs: Int = 0;
+            Constructor() 
+            {
+                BaseClass::$numOfObjs = BaseClass::$numOfObjs + 1;
+            }
+            Destructor() 
+            {
+                BaseClass::$numOfObjs = BaseClass::$numOfObjs - 1;
+                Out.printLn("Can\'t even be free for a day huh");
+            }
+            $staticMethod() {
+                Out.printLn(Program.gcd(123_456,46*75%3));
+            }
+        }
+        Class DerivedClass : BaseClass 
+        {
+            Var UUID: Int;
+        }"""
+        expect = """Program([ClassDecl(Id(BaseClass),[AttributeDecl(Static,VarDecl(Id($numOfObjs),IntType,IntLit(0))),MethodDecl(Id(Constructor),Static,[],Block([AssignStmt(FieldAccess(Id(BaseClass),Id($numOfObjs)),BinaryOp(+,FieldAccess(Id(BaseClass),Id($numOfObjs)),IntLit(1)))])),MethodDecl(Id(Destructor),Static,[],Block([AssignStmt(FieldAccess(Id(BaseClass),Id($numOfObjs)),BinaryOp(-,FieldAccess(Id(BaseClass),Id($numOfObjs)),IntLit(1))),Call(Id(Out),Id(printLn),[StringLit(Can't even be free for a day huh)])])),MethodDecl(Id($staticMethod),Static,[],Block([Call(Id(Out),Id(printLn),[CallExpr(Id(Program),Id(gcd),[IntLit(123456),BinaryOp(%,BinaryOp(*,IntLit(46),IntLit(75)),IntLit(3))])])]))]),ClassDecl(Id(DerivedClass),Id(BaseClass),[AttributeDecl(Instance,VarDecl(Id(UUID),IntType))])])"""
+        self.assertTrue(TestAST.test(input,expect,336))
         
 
     # def test_38 (self):

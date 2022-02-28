@@ -1,0 +1,21 @@
+
+        Class BaseClass 
+        {
+            Var $numOfObjs: Int = 0;
+            Constructor() 
+            {
+                BaseClass::$numOfObjs = BaseClass::$numOfObjs + 1;
+            }
+            Destructor() 
+            {
+                BaseClass::$numOfObjs = BaseClass::$numOfObjs - 1;
+                Out.printLn("Can't even be free for a day huh");
+            }
+            $staticMethod() {
+                Out.printLn(Program.gcd(123_456,46*75%3));
+            }
+        }
+        Class DerivedClass : BaseClass 
+        {
+            Var UUID: Int;
+        }

@@ -41,7 +41,7 @@ static_access_operation: object_create_operation STATIC_ACCESS  DOLLARID LB expL
                        | object_create_operation;
 
 
-object_create_operation: NEW object_create_operation LB expList? RB| parenthesis_operations;
+object_create_operation: NEW ID LB expList? RB| parenthesis_operations;
 
 parenthesis_operations: LB exp RB
                       |INTLIT | STRINGLIT | BOOLEANLIT | FLOATLIT | ID | array_lit  | SELF | NULL; 
@@ -137,7 +137,7 @@ single_statement: if_statements
                 | block_statements; //
 
 // NOTE: block in block
-
+// ID in new Expr
 
 
 

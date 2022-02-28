@@ -1,0 +1,24 @@
+
+        Class Rectangle
+        {
+            Var height: Float;
+            Var width: Float;
+            Constructor(height, width: Float)
+            {
+                Self.height = height;
+                Self.width = width;
+            }
+            getArea()
+            {
+                Return Self.height * Self.width;
+            }
+        }
+        Class Program
+        {
+            main()
+            {
+                Var myShape: Rectangle = New Rectangle(5,6);
+                System.print(myShape.getArea());
+            }
+        }
+        
