@@ -165,11 +165,11 @@ def serializedATN():
         buf.write("\f\4\2\2\u0142\u0143\7\61\2\2\u0143\u0145\5:\36\2\u0144")
         buf.write("\u0141\3\2\2\2\u0145\u0148\3\2\2\2\u0146\u0144\3\2\2\2")
         buf.write("\u0146\u0147\3\2\2\2\u01479\3\2\2\2\u0148\u0146\3\2\2")
-        buf.write("\2\u0149\u014d\7@\2\2\u014a\u014d\5&\24\2\u014b\u014d")
+        buf.write("\2\u0149\u014d\7@\2\2\u014a\u014d\5\22\n\2\u014b\u014d")
         buf.write("\7\35\2\2\u014c\u0149\3\2\2\2\u014c\u014a\3\2\2\2\u014c")
         buf.write("\u014b\3\2\2\2\u014d\u014e\3\2\2\2\u014e\u014f\7\60\2")
         buf.write("\2\u014f\u0154\7?\2\2\u0150\u0154\7@\2\2\u0151\u0154\5")
-        buf.write("&\24\2\u0152\u0154\7\35\2\2\u0153\u014c\3\2\2\2\u0153")
+        buf.write("\22\n\2\u0152\u0154\7\35\2\2\u0153\u014c\3\2\2\2\u0153")
         buf.write("\u0150\3\2\2\2\u0153\u0151\3\2\2\2\u0153\u0152\3\2\2\2")
         buf.write("\u0154;\3\2\2\2\u0155\u0156\7\22\2\2\u0156\u0157\7\6\2")
         buf.write("\2\u0157\u0158\7@\2\2\u0158\u0159\7\23\2\2\u0159\u015a")
@@ -2338,8 +2338,8 @@ class D96Parser ( Parser ):
         def ID(self):
             return self.getToken(D96Parser.ID, 0)
 
-        def element_expression(self):
-            return self.getTypedRuleContext(D96Parser.Element_expressionContext,0)
+        def index_operations(self):
+            return self.getTypedRuleContext(D96Parser.Index_operationsContext,0)
 
 
         def SELF(self):
@@ -2377,7 +2377,7 @@ class D96Parser ( Parser ):
 
                 elif la_ == 2:
                     self.state = 328
-                    self.element_expression()
+                    self.index_operations(0)
                     pass
 
                 elif la_ == 3:
@@ -2401,7 +2401,7 @@ class D96Parser ( Parser ):
             elif la_ == 3:
                 self.enterOuterAlt(localctx, 3)
                 self.state = 335
-                self.element_expression()
+                self.index_operations(0)
                 pass
 
             elif la_ == 4:
