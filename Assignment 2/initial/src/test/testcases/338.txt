@@ -1,0 +1,8 @@
+
+        Class Program
+        {
+            main()
+            {
+                Var mytemp: ABC;
+            }
+        }

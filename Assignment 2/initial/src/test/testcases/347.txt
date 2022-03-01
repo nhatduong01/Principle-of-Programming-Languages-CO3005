@@ -1,0 +1,9 @@
+
+            Class Laptop:Electrical
+            {
+                start()
+                {
+                    Laptop::$nothing();
+                    Return useBattery;
+                }
+            }

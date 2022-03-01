@@ -1,5 +1,7 @@
 from functools import reduce
 from gettext import gettext
+from tkinter import N
+from traceback import print_tb
 from D96Visitor import D96Visitor
 from D96Parser import D96Parser
 from AST import *
@@ -38,11 +40,16 @@ class ASTGeneration(D96Visitor):
     def visitAttribute_declaration(self, ctx: D96Parser.Attribute_declarationContext):
         # NOTE: If number of exps is not equal to the attribute list, then what???
         attribList = self.visit(ctx.attributesList())
-        expList = self.visit(ctx.expList()) if ctx.expList() else [None] * len(attribList)
+        temp = self.visit(ctx.expList()) if ctx.expList() else None
+        if temp:
+            assert len(temp) == len(attribList), "Not enough expressions"
+        expList = temp if ctx.expList() else [None] * len(attribList)
         mytype = self.visit(ctx.primitive_type())
+        if isinstance(mytype, ClassType):
+            if temp == None:
+                expList = [NullLiteral()] * len(attribList)
         constList = [(name, mytype, value) for name, value in zip (attribList, expList)]
         if ctx.VAL():
-
             return [AttributeDecl(Instance(), ConstDecl(myId, myType, myValue)) if str(myId)[3] !='$' else 
                     AttributeDecl(Static(), ConstDecl(myId, myType, myValue)) for myId, myType, myValue in constList]
         elif ctx.VAR():
@@ -76,13 +83,13 @@ class ASTGeneration(D96Visitor):
         myID = Id('Destructor')
         param = []
         body = self.visit(ctx.block_statements())
-        return MethodDecl(Static(),myID, param, body)
+        return MethodDecl(Instance(),myID, param, body)
     
     def visitConstructor(self, ctx: D96Parser.ConstructorContext):
             name = Id("Constructor")
             param = self.visit(ctx.list_parameters())
             body = self.visit(ctx.block_statements())
-            return MethodDecl(Static(), name, param, body)
+            return MethodDecl(Instance(), name, param, body)
     
     def visitList_parameters(self, ctx: D96Parser.List_parametersContext):
         if ctx.getChildCount() == 2:
@@ -188,7 +195,7 @@ class ASTGeneration(D96Visitor):
         elif ctx.block_statements():
             return self.visit(ctx.block_statements())
     
-    def visitIf_statements(self, ctx : D96Parser.If_statementsContext):
+    def visitIf_statements(self, ctx : D96Parser.If_statementsContext): 
         expr  = self.visit(ctx.exp())
         thenStmt = self.visit(ctx.block_statements())
         if ctx.else_ifList():
@@ -233,8 +240,8 @@ class ASTGeneration(D96Visitor):
     
     def visitAssignment_static_access(self, ctx: D96Parser.Assignment_static_accessContext):
         if ctx.getChildCount() == 3:
-            if ctx.element_expression():
-                obj = self.visit(ctx.element_expression())
+            if ctx.index_operations():
+                obj = self.visit(ctx.index_operations())
                 fieldName = Id(ctx.DOLLARID().getText())
                 return FieldAccess(obj, fieldName)
             elif ctx.ID():
@@ -246,17 +253,17 @@ class ASTGeneration(D96Visitor):
                 fieldName = Id(ctx.DOLLARID().getText())
                 return FieldAccess(obj, fieldName)
         else:
-            if ctx.element_expression():
-                return self.visit(ctx.element_expression())
+            if ctx.index_operations():
+                return self.visit(ctx.index_operations())
             elif ctx.ID():
                 return Id(ctx.ID().getText())
             elif ctx.SELF():
                 return SelfLiteral()
     
-    def visitElement_expression(self, ctx: D96Parser.Element_expressionContext):
-        exp = self.vist(ctx.exp())
-        idx = self.visit(ctx.index_operators())
-        return ArrayCell(exp, idx)
+    # def visitElement_expression(self, ctx: D96Parser.Element_expressionContext):
+    #     exp = self.visit(ctx.exp())
+    #     idx = self.visit(ctx.index_operators())
+    #     return ArrayCell(exp, idx)
     
     def visitIndex_operators(self, ctx: D96Parser.Index_operatorsContext):
         if ctx.getChildCount() == 3:
@@ -278,7 +285,7 @@ class ASTGeneration(D96Visitor):
         # NOTE: DO we need to use CTX
         return Break()
     
-    def visitcontinue_statements(self, ctx: D96Parser.Continue_statementsContext):
+    def visitContinue_statements(self, ctx: D96Parser.Continue_statementsContext):
         # NOTE: DO we need to use CTX
         return Continue()
     
@@ -301,12 +308,12 @@ class ASTGeneration(D96Visitor):
             # NOTE: In the grammar you write ID not exp
             # NOTE: In the grammar tou wirite Dollar ID
             if ctx.LB():
-                expr = self.visit(ctx.ID())
+                expr = Id(ctx.ID().getText())
                 id = Id(ctx.DOLLARID().getText())
                 expList = self.visit(ctx.expList()) if ctx.expList() else []
                 return CallStmt(expr, id, expList)
             else:
-                expr = self.visit(ctx.ID())
+                expr = Id(ctx.ID().getText())
                 id = Id(ctx.DOLLARID().getText())
                 return FieldAccess(expr, id)
     
@@ -316,15 +323,17 @@ class ASTGeneration(D96Visitor):
         if ctx.VAL():
             if ctx.expList():
                 expList = self.visit(ctx.expList())
+                assert len(expList) == len(idList), "Not enough expressions"
                 return [ConstDecl(id, mytype, value) for id, value in zip(idList, expList)]
             else:
-                return [ConstDecl(id, mytype, None) for id in idList] 
+                return [ConstDecl(id, mytype, NullLiteral()) for id in idList] if isinstance(mytype,ClassType) else  [ConstDecl(id, mytype, None) for id in idList]
         elif ctx.VAR():
             if ctx.expList():
                 expList = self.visit(ctx.expList())
+                assert len(expList) == len(idList), "Not enough expressions"
                 return [VarDecl(id, mytype, value) for id, value in zip(idList, expList)]
             else:
-                return [VarDecl(id, mytype, None) for id in idList]
+                return [VarDecl(id, mytype, NullLiteral()) for id in idList ] if isinstance(mytype,ClassType) else [VarDecl(id, mytype, None) for id in idList ]
     
     def visitVariableList(self, ctx: D96Parser.VariableListContext):
         idList = []
@@ -498,7 +507,10 @@ class ASTGeneration(D96Visitor):
         elif ctx.BOOLEANLIT():
             return BooleanLiteral(ctx.BOOLEANLIT().getText() == 'True')
         elif ctx.FLOATLIT():
-            return FloatLiteral(float(ctx.FLOATLIT().getText()))
+            num = ctx.FLOATLIT().getText()
+            if num[0] == '.':
+                num = '0' + num
+            return FloatLiteral(float(num))
         elif ctx.ID():
             return Id(ctx.ID().getText())
         elif ctx.array_lit():

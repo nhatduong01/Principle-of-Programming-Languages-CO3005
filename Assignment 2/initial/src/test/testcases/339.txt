@@ -1,0 +1,9 @@
+
+        Class Program
+        {
+            Var myshape, $myroad: ABC;
+            main()
+            {
+                Var a,b,d : Shape;
+            }
+        }

@@ -88,8 +88,8 @@ assignment_statements: lhs ASSIGN exp SEMI;//
 lhs: lhs DOT assignment_static_access
    | assignment_static_access;
 
-assignment_static_access: (ID | element_expression| SELF) STATIC_ACCESS DOLLARID
-                        | ID | element_expression | SELF;//
+assignment_static_access: (ID | index_operations| SELF) STATIC_ACCESS DOLLARID
+                        | ID | index_operations | SELF;//
 // For/In
 
 foreach_statements: FOREACH LB ID IN  exp '..' exp (BY exp)? RB  block_statements;//
@@ -138,6 +138,7 @@ single_statement: if_statements
 
 // NOTE: block in block
 // ID in new Expr
+// delemeber access
 
 
 

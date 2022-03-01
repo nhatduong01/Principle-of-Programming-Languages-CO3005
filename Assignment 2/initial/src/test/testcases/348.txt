@@ -1,0 +1,9 @@
+
+        Class Program 
+        {
+            Var _Fool: Float = 1.2e3;
+            main()
+            {
+                
+            }
+        }
