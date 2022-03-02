@@ -1,0 +1,14 @@
+
+        Class Program
+        {
+            main(a:Int; b:Float; c: String; e,f: Boolean)
+            {
+                Var a: Int = 0x234_F;
+                Self.helloworld();
+            }
+            helloworld()
+            {
+                System.print("Hello world");
+            }
+        }
+        

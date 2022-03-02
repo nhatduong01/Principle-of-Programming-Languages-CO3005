@@ -1,0 +1,16 @@
+
+        Class LinkedList
+        {
+            LinkedList()
+            {
+                Self.value = 0;
+                Self.next_node = Null;
+            }
+            LinkedList(new_value: Int; nextNode: Int)
+            {
+                Self.value = new_value;
+                Self.next_node = nextNode;
+            }
+            Val value:Int;
+            Val next_node: Boolean;
+        }

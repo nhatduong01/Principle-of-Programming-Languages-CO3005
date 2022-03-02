@@ -1,0 +1,8 @@
+
+        Class TestHex
+        {
+            main()
+            {
+                Var a,b,c,d : Int = 00, 0, 0b0, 0x0;
+            }
+        }

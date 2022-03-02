@@ -1,0 +1,12 @@
+
+        Class Family
+        {
+            Val name, office: String;
+            Val Age: Int;
+            Val Income: Float;
+            goOut()
+            {
+                System.print("Lets go out together");
+                ## Family hang out ##
+            }
+        }

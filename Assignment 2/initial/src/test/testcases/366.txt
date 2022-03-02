@@ -1,0 +1,17 @@
+
+        Class Program
+        {
+            main()
+            {
+                Val s1: String = "Hello \n";
+                Var s2: String = "World \n";
+                If(s1 ==. s2)
+                {
+                    System.print("You are right");
+                }
+                Else
+                {
+                    System.print("Noooo");
+                }
+            }
+        }

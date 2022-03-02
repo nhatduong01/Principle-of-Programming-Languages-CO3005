@@ -1,1 +1,1 @@
-Program([ClassDecl(Id(Program),[MethodDecl(Id(main),Instance,[],Block([VarDecl(Id(mytemp),ClassType(Id(ABC)),NullLiteral())]))])])
+Program([ClassDecl(Id(Program),[MethodDecl(Id(main),Static,[],Block([VarDecl(Id(mytemp),ClassType(Id(ABC)),NullLiteral())]))])])

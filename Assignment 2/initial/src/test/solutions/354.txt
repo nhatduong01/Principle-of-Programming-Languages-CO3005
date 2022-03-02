@@ -1,0 +1,1 @@
+Program([ClassDecl(Id(Test),[MethodDecl(Id(main),Instance,[],Block([VarDecl(Id(a),IntType,IntLit(9039)),Call(Self(),Id(helloworld),[])])),MethodDecl(Id(helloworld),Instance,[],Block([Call(Id(System),Id(print),[StringLit(Hello world)])]))])])

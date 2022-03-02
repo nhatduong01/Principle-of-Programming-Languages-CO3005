@@ -1,7 +1,3 @@
-from functools import reduce
-from gettext import gettext
-from tkinter import N
-from traceback import print_tb
 from D96Visitor import D96Visitor
 from D96Parser import D96Parser
 from AST import *
@@ -72,6 +68,12 @@ class ASTGeneration(D96Visitor):
             name = Id(ctx.getChild(0).getText())
             param = self.visit(ctx.list_parameters())
             body = self.visit(ctx.block_statements())
+            if str(name) == "Id(main)" and len(param) == 0:
+                temp = ctx
+                while(not isinstance(temp, D96Parser.Class_declarationContext)):
+                    temp = temp.parentCtx
+                if temp.ID(0).getText()== 'Program':
+                    kind = Static()
             return MethodDecl(kind, name, param, body)
         elif ctx.getChildCount() == 1:
             if ctx.constructor():
@@ -143,7 +145,19 @@ class ASTGeneration(D96Visitor):
     
     def visitArrayDeclaration(self,ctx: D96Parser.ArrayDeclarationContext):
         eleType = self.visit(ctx.primitive_type())
-        size = int(ctx.INTLIT().getText())
+        numText = ctx.INTLIT().getText()
+        size = 0
+        if numText == '0' or numText == '00':
+            size = 0
+        elif numText[0] == '0' and (numText[1] == 'x' or numText[1] == 'X'):
+            size = int(numText,16)
+        elif numText[0] == '0' and (numText[1] == 'B' or numText[1] == 'b'):
+            size = int(numText,2)
+        elif numText[0] == '0':
+            size = int('0o' + numText[1:],8)
+        else:
+            size = int(numText)
+        assert size > 0, "Size of array must be greater then 0"
         # NOTE: Do we use int or INTLIT for size
         return ArrayType(size, eleType)
     
@@ -501,7 +515,17 @@ class ASTGeneration(D96Visitor):
         if ctx.exp():
             return self.visit(ctx.exp())
         elif ctx.INTLIT():
-            return IntLiteral(int(ctx.INTLIT().getText()))
+            numText = ctx.INTLIT().getText()
+            if numText == '0' or numText == '00':
+                return IntLiteral(0)
+            elif numText[0] == '0' and (numText[1] == 'x' or numText[1] == 'X'):
+                return IntLiteral(int(numText,16))
+            elif numText[0] == '0' and (numText[1] == 'B' or numText[1] == 'b'):
+                return IntLiteral(int(numText,2))
+            elif numText[0] == '0':
+                return IntLiteral(int('0o' + numText[1:],8))
+            else:
+                return IntLiteral(int(numText)) 
         elif ctx.STRINGLIT():
             return StringLiteral(ctx.STRINGLIT().getText())
         elif ctx.BOOLEANLIT():

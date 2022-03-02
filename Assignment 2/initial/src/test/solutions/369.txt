@@ -1,0 +1,1 @@
+Program([ClassDecl(Id(Image),[AttributeDecl(Instance,VarDecl(Id(width),IntType)),AttributeDecl(Instance,VarDecl(Id(height),IntType)),AttributeDecl(Instance,VarDecl(Id(matrix),ArrayType(256,ArrayType(256,ArrayType(3,IntType))))),MethodDecl(Id(Constructor),Instance,[],Block([])),MethodDecl(Id(foo),Instance,[],Block([AssignStmt(Id(x),BinaryOp(+,Id(a),Id(b)))]))])])

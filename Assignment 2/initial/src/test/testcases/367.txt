@@ -1,0 +1,22 @@
+
+        Class Student
+        {
+            ## This a a comment here##
+            Val name, major: String;
+            Var grade : Float;
+            classifyStudent()
+            {
+                If (Self.grade <= 5.e0)
+                {
+                    Return "So so";
+                }
+                Elseif ((Self.grade > 5) && (Self.grade <= 8))
+                {
+                    Return "Good";
+                }
+                Else
+                {
+                    Return "Excellent";
+                }
+            }
+        }

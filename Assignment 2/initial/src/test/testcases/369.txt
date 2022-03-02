@@ -1,0 +1,14 @@
+
+        Class Image
+        {
+            Var width, height: Int;
+            Var matrix: Array[Array[Array[Int, 3], 256], 256];
+            Constructor()
+            {
+            }
+            foo()
+            {
+                x = a + b;
+            }
+        }
+        

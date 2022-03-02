@@ -1,0 +1,15 @@
+
+        Class Animal
+        {
+            Var isFeed: Boolean;
+            Var weight, height: Float;
+            Val Name: String;
+            feeding()
+            {
+                Self.isFeed = True;
+            }
+            getPrice()
+            {
+                Return 100_56_16 * Self.weight * Self.height;
+            }
+        }

@@ -1,0 +1,8 @@
+
+        Class Program
+        {
+            main()
+            {
+                Var a,b: Int = 0b11, 0B1001;
+            }
+        }

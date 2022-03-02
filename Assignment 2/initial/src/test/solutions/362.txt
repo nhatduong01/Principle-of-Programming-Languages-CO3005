@@ -1,0 +1,1 @@
+Program([ClassDecl(Id(Family),[AttributeDecl(Instance,ConstDecl(Id(name),StringType,None)),AttributeDecl(Instance,ConstDecl(Id(office),StringType,None)),AttributeDecl(Instance,ConstDecl(Id(Age),IntType,None)),AttributeDecl(Instance,ConstDecl(Id(Income),FloatType,None)),MethodDecl(Id(goOut),Instance,[],Block([Call(Id(System),Id(print),[StringLit(Lets go out together)])]))])])

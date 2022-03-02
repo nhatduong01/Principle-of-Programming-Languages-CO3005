@@ -1,0 +1,16 @@
+
+        Class University
+        {
+            Val name: String;
+            Var $highestScore : Float = 0;
+            Var Score: Float;
+            Constructor(newName : String; newScore: String)
+            {
+                Self.name = newName;
+                Self.score = newScore;
+                If(University::$highestScore < newScore)
+                {
+                    Unisersity::$highestScore = newScore;
+                }
+            }
+        }

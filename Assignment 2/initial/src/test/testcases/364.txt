@@ -1,0 +1,15 @@
+
+        Class Zoo
+        {
+            Var $listAnimal : Array[Animal, 0b111111011];
+            Var $maxSize : Int;
+            Constructor()
+            {
+                Zoo::$maxSize = 1;
+            }
+            addAnimal(newAnimal: Animal)
+            {
+                Self.listAnimal[Zoo::$maxSize] = newAnimal;
+                Zoo::$maxSize = Zoo::$maxSize + 1;
+            }
+        }

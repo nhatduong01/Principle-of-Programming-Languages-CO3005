@@ -1,0 +1,29 @@
+
+        Class Program 
+        {
+            a() 
+            {
+                If (a == b) 
+                {
+                    Foreach (i In j .. b By a/2) 
+                    {
+                        b = b + 1;
+                        c = b * a;
+                        d = c / 2;
+                        Self.print(d.foo().a.bar());
+                    }
+                } Elseif ((a < b) || (b < d) && (i == (j + 1))) 
+                {
+                    If (a == b) 
+                    {
+                        Self.print("Index out of bound");
+                    } Else 
+                    {
+                        a[1][2][(b+1)] = c[(b+2)][(b*2)];
+                    }
+                } Else 
+                {
+                    Out.println("An error has occured");
+                }
+            }    
+        }

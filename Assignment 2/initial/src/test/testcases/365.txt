@@ -1,0 +1,12 @@
+
+        Class Bird: Animal
+        {
+            Var WingsLength : Float;
+            Val Color: String;
+            demonstrate()
+            {
+                Val myString: String = "This is: ";
+                Val printedSentence : String = myString +. Self.name;
+                System.print();
+            }
+        }
