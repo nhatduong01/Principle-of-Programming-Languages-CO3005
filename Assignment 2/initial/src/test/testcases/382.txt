@@ -1,0 +1,21 @@
+
+        Class Bank
+        {
+            Var generalInterest: Float = 0.03;
+            Var numUsers: Int = 0;
+            Var Users : Array [Int, 1000];
+            Var $goverment : String = "Russia";
+            Var bankName: String;
+            defaultUser(miserableUser : BankAccount)
+            {
+                Foreach (index In 1 .. Self.numUsers)
+                {
+                    If(miserableUser == Users[index])
+                    {
+                        (Users[index]).balance  = 0;
+                        (Users[index]).loan = 1000;
+                        Break;
+                    }
+                }
+            }
+        }

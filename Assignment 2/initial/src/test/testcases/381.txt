@@ -1,0 +1,22 @@
+
+        Class BankAccount
+        {
+            Val name:String;
+            Var balance: Float;
+            Var Loan: Float;
+            Var Transactions: Array[Int, 1000];
+            Var numTransaction : Int;
+            Constructor(newName: String)
+            {
+                Self.name = newName;
+                Self.balance = 0B0;
+                Self.Loan = 00;
+                numTransaction = 0;
+            }
+            receiveMoney(newMoney : Float; newDate: Date)
+            {
+                Self.numTransaction = Self.numTransaction + 1;
+                Self.Transactions[Self.numTransaction] = newDate;
+                Self.balance  = Self.balance + newMoney; 
+            }
+        }

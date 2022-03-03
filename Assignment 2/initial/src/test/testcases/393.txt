@@ -1,0 +1,38 @@
+
+        Class BST
+        {
+            delete(deleteValue: Int; rootNode : root)
+            {
+                ##We will take the biggest left to replace##
+                If (rootNode.value > deleteValue)
+                {
+                    Self.delete(deleteValue, rootNode.left);
+                }
+                Elseif (rootNode.value < deleteValue)
+                {
+                    Self.delete(deleteValue, rootNode.right);
+                }
+                Else
+                {
+                    If((rootNode.left == Null) && (rootNode.right == Null))
+                    {
+                        rootNode = Null;
+                    }
+                    Elseif(rootNode.left == Null)
+                    {
+                        rootNode.value = rootNode.left.value;
+                        rootNode.left = Null;
+                    }
+                    Elseif(rootNode.right == Null)
+                    {
+                        rootNode.value = rootNode.right.value;
+                        rootNode.right = Null;
+                    }
+                    Else
+                    {
+                        biggestLeft = Self.getbiggestLeft(rootNode.left);
+                        rootNode.value = biggestLeft;
+                    }
+                }
+            }
+        }

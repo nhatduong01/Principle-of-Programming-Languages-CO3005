@@ -497,9 +497,9 @@ class ASTGeneration(D96Visitor):
             return FieldAccess(obj,Id(fieldName))
         elif ctx.LB():
             obj = self.visit(ctx.object_create_operation())
-            method = self.visit(ctx.DOLLARID().getText())
+            method = Id(ctx.DOLLARID().getText())
             param = self.visit(ctx.expList()) if ctx.expList() else []
-            return CallExpr(obj, Id(method), param)
+            return CallExpr(obj, method, param)
         elif ctx.getChildCount() == 1:
             return self.visit(ctx.object_create_operation())
     
@@ -545,7 +545,7 @@ class ASTGeneration(D96Visitor):
             return NullLiteral()
     
     def visitArray_lit(self, ctx: D96Parser.Array_litContext):
-        literralList = self.visit(ctx.expList())
+        literralList = self.visit(ctx.expList()) if ctx.expList() else []
         return ArrayLiteral(literralList)
 
 

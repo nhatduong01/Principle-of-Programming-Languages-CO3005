@@ -1,1 +1,1 @@
-Program([])
+Program([ClassDecl(Id(BST),[MethodDecl(Id(getbiggestLeft),Instance,[param(Id(rootNode),ClassType(Id(Node)))],Block([If(BinaryOp(!=,FieldAccess(Id(rootNode),Id(left)),NullLiteral()),Block([Return(CallExpr(Self(),Id(getbiggestLeft),[FieldAccess(Id(rootNode),Id(left))]))]),Block([VarDecl(Id(temp),IntType,FieldAccess(Id(rootNode),Id(value))),AssignStmt(Id(rootNode),NullLiteral()),Return(Id(temp))]))]))])])

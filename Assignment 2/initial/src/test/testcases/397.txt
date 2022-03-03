@@ -1,0 +1,8 @@
+
+        Class AVL
+        {
+            add(newNode, rootNode: Node)
+            {
+                BST.add(rootNode, newNode);
+            }
+        }

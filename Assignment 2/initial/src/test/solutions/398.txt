@@ -1,1 +1,1 @@
-Program([])
+Program([ClassDecl(Id(Program),[MethodDecl(Id(main),Static,[],Block([VarDecl(Id(rootNode),ClassType(Id(Node)),NewExpr(Id(Node),[IntLit(10)])),VarDecl(Id(myBST),ClassType(Id(BST)),NewExpr(Id(BST),[Id(rootNode)])),VarDecl(Id(newNode1),ClassType(Id(Node)),NewExpr(Id(Node),[IntLit(1)])),Call(Id(myBST),Id(add),[Id(rootNode),Id(newNode1)]),VarDecl(Id(newNode2),ClassType(Id(Node)),NewExpr(Id(Node),[IntLit(15)])),Call(Id(myBST),Id(add),[Id(rootNode),Id(newNode2)]),Call(Id(myBST),Id(preorderTraversal),[Id(rootNode)])]))])])

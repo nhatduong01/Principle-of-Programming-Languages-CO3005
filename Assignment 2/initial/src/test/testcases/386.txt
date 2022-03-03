@@ -1,0 +1,23 @@
+
+        Class DataNode
+        {
+            Var key: String;
+            Var value: anything;
+            compare(anotherNode : DataNode)
+            {
+                If((anotherNode.key == Self.key)&& (anotherNode.value == Self.value))
+                {
+                    Return True;
+                }
+                Else
+                {
+                    Return False;
+                }
+            }
+            printOut()
+            {
+                Val firstString : String  = "The value is: " +. Self.value;
+                firstString = firstString +. ", The key is: ";
+                Return firstString + Self.key;
+            }
+        }

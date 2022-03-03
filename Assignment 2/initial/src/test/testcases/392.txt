@@ -1,0 +1,29 @@
+
+        Class BST
+        {
+            add(rootNode,newNode: Node)
+            {
+                If(newNode.value > rootNode.value)
+                {
+                    If(rootNode.right != Null)
+                    {
+                        Self.add(rootNode.right, newNode);
+                    }
+                    Else
+                    {
+                        rootNode.right = newNode;
+                    }
+                }
+                Else
+                {
+                    If(rootNode.left != Null)
+                    {
+                        Self.add(rootNode.left, newNode);
+                    }
+                    Else
+                    {
+                        rootNode.left = newNode;
+                    }
+                }
+            }
+        }

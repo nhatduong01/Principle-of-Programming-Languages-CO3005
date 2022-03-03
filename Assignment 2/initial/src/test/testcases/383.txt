@@ -1,0 +1,22 @@
+
+        Class Bank
+        {
+            addUser(newUser: BankAccount)
+            {
+                Self.numUsers = Self.numUsers + 1;
+                Self.Users[Self.numUsers] = newUser;
+            }
+            deleteUser(oldUser: BankAccount)
+            {
+                Foreach (index In 1 .. Self.numUsers)
+                {
+                    If(oldUser == Users[index])
+                    {
+                        (Users[index]).balance  = 0;
+                        (Users[index]).loan = 1000;
+                        Break;
+                    }
+                    Self.numUsers = Self.numUsers - 1;
+                }
+            }
+        }

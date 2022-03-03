@@ -1,1 +1,1 @@
-Program([])
+Program([ClassDecl(Id(Toy),[AttributeDecl(Instance,VarDecl(Id(name),StringType)),AttributeDecl(Instance,VarDecl(Id(yearProduction),IntType)),AttributeDecl(Instance,VarDecl(Id(emptyArray),ArrayType(56,IntType),[]))])])

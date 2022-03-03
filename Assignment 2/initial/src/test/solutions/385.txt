@@ -1,1 +1,1 @@
-Program([])
+Program([ClassDecl(Id(AbstractData),[MethodDecl(Id(pop),Instance,[],Block([])),MethodDecl(Id(push),Instance,[],Block([])),MethodDecl(Id(get),Instance,[],Block([])),MethodDecl(Id(isEmpty),Instance,[],Block([])),MethodDecl(Id(isFull),Instance,[],Block([])),AttributeDecl(Instance,VarDecl(Id(myData),ArrayType(1000,IntType))),AttributeDecl(Instance,VarDecl(Id(currentSize),IntType))])])

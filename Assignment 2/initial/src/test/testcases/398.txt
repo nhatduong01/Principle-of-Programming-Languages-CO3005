@@ -1,0 +1,14 @@
+
+        Class Program
+        {
+            main()
+            {
+                Var rootNode: Node = New Node(10);
+                Var myBST : BST = New BST(rootNode);
+                Var newNode1 : Node = New Node (1);
+                myBST.add(rootNode, newNode1);
+                Var newNode2 : Node = New Node (15);
+                myBST.add(rootNode, newNode2);
+                myBST.preorderTraversal(rootNode);
+            }
+        }

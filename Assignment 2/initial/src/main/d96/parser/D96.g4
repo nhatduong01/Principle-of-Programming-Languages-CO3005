@@ -65,7 +65,7 @@ index_operators : '[' exp ']' index_operators
                 | '[' exp ']';//
 
 // Array Literature
-array_lit: ARRAYTYPE LB expList RB;
+array_lit: ARRAYTYPE LB expList? RB;
 
 
 
@@ -139,6 +139,7 @@ single_statement: if_statements
 // NOTE: block in block
 // ID in new Expr
 // delemeber access
+// Array lit can be empty
 
 
 

@@ -1,7 +1,7 @@
 
         Class Zoo
         {
-            Var $listAnimal : Array[Animal, 0b111111011];
+            Var $listAnimal : Array[Int, 0b111111011];
             Var $maxSize : Int;
             Constructor()
             {

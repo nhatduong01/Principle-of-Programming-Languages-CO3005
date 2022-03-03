@@ -1,0 +1,7 @@
+
+        Class Toy
+        {
+            Var name: String;
+            Var yearProduction : Int;
+            Var emptyArray : Array[Int, 56] = Array();
+        }

@@ -1,0 +1,25 @@
+
+        Class Stack : AbstractData
+        {
+            get(index: Int)
+            {
+                Foreach (i In 1 .. Self.currentSize)
+                {
+                    If(i == index)
+                    {
+                        Return Self.myData[index];
+                    }
+                }
+                System.print("Sorry index out of bound!!");
+                Return Null;
+            }
+            push(newData: DataNode)
+            {
+                If(!Self.isFull())
+                {
+                    Self.currentSize = Self.currentSize + 1;
+                    Self.myData[Self.currentSize] = newData;
+                }
+                System.print("Sorry the stack is full!");
+            }
+        }

@@ -1,0 +1,11 @@
+
+        Class AbstractData
+        {
+            pop(){}
+            push(){}
+            get(){}
+            isEmpty(){}
+            isFull(){}
+            Var  myData: Array[Int, 1000];
+            Var  currentSize : Int;
+        }

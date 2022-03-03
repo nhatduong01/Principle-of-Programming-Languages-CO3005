@@ -1,0 +1,18 @@
+
+        Class AVL
+        {
+            rotateLeft(rootNode : Node)
+            {
+                Var rightChild: Node = rootNode.right;
+                rootNode.right = rightChild.left;
+                rightChild.left = rootNode;
+                rootNode = rightChild;
+            }
+            rotateRight(rootNode : Node)
+            {
+                Var leftChild: Node = rootNode.left;
+                rootNode.left = leftChild.right;
+                leftChild.right = rootNode;
+                rootNode = leftChild;
+            }
+        }

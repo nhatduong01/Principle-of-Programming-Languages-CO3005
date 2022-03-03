@@ -1,1 +1,1 @@
-Program([])
+Program([ClassDecl(Id(AVL),[MethodDecl(Id(add),Instance,[param(Id(newNode),ClassType(Id(Node))),param(Id(rootNode),ClassType(Id(Node)))],Block([Call(Id(BST),Id(add),[Id(rootNode),Id(newNode)])]))])])

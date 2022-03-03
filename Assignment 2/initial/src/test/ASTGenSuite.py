@@ -1157,7 +1157,7 @@ class ASTGenSuite(unittest.TestCase):
         input = """
         Class Zoo
         {
-            Var $listAnimal : Array[Animal, 0b111111011];
+            Var $listAnimal : Array[Int, 0b111111011];
             Var $maxSize : Int;
             Constructor()
             {
@@ -1169,7 +1169,7 @@ class ASTGenSuite(unittest.TestCase):
                 Zoo::$maxSize = Zoo::$maxSize + 1;
             }
         }""" 
-        expect = """Program([ClassDecl(Id(Zoo),[AttributeDecl(Static,VarDecl(Id($listAnimal),ArrayType(507,ClassType(Id(Animal))))),AttributeDecl(Static,VarDecl(Id($maxSize),IntType)),MethodDecl(Id(Constructor),Instance,[],Block([AssignStmt(FieldAccess(Id(Zoo),Id($maxSize)),IntLit(1))])),MethodDecl(Id(addAnimal),Instance,[param(Id(newAnimal),ClassType(Id(Animal)))],Block([AssignStmt(ArrayCell(FieldAccess(Self(),Id(listAnimal)),[FieldAccess(Id(Zoo),Id($maxSize))]),Id(newAnimal)),AssignStmt(FieldAccess(Id(Zoo),Id($maxSize)),BinaryOp(+,FieldAccess(Id(Zoo),Id($maxSize)),IntLit(1)))]))])])"""
+        expect = """Program([ClassDecl(Id(Zoo),[AttributeDecl(Static,VarDecl(Id($listAnimal),ArrayType(507,IntType))),AttributeDecl(Static,VarDecl(Id($maxSize),IntType)),MethodDecl(Id(Constructor),Instance,[],Block([AssignStmt(FieldAccess(Id(Zoo),Id($maxSize)),IntLit(1))])),MethodDecl(Id(addAnimal),Instance,[param(Id(newAnimal),ClassType(Id(Animal)))],Block([AssignStmt(ArrayCell(FieldAccess(Self(),Id(listAnimal)),[FieldAccess(Id(Zoo),Id($maxSize))]),Id(newAnimal)),AssignStmt(FieldAccess(Id(Zoo),Id($maxSize)),BinaryOp(+,FieldAccess(Id(Zoo),Id($maxSize)),IntLit(1)))]))])])"""
         self.assertTrue(TestAST.test(input,expect,364))
         
 
@@ -1593,115 +1593,535 @@ class ASTGenSuite(unittest.TestCase):
         self.assertTrue(TestAST.test(input,expect,380))
         
 
-    # def test_82 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestAST.test(input,expect,381))
+    def test_82 (self):
+        input = """
+        Class BankAccount
+        {
+            Val name:String;
+            Var balance: Float;
+            Var Loan: Float;
+            Var Transactions: Array[Int, 1000];
+            Var numTransaction : Int;
+            Constructor(newName: String)
+            {
+                Self.name = newName;
+                Self.balance = 0B0;
+                Self.Loan = 00;
+                numTransaction = 0;
+            }
+            receiveMoney(newMoney : Float; newDate: Date)
+            {
+                Self.numTransaction = Self.numTransaction + 1;
+                Self.Transactions[Self.numTransaction] = newDate;
+                Self.balance  = Self.balance + newMoney; 
+            }
+        }""" 
+        expect = """Program([ClassDecl(Id(BankAccount),[AttributeDecl(Instance,ConstDecl(Id(name),StringType,None)),AttributeDecl(Instance,VarDecl(Id(balance),FloatType)),AttributeDecl(Instance,VarDecl(Id(Loan),FloatType)),AttributeDecl(Instance,VarDecl(Id(Transactions),ArrayType(1000,IntType))),AttributeDecl(Instance,VarDecl(Id(numTransaction),IntType)),MethodDecl(Id(Constructor),Instance,[param(Id(newName),StringType)],Block([AssignStmt(FieldAccess(Self(),Id(name)),Id(newName)),AssignStmt(FieldAccess(Self(),Id(balance)),IntLit(0)),AssignStmt(FieldAccess(Self(),Id(Loan)),IntLit(0)),AssignStmt(Id(numTransaction),IntLit(0))])),MethodDecl(Id(receiveMoney),Instance,[param(Id(newMoney),FloatType),param(Id(newDate),ClassType(Id(Date)))],Block([AssignStmt(FieldAccess(Self(),Id(numTransaction)),BinaryOp(+,FieldAccess(Self(),Id(numTransaction)),IntLit(1))),AssignStmt(ArrayCell(FieldAccess(Self(),Id(Transactions)),[FieldAccess(Self(),Id(numTransaction))]),Id(newDate)),AssignStmt(FieldAccess(Self(),Id(balance)),BinaryOp(+,FieldAccess(Self(),Id(balance)),Id(newMoney)))]))])])"""
+        self.assertTrue(TestAST.test(input,expect,381))
         
 
-    # def test_83 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestAST.test(input,expect,382))
+    def test_83 (self):
+        input = """
+        Class Bank
+        {
+            Var generalInterest: Float = 0.03;
+            Var numUsers: Int = 0;
+            Var Users : Array [Int, 1000];
+            Var $goverment : String = "Russia";
+            Var bankName: String;
+            defaultUser(miserableUser : BankAccount)
+            {
+                Foreach (index In 1 .. Self.numUsers)
+                {
+                    If(miserableUser == Users[index])
+                    {
+                        (Users[index]).balance  = 0;
+                        (Users[index]).loan = 1000;
+                        Break;
+                    }
+                }
+            }
+        }""" 
+        expect = """Program([ClassDecl(Id(Bank),[AttributeDecl(Instance,VarDecl(Id(generalInterest),FloatType,FloatLit(0.03))),AttributeDecl(Instance,VarDecl(Id(numUsers),IntType,IntLit(0))),AttributeDecl(Instance,VarDecl(Id(Users),ArrayType(1000,IntType))),AttributeDecl(Static,VarDecl(Id($goverment),StringType,StringLit(Russia))),AttributeDecl(Instance,VarDecl(Id(bankName),StringType)),MethodDecl(Id(defaultUser),Instance,[param(Id(miserableUser),ClassType(Id(BankAccount)))],Block([For(Id(index),IntLit(1),FieldAccess(Self(),Id(numUsers)),IntLit(1),Block([If(BinaryOp(==,Id(miserableUser),ArrayCell(Id(Users),[Id(index)])),Block([AssignStmt(FieldAccess(ArrayCell(Id(Users),[Id(index)]),Id(balance)),IntLit(0)),AssignStmt(FieldAccess(ArrayCell(Id(Users),[Id(index)]),Id(loan)),IntLit(1000)),Break]))])])]))])])"""
+        self.assertTrue(TestAST.test(input,expect,382))
         
 
-    # def test_84 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestAST.test(input,expect,383))
+    def test_84 (self):
+        input = """
+        Class Bank
+        {
+            addUser(newUser: BankAccount)
+            {
+                Self.numUsers = Self.numUsers + 1;
+                Self.Users[Self.numUsers] = newUser;
+            }
+            deleteUser(oldUser: BankAccount)
+            {
+                Foreach (index In 1 .. Self.numUsers)
+                {
+                    If(oldUser == Users[index])
+                    {
+                        (Users[index]).balance  = 0;
+                        (Users[index]).loan = 1000;
+                        Break;
+                    }
+                    Self.numUsers = Self.numUsers - 1;
+                }
+            }
+        }""" 
+        expect = """Program([ClassDecl(Id(Bank),[MethodDecl(Id(addUser),Instance,[param(Id(newUser),ClassType(Id(BankAccount)))],Block([AssignStmt(FieldAccess(Self(),Id(numUsers)),BinaryOp(+,FieldAccess(Self(),Id(numUsers)),IntLit(1))),AssignStmt(ArrayCell(FieldAccess(Self(),Id(Users)),[FieldAccess(Self(),Id(numUsers))]),Id(newUser))])),MethodDecl(Id(deleteUser),Instance,[param(Id(oldUser),ClassType(Id(BankAccount)))],Block([For(Id(index),IntLit(1),FieldAccess(Self(),Id(numUsers)),IntLit(1),Block([If(BinaryOp(==,Id(oldUser),ArrayCell(Id(Users),[Id(index)])),Block([AssignStmt(FieldAccess(ArrayCell(Id(Users),[Id(index)]),Id(balance)),IntLit(0)),AssignStmt(FieldAccess(ArrayCell(Id(Users),[Id(index)]),Id(loan)),IntLit(1000)),Break])),AssignStmt(FieldAccess(Self(),Id(numUsers)),BinaryOp(-,FieldAccess(Self(),Id(numUsers)),IntLit(1)))])])]))])])"""
+        self.assertTrue(TestAST.test(input,expect,383))
         
 
-    # def test_85 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestAST.test(input,expect,384))
+    def test_85 (self):
+        input = """
+        Class CentralBank : Bank
+        {
+            Var allBank: Array[Int, 100];
+            Var numBanks: Int = 0;
+            increaseInterest(increasedAmount: Float)
+            {
+                Foreach (index In 1 .. Self.numBanks)
+                {
+                    (Self.allBank[index]).generalInterest = (Self.allBank[index]).generalInterest + increasedAmount;
+                }
+            }
+            covid_19_support(newDollar: Float)
+            {
+                System.print("korona uirusu no sei de, watashitachi ha minasan no koto wo shiji shitain desu");
+                Foreach (index In 1 .. Self.numBanks)
+                {
+                    Foreach (user In 1 .. (Self.allBank[index]).numUsers)
+                    {
+                        (Self.allBank[index]).Users[user] = (Self.allBank[index]).Users[user] + newDollar;
+                    }
+                }
+            }
+        }""" 
+        expect = """Program([ClassDecl(Id(CentralBank),Id(Bank),[AttributeDecl(Instance,VarDecl(Id(allBank),ArrayType(100,IntType))),AttributeDecl(Instance,VarDecl(Id(numBanks),IntType,IntLit(0))),MethodDecl(Id(increaseInterest),Instance,[param(Id(increasedAmount),FloatType)],Block([For(Id(index),IntLit(1),FieldAccess(Self(),Id(numBanks)),IntLit(1),Block([AssignStmt(FieldAccess(ArrayCell(FieldAccess(Self(),Id(allBank)),[Id(index)]),Id(generalInterest)),BinaryOp(+,FieldAccess(ArrayCell(FieldAccess(Self(),Id(allBank)),[Id(index)]),Id(generalInterest)),Id(increasedAmount)))])])])),MethodDecl(Id(covid_19_support),Instance,[param(Id(newDollar),FloatType)],Block([Call(Id(System),Id(print),[StringLit(korona uirusu no sei de, watashitachi ha minasan no koto wo shiji shitain desu)]),For(Id(index),IntLit(1),FieldAccess(Self(),Id(numBanks)),IntLit(1),Block([For(Id(user),IntLit(1),FieldAccess(ArrayCell(FieldAccess(Self(),Id(allBank)),[Id(index)]),Id(numUsers)),IntLit(1),Block([AssignStmt(ArrayCell(FieldAccess(ArrayCell(FieldAccess(Self(),Id(allBank)),[Id(index)]),Id(Users)),[Id(user)]),BinaryOp(+,ArrayCell(FieldAccess(ArrayCell(FieldAccess(Self(),Id(allBank)),[Id(index)]),Id(Users)),[Id(user)]),Id(newDollar)))])])])])]))])])"""
+        self.assertTrue(TestAST.test(input,expect,384))
         
 
-    # def test_86 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestAST.test(input,expect,385))
+    def test_86 (self):
+        input = """
+        Class AbstractData
+        {
+            pop(){}
+            push(){}
+            get(){}
+            isEmpty(){}
+            isFull(){}
+            Var  myData: Array[Int, 1000];
+            Var  currentSize : Int;
+        }""" 
+        expect = """Program([ClassDecl(Id(AbstractData),[MethodDecl(Id(pop),Instance,[],Block([])),MethodDecl(Id(push),Instance,[],Block([])),MethodDecl(Id(get),Instance,[],Block([])),MethodDecl(Id(isEmpty),Instance,[],Block([])),MethodDecl(Id(isFull),Instance,[],Block([])),AttributeDecl(Instance,VarDecl(Id(myData),ArrayType(1000,IntType))),AttributeDecl(Instance,VarDecl(Id(currentSize),IntType))])])"""
+        self.assertTrue(TestAST.test(input,expect,385))
         
 
-    # def test_87 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestAST.test(input,expect,386))
+    def test_87 (self):
+        input = """
+        Class DataNode
+        {
+            Var key: String;
+            Var value: anything;
+            compare(anotherNode : DataNode)
+            {
+                If((anotherNode.key == Self.key)&& (anotherNode.value == Self.value))
+                {
+                    Return True;
+                }
+                Else
+                {
+                    Return False;
+                }
+            }
+            printOut()
+            {
+                Val firstString : String  = "The value is: " +. Self.value;
+                firstString = firstString +. ", The key is: ";
+                Return firstString + Self.key;
+            }
+        }""" 
+        expect = """Program([ClassDecl(Id(DataNode),[AttributeDecl(Instance,VarDecl(Id(key),StringType)),AttributeDecl(Instance,VarDecl(Id(value),ClassType(Id(anything)),NullLiteral())),MethodDecl(Id(compare),Instance,[param(Id(anotherNode),ClassType(Id(DataNode)))],Block([If(BinaryOp(&&,BinaryOp(==,FieldAccess(Id(anotherNode),Id(key)),FieldAccess(Self(),Id(key))),BinaryOp(==,FieldAccess(Id(anotherNode),Id(value)),FieldAccess(Self(),Id(value)))),Block([Return(BooleanLit(True))]),Block([Return(BooleanLit(False))]))])),MethodDecl(Id(printOut),Instance,[],Block([ConstDecl(Id(firstString),StringType,BinaryOp(+.,StringLit(The value is: ),FieldAccess(Self(),Id(value)))),AssignStmt(Id(firstString),BinaryOp(+.,Id(firstString),StringLit(, The key is: ))),Return(BinaryOp(+,Id(firstString),FieldAccess(Self(),Id(key))))]))])])"""
+        self.assertTrue(TestAST.test(input,expect,386))
         
 
-    # def test_88 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestAST.test(input,expect,387))
+    def test_88 (self):
+        input = """
+        Class Stack: AbstractData
+        {
+            Constructor()
+            {
+                Self.currentSize = 0;
+            }
+            pop()
+            {
+                If(Self.isEmpty())
+                {
+                    System.print("I am empty, sorry");
+                }
+                Else
+                {
+                    Self.currentSize = Self.currentSize - 1;
+                    Return  Self.myData[Self.currentSize + 1];
+                }
+            }
+            isEmpty()
+            {
+                If(Self.currentSize == 0)
+                    {
+                        Return True;
+                    }
+                Return False;
+            }
+            isFull()
+            {   
+                If(Self.currentSize == 1000)
+                    {
+                        Return True;
+                    }
+                Return False;
+            }
+        }""" 
+        expect = """Program([ClassDecl(Id(Stack),Id(AbstractData),[MethodDecl(Id(Constructor),Instance,[],Block([AssignStmt(FieldAccess(Self(),Id(currentSize)),IntLit(0))])),MethodDecl(Id(pop),Instance,[],Block([If(CallExpr(Self(),Id(isEmpty),[]),Block([Call(Id(System),Id(print),[StringLit(I am empty, sorry)])]),Block([AssignStmt(FieldAccess(Self(),Id(currentSize)),BinaryOp(-,FieldAccess(Self(),Id(currentSize)),IntLit(1))),Return(ArrayCell(FieldAccess(Self(),Id(myData)),[BinaryOp(+,FieldAccess(Self(),Id(currentSize)),IntLit(1))]))]))])),MethodDecl(Id(isEmpty),Instance,[],Block([If(BinaryOp(==,FieldAccess(Self(),Id(currentSize)),IntLit(0)),Block([Return(BooleanLit(True))])),Return(BooleanLit(False))])),MethodDecl(Id(isFull),Instance,[],Block([If(BinaryOp(==,FieldAccess(Self(),Id(currentSize)),IntLit(1000)),Block([Return(BooleanLit(True))])),Return(BooleanLit(False))]))])])"""
+        self.assertTrue(TestAST.test(input,expect,387))
         
 
-    # def test_89 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestAST.test(input,expect,388))
+    def test_89 (self):
+        input = """
+        Class Stack : AbstractData
+        {
+            get(index: Int)
+            {
+                Foreach (i In 1 .. Self.currentSize)
+                {
+                    If(i == index)
+                    {
+                        Return Self.myData[index];
+                    }
+                }
+                System.print("Sorry index out of bound!!");
+                Return Null;
+            }
+            push(newData: DataNode)
+            {
+                If(!Self.isFull())
+                {
+                    Self.currentSize = Self.currentSize + 1;
+                    Self.myData[Self.currentSize] = newData;
+                }
+                System.print("Sorry the stack is full!");
+            }
+        }""" 
+        expect = """Program([ClassDecl(Id(Stack),Id(AbstractData),[MethodDecl(Id(get),Instance,[param(Id(index),IntType)],Block([For(Id(i),IntLit(1),FieldAccess(Self(),Id(currentSize)),IntLit(1),Block([If(BinaryOp(==,Id(i),Id(index)),Block([Return(ArrayCell(FieldAccess(Self(),Id(myData)),[Id(index)]))]))])]),Call(Id(System),Id(print),[StringLit(Sorry index out of bound!!)]),Return(NullLiteral())])),MethodDecl(Id(push),Instance,[param(Id(newData),ClassType(Id(DataNode)))],Block([If(UnaryOp(!,CallExpr(Self(),Id(isFull),[])),Block([AssignStmt(FieldAccess(Self(),Id(currentSize)),BinaryOp(+,FieldAccess(Self(),Id(currentSize)),IntLit(1))),AssignStmt(ArrayCell(FieldAccess(Self(),Id(myData)),[FieldAccess(Self(),Id(currentSize))]),Id(newData))])),Call(Id(System),Id(print),[StringLit(Sorry the stack is full!)])]))])])"""
+        self.assertTrue(TestAST.test(input,expect,388))
         
 
-    # def test_90 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestAST.test(input,expect,389))
+    def test_90 (self):
+        input = """
+        Class Queue
+        {
+            pop()
+            {
+                If (!Self.isEmpty())
+                {
+                    Val returnedValue: DataNode = Self.myData[0];
+                    Foreach(index In Self.currentSize - 1 .. 1 By -1)
+                    {
+                        Self.myData[index] = Self.myData[index + 1];
+                    }
+                    Self.currentSize = Self.currentSize - 1;
+                    Return returnedValue;
+                }
+                Else
+                {
+                    System.print("Sumimasen stack ha aki desu");
+                    Return Null;
+                }
+            }
+            push(myNode : DataNode)
+            {
+                If(!Self.isFull())
+                {
+                    Self.currentSize = Self.currentSize + 1;
+                    Self.myData[Self.currentSize] = myNode;
+                }
+                Else
+                {
+                    System.print("moushi wake arimasen kuuseki ga nain sedu");
+                }
+            }
+        }""" 
+        expect = """Program([ClassDecl(Id(Queue),[MethodDecl(Id(pop),Instance,[],Block([If(UnaryOp(!,CallExpr(Self(),Id(isEmpty),[])),Block([ConstDecl(Id(returnedValue),ClassType(Id(DataNode)),ArrayCell(FieldAccess(Self(),Id(myData)),[IntLit(0)])),For(Id(index),BinaryOp(-,FieldAccess(Self(),Id(currentSize)),IntLit(1)),IntLit(1),UnaryOp(-,IntLit(1)),Block([AssignStmt(ArrayCell(FieldAccess(Self(),Id(myData)),[Id(index)]),ArrayCell(FieldAccess(Self(),Id(myData)),[BinaryOp(+,Id(index),IntLit(1))]))])]),AssignStmt(FieldAccess(Self(),Id(currentSize)),BinaryOp(-,FieldAccess(Self(),Id(currentSize)),IntLit(1))),Return(Id(returnedValue))]),Block([Call(Id(System),Id(print),[StringLit(Sumimasen stack ha aki desu)]),Return(NullLiteral())]))])),MethodDecl(Id(push),Instance,[param(Id(myNode),ClassType(Id(DataNode)))],Block([If(UnaryOp(!,CallExpr(Self(),Id(isFull),[])),Block([AssignStmt(FieldAccess(Self(),Id(currentSize)),BinaryOp(+,FieldAccess(Self(),Id(currentSize)),IntLit(1))),AssignStmt(ArrayCell(FieldAccess(Self(),Id(myData)),[FieldAccess(Self(),Id(currentSize))]),Id(myNode))]),Block([Call(Id(System),Id(print),[StringLit(moushi wake arimasen kuuseki ga nain sedu)])]))]))])])"""
+        self.assertTrue(TestAST.test(input,expect,389))
         
 
-    # def test_91 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestAST.test(input,expect,390))
+    def test_91 (self):
+        input = """
+        Class Node
+        {
+            Var value: Int;
+            Var left: Node;
+            Var right: Node;
+            Constructor(_value : Int)
+            {
+                Self.value = _value;
+            }
+            Constructor(_value : Int ; _left, _right : Node)
+            {
+                Self.value = _value;
+                Self.left = _left;
+                Self.right = _right;
+            }
+        }
+        Class BST 
+        {
+            Var rootNode : Node;
+            Constructor(_root: Node)
+            {
+                Self.rootNode = _root;
+            }
+        }
+        Class Program
+        {
+            main()
+            {
+                Var rootNode: Node = New Node(10);
+                Var myBST : BST = New BST (rootNode);
+            }
+        }""" 
+        expect = """Program([ClassDecl(Id(Node),[AttributeDecl(Instance,VarDecl(Id(value),IntType)),AttributeDecl(Instance,VarDecl(Id(left),ClassType(Id(Node)),NullLiteral())),AttributeDecl(Instance,VarDecl(Id(right),ClassType(Id(Node)),NullLiteral())),MethodDecl(Id(Constructor),Instance,[param(Id(_value),IntType)],Block([AssignStmt(FieldAccess(Self(),Id(value)),Id(_value))])),MethodDecl(Id(Constructor),Instance,[param(Id(_value),IntType),param(Id(_left),ClassType(Id(Node))),param(Id(_right),ClassType(Id(Node)))],Block([AssignStmt(FieldAccess(Self(),Id(value)),Id(_value)),AssignStmt(FieldAccess(Self(),Id(left)),Id(_left)),AssignStmt(FieldAccess(Self(),Id(right)),Id(_right))]))]),ClassDecl(Id(BST),[AttributeDecl(Instance,VarDecl(Id(rootNode),ClassType(Id(Node)),NullLiteral())),MethodDecl(Id(Constructor),Instance,[param(Id(_root),ClassType(Id(Node)))],Block([AssignStmt(FieldAccess(Self(),Id(rootNode)),Id(_root))]))]),ClassDecl(Id(Program),[MethodDecl(Id(main),Static,[],Block([VarDecl(Id(rootNode),ClassType(Id(Node)),NewExpr(Id(Node),[IntLit(10)])),VarDecl(Id(myBST),ClassType(Id(BST)),NewExpr(Id(BST),[Id(rootNode)]))]))])])"""
+        self.assertTrue(TestAST.test(input,expect,390))
         
 
-    # def test_92 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestAST.test(input,expect,391))
+    def test_92 (self):
+        input = """
+        Class BST
+        {
+            inorderTraversal(myNode : Node)
+            {
+                If(myNode != Null)
+                {
+                    Self.inorderTraversal(myNode.left);
+                    System.print(myNode.value);
+                    Self.inorderTraversal(myNode.right);
+                }
+            }
+            postorderTraversal(myNode : Node)
+            {
+                If(myNode != Null)
+                {
+                    Self.postorderTraversal(myNode.left);
+                    System.print(myNode.value);
+                    Self.postorderTraversal(myNode.right);
+                }
+            }
+            preorderTraversal(myNode : Node)
+            {
+                If(myNode != Null)
+                {
+                    System.print(myNode.value);
+                    Self.preorderTraversal(myNode.left);
+                    Self.preorderTraversal(myNode.right);
+                }
+            }
+        }""" 
+        expect = """Program([ClassDecl(Id(BST),[MethodDecl(Id(inorderTraversal),Instance,[param(Id(myNode),ClassType(Id(Node)))],Block([If(BinaryOp(!=,Id(myNode),NullLiteral()),Block([Call(Self(),Id(inorderTraversal),[FieldAccess(Id(myNode),Id(left))]),Call(Id(System),Id(print),[FieldAccess(Id(myNode),Id(value))]),Call(Self(),Id(inorderTraversal),[FieldAccess(Id(myNode),Id(right))])]))])),MethodDecl(Id(postorderTraversal),Instance,[param(Id(myNode),ClassType(Id(Node)))],Block([If(BinaryOp(!=,Id(myNode),NullLiteral()),Block([Call(Self(),Id(postorderTraversal),[FieldAccess(Id(myNode),Id(left))]),Call(Id(System),Id(print),[FieldAccess(Id(myNode),Id(value))]),Call(Self(),Id(postorderTraversal),[FieldAccess(Id(myNode),Id(right))])]))])),MethodDecl(Id(preorderTraversal),Instance,[param(Id(myNode),ClassType(Id(Node)))],Block([If(BinaryOp(!=,Id(myNode),NullLiteral()),Block([Call(Id(System),Id(print),[FieldAccess(Id(myNode),Id(value))]),Call(Self(),Id(preorderTraversal),[FieldAccess(Id(myNode),Id(left))]),Call(Self(),Id(preorderTraversal),[FieldAccess(Id(myNode),Id(right))])]))]))])])"""
+        self.assertTrue(TestAST.test(input,expect,391))
         
 
-    # def test_93 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestAST.test(input,expect,392))
+    def test_93 (self):
+        input = """
+        Class BST
+        {
+            add(rootNode,newNode: Node)
+            {
+                If(newNode.value > rootNode.value)
+                {
+                    If(rootNode.right != Null)
+                    {
+                        Self.add(rootNode.right, newNode);
+                    }
+                    Else
+                    {
+                        rootNode.right = newNode;
+                    }
+                }
+                Else
+                {
+                    If(rootNode.left != Null)
+                    {
+                        Self.add(rootNode.left, newNode);
+                    }
+                    Else
+                    {
+                        rootNode.left = newNode;
+                    }
+                }
+            }
+        }""" 
+        expect = """Program([ClassDecl(Id(BST),[MethodDecl(Id(add),Instance,[param(Id(rootNode),ClassType(Id(Node))),param(Id(newNode),ClassType(Id(Node)))],Block([If(BinaryOp(>,FieldAccess(Id(newNode),Id(value)),FieldAccess(Id(rootNode),Id(value))),Block([If(BinaryOp(!=,FieldAccess(Id(rootNode),Id(right)),NullLiteral()),Block([Call(Self(),Id(add),[FieldAccess(Id(rootNode),Id(right)),Id(newNode)])]),Block([AssignStmt(FieldAccess(Id(rootNode),Id(right)),Id(newNode))]))]),Block([If(BinaryOp(!=,FieldAccess(Id(rootNode),Id(left)),NullLiteral()),Block([Call(Self(),Id(add),[FieldAccess(Id(rootNode),Id(left)),Id(newNode)])]),Block([AssignStmt(FieldAccess(Id(rootNode),Id(left)),Id(newNode))]))]))]))])])"""
+        self.assertTrue(TestAST.test(input,expect,392))
         
 
-    # def test_94 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestAST.test(input,expect,393))
+    def test_94 (self):
+        input = """
+        Class BST
+        {
+            delete(deleteValue: Int; rootNode : root)
+            {
+                ##We will take the biggest left to replace##
+                If (rootNode.value > deleteValue)
+                {
+                    Self.delete(deleteValue, rootNode.left);
+                }
+                Elseif (rootNode.value < deleteValue)
+                {
+                    Self.delete(deleteValue, rootNode.right);
+                }
+                Else
+                {
+                    If((rootNode.left == Null) && (rootNode.right == Null))
+                    {
+                        rootNode = Null;
+                    }
+                    Elseif(rootNode.left == Null)
+                    {
+                        rootNode.value = rootNode.left.value;
+                        rootNode.left = Null;
+                    }
+                    Elseif(rootNode.right == Null)
+                    {
+                        rootNode.value = rootNode.right.value;
+                        rootNode.right = Null;
+                    }
+                    Else
+                    {
+                        biggestLeft = Self.getbiggestLeft(rootNode.left);
+                        rootNode.value = biggestLeft;
+                    }
+                }
+            }
+        }""" 
+        expect = """Program([ClassDecl(Id(BST),[MethodDecl(Id(delete),Instance,[param(Id(deleteValue),IntType),param(Id(rootNode),ClassType(Id(root)))],Block([If(BinaryOp(>,FieldAccess(Id(rootNode),Id(value)),Id(deleteValue)),Block([Call(Self(),Id(delete),[Id(deleteValue),FieldAccess(Id(rootNode),Id(left))])]),If(BinaryOp(<,FieldAccess(Id(rootNode),Id(value)),Id(deleteValue)),Block([Call(Self(),Id(delete),[Id(deleteValue),FieldAccess(Id(rootNode),Id(right))])]),Block([If(BinaryOp(&&,BinaryOp(==,FieldAccess(Id(rootNode),Id(left)),NullLiteral()),BinaryOp(==,FieldAccess(Id(rootNode),Id(right)),NullLiteral())),Block([AssignStmt(Id(rootNode),NullLiteral())]),If(BinaryOp(==,FieldAccess(Id(rootNode),Id(left)),NullLiteral()),Block([AssignStmt(FieldAccess(Id(rootNode),Id(value)),FieldAccess(FieldAccess(Id(rootNode),Id(left)),Id(value))),AssignStmt(FieldAccess(Id(rootNode),Id(left)),NullLiteral())]),If(BinaryOp(==,FieldAccess(Id(rootNode),Id(right)),NullLiteral()),Block([AssignStmt(FieldAccess(Id(rootNode),Id(value)),FieldAccess(FieldAccess(Id(rootNode),Id(right)),Id(value))),AssignStmt(FieldAccess(Id(rootNode),Id(right)),NullLiteral())]),Block([AssignStmt(Id(biggestLeft),CallExpr(Self(),Id(getbiggestLeft),[FieldAccess(Id(rootNode),Id(left))])),AssignStmt(FieldAccess(Id(rootNode),Id(value)),Id(biggestLeft))]))))])))]))])])"""
+        self.assertTrue(TestAST.test(input,expect,393))
         
 
-    # def test_95 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestAST.test(input,expect,394))
+    def test_95 (self):
+        input = """
+        Class BST
+        {
+            getbiggestLeft(rootNode : Node)
+            {
+                If(rootNode.left != Null)
+                {
+                    Return Self.getbiggestLeft(rootNode.left);
+                }
+                Else
+                {
+                    Var temp: Int = rootNode.value;
+                    rootNode = Null;
+                    Return temp;
+                }
+            }
+        }""" 
+        expect = """Program([ClassDecl(Id(BST),[MethodDecl(Id(getbiggestLeft),Instance,[param(Id(rootNode),ClassType(Id(Node)))],Block([If(BinaryOp(!=,FieldAccess(Id(rootNode),Id(left)),NullLiteral()),Block([Return(CallExpr(Self(),Id(getbiggestLeft),[FieldAccess(Id(rootNode),Id(left))]))]),Block([VarDecl(Id(temp),IntType,FieldAccess(Id(rootNode),Id(value))),AssignStmt(Id(rootNode),NullLiteral()),Return(Id(temp))]))]))])])"""
+        self.assertTrue(TestAST.test(input,expect,394))
         
 
-    # def test_96 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestAST.test(input,expect,395))
+    def test_96 (self):
+        input = """
+        Class AVL
+        {
+            Var rootNode : Node;
+            Constructor(_root: Node)
+            {
+                Self.rootNode = _root;
+            }
+            getHeight(currentNode : Node)
+            {
+                If(currentNode == Null)
+                {
+                    Return 0;
+                }
+                Else
+                {
+                    Var maxLeft : Int = Self.getHeight(currentNode.left);
+                    Var maxRight : Int = Self.getHeight(currentNode.right);
+                    Return Math.max(maxLeft, maxRight) + 1;
+                }
+            }
+        }""" 
+        expect = """Program([ClassDecl(Id(AVL),[AttributeDecl(Instance,VarDecl(Id(rootNode),ClassType(Id(Node)),NullLiteral())),MethodDecl(Id(Constructor),Instance,[param(Id(_root),ClassType(Id(Node)))],Block([AssignStmt(FieldAccess(Self(),Id(rootNode)),Id(_root))])),MethodDecl(Id(getHeight),Instance,[param(Id(currentNode),ClassType(Id(Node)))],Block([If(BinaryOp(==,Id(currentNode),NullLiteral()),Block([Return(IntLit(0))]),Block([VarDecl(Id(maxLeft),IntType,CallExpr(Self(),Id(getHeight),[FieldAccess(Id(currentNode),Id(left))])),VarDecl(Id(maxRight),IntType,CallExpr(Self(),Id(getHeight),[FieldAccess(Id(currentNode),Id(right))])),Return(BinaryOp(+,CallExpr(Id(Math),Id(max),[Id(maxLeft),Id(maxRight)]),IntLit(1)))]))]))])])"""
+        self.assertTrue(TestAST.test(input,expect,395))
         
 
-    # def test_97 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestAST.test(input,expect,396))
+    def test_97 (self):
+        input = """
+        Class AVL
+        {
+            rotateLeft(rootNode : Node)
+            {
+                Var rightChild: Node = rootNode.right;
+                rootNode.right = rightChild.left;
+                rightChild.left = rootNode;
+                rootNode = rightChild;
+            }
+            rotateRight(rootNode : Node)
+            {
+                Var leftChild: Node = rootNode.left;
+                rootNode.left = leftChild.right;
+                leftChild.right = rootNode;
+                rootNode = leftChild;
+            }
+        }""" 
+        expect = """Program([ClassDecl(Id(AVL),[MethodDecl(Id(rotateLeft),Instance,[param(Id(rootNode),ClassType(Id(Node)))],Block([VarDecl(Id(rightChild),ClassType(Id(Node)),FieldAccess(Id(rootNode),Id(right))),AssignStmt(FieldAccess(Id(rootNode),Id(right)),FieldAccess(Id(rightChild),Id(left))),AssignStmt(FieldAccess(Id(rightChild),Id(left)),Id(rootNode)),AssignStmt(Id(rootNode),Id(rightChild))])),MethodDecl(Id(rotateRight),Instance,[param(Id(rootNode),ClassType(Id(Node)))],Block([VarDecl(Id(leftChild),ClassType(Id(Node)),FieldAccess(Id(rootNode),Id(left))),AssignStmt(FieldAccess(Id(rootNode),Id(left)),FieldAccess(Id(leftChild),Id(right))),AssignStmt(FieldAccess(Id(leftChild),Id(right)),Id(rootNode)),AssignStmt(Id(rootNode),Id(leftChild))]))])])"""
+        self.assertTrue(TestAST.test(input,expect,396))
         
 
-    # def test_98 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestAST.test(input,expect,397))
+    def test_98 (self):
+        input = """
+        Class AVL
+        {
+            add(newNode, rootNode: Node)
+            {
+                BST.add(rootNode, newNode);
+            }
+        }""" 
+        expect = """Program([ClassDecl(Id(AVL),[MethodDecl(Id(add),Instance,[param(Id(newNode),ClassType(Id(Node))),param(Id(rootNode),ClassType(Id(Node)))],Block([Call(Id(BST),Id(add),[Id(rootNode),Id(newNode)])]))])])"""
+        self.assertTrue(TestAST.test(input,expect,397))
         
 
-    # def test_99 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestAST.test(input,expect,398))
+    def test_99 (self):
+        input = """
+        Class Program
+        {
+            main()
+            {
+                Var rootNode: Node = New Node(10);
+                Var myBST : BST = New BST(rootNode);
+                Var newNode1 : Node = New Node (1);
+                myBST.add(rootNode, newNode1);
+                Var newNode2 : Node = New Node (15);
+                myBST.add(rootNode, newNode2);
+                myBST.preorderTraversal(rootNode);
+            }
+        }""" 
+        expect = """Program([ClassDecl(Id(Program),[MethodDecl(Id(main),Static,[],Block([VarDecl(Id(rootNode),ClassType(Id(Node)),NewExpr(Id(Node),[IntLit(10)])),VarDecl(Id(myBST),ClassType(Id(BST)),NewExpr(Id(BST),[Id(rootNode)])),VarDecl(Id(newNode1),ClassType(Id(Node)),NewExpr(Id(Node),[IntLit(1)])),Call(Id(myBST),Id(add),[Id(rootNode),Id(newNode1)]),VarDecl(Id(newNode2),ClassType(Id(Node)),NewExpr(Id(Node),[IntLit(15)])),Call(Id(myBST),Id(add),[Id(rootNode),Id(newNode2)]),Call(Id(myBST),Id(preorderTraversal),[Id(rootNode)])]))])])"""
+        self.assertTrue(TestAST.test(input,expect,398))
+
+    def test_100 (self):
+        input = """
+        Class Toy
+        {
+            Var name: String;
+            Var yearProduction : Int;
+            Var emptyArray : Array[Int, 56] = Array();
+        }""" 
+        expect = """Program([ClassDecl(Id(Toy),[AttributeDecl(Instance,VarDecl(Id(name),StringType)),AttributeDecl(Instance,VarDecl(Id(yearProduction),IntType)),AttributeDecl(Instance,VarDecl(Id(emptyArray),ArrayType(56,IntType),[]))])])"""
+        self.assertTrue(TestAST.test(input,expect,399))
+
+
+
    
-    # def test_100 (self):
-    #     input = """""" 
-    #     expect = """"""
-    #     self.assertTrue(TestAST.test(input,expect,399))
-    
+   

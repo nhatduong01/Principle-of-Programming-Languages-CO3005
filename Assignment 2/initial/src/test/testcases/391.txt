@@ -1,0 +1,31 @@
+
+        Class BST
+        {
+            inorderTraversal(myNode : Node)
+            {
+                If(myNode != Null)
+                {
+                    Self.inorderTraversal(myNode.left);
+                    System.print(myNode.value);
+                    Self.inorderTraversal(myNode.right);
+                }
+            }
+            postorderTraversal(myNode : Node)
+            {
+                If(myNode != Null)
+                {
+                    Self.postorderTraversal(myNode.left);
+                    System.print(myNode.value);
+                    Self.postorderTraversal(myNode.right);
+                }
+            }
+            preorderTraversal(myNode : Node)
+            {
+                If(myNode != Null)
+                {
+                    System.print(myNode.value);
+                    Self.preorderTraversal(myNode.left);
+                    Self.preorderTraversal(myNode.right);
+                }
+            }
+        }

@@ -1,0 +1,24 @@
+
+        Class CentralBank : Bank
+        {
+            Var allBank: Array[Int, 100];
+            Var numBanks: Int = 0;
+            increaseInterest(increasedAmount: Float)
+            {
+                Foreach (index In 1 .. Self.numBanks)
+                {
+                    (Self.allBank[index]).generalInterest = (Self.allBank[index]).generalInterest + increasedAmount;
+                }
+            }
+            covid_19_support(newDollar: Float)
+            {
+                System.print("korona uirusu no sei de, watashitachi ha minasan no koto wo shiji shitain desu");
+                Foreach (index In 1 .. Self.numBanks)
+                {
+                    Foreach (user In 1 .. (Self.allBank[index]).numUsers)
+                    {
+                        (Self.allBank[index]).Users[user] = (Self.allBank[index]).Users[user] + newDollar;
+                    }
+                }
+            }
+        }

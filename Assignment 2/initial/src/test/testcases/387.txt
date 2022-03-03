@@ -1,0 +1,36 @@
+
+        Class Stack: AbstractData
+        {
+            Constructor()
+            {
+                Self.currentSize = 0;
+            }
+            pop()
+            {
+                If(Self.isEmpty())
+                {
+                    System.print("I am empty, sorry");
+                }
+                Else
+                {
+                    Self.currentSize = Self.currentSize - 1;
+                    Return  Self.myData[Self.currentSize + 1];
+                }
+            }
+            isEmpty()
+            {
+                If(Self.currentSize == 0)
+                    {
+                        Return True;
+                    }
+                Return False;
+            }
+            isFull()
+            {   
+                If(Self.currentSize == 1000)
+                    {
+                        Return True;
+                    }
+                Return False;
+            }
+        }

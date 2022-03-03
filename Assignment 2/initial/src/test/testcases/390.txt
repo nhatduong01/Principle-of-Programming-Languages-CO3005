@@ -1,0 +1,33 @@
+
+        Class Node
+        {
+            Var value: Int;
+            Var left: Node;
+            Var right: Node;
+            Constructor(_value : Int)
+            {
+                Self.value = _value;
+            }
+            Constructor(_value : Int ; _left, _right : Node)
+            {
+                Self.value = _value;
+                Self.left = _left;
+                Self.right = _right;
+            }
+        }
+        Class BST 
+        {
+            Var rootNode : Node;
+            Constructor(_root: Node)
+            {
+                Self.rootNode = _root;
+            }
+        }
+        Class Program
+        {
+            main()
+            {
+                Var rootNode: Node = New Node(10);
+                Var myBST : BST = New BST (rootNode);
+            }
+        }

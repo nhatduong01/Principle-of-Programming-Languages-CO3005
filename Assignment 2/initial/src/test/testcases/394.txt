@@ -1,0 +1,17 @@
+
+        Class BST
+        {
+            getbiggestLeft(rootNode : Node)
+            {
+                If(rootNode.left != Null)
+                {
+                    Return Self.getbiggestLeft(rootNode.left);
+                }
+                Else
+                {
+                    Var temp: Int = rootNode.value;
+                    rootNode = Null;
+                    Return temp;
+                }
+            }
+        }

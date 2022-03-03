@@ -1,0 +1,22 @@
+
+        Class AVL
+        {
+            Var rootNode : Node;
+            Constructor(_root: Node)
+            {
+                Self.rootNode = _root;
+            }
+            getHeight(currentNode : Node)
+            {
+                If(currentNode == Null)
+                {
+                    Return 0;
+                }
+                Else
+                {
+                    Var maxLeft : Int = Self.getHeight(currentNode.left);
+                    Var maxRight : Int = Self.getHeight(currentNode.right);
+                    Return Math.max(maxLeft, maxRight) + 1;
+                }
+            }
+        }
