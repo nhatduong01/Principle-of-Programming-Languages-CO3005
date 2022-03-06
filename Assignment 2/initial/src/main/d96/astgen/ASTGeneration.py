@@ -42,7 +42,7 @@ class ASTGeneration(D96Visitor):
         expList = temp if ctx.expList() else [None] * len(attribList)
         mytype = self.visit(ctx.primitive_type())
         if isinstance(mytype, ClassType):
-            if temp == None:
+            if temp == None and ctx.VAR():
                 expList = [NullLiteral()] * len(attribList)
         constList = [(name, mytype, value) for name, value in zip (attribList, expList)]
         if ctx.VAL():
@@ -340,7 +340,7 @@ class ASTGeneration(D96Visitor):
                 assert len(expList) == len(idList), "Not enough expressions"
                 return [ConstDecl(id, mytype, value) for id, value in zip(idList, expList)]
             else:
-                return [ConstDecl(id, mytype, NullLiteral()) for id in idList] if isinstance(mytype,ClassType) else  [ConstDecl(id, mytype, None) for id in idList]
+                return [ConstDecl(id, mytype, None) for id in idList] if isinstance(mytype,ClassType) else  [ConstDecl(id, mytype, None) for id in idList]
         elif ctx.VAR():
             if ctx.expList():
                 expList = self.visit(ctx.expList())
