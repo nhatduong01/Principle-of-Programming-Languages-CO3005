@@ -1,0 +1,6 @@
+
+        Class Student
+        {
+            Val numStudents: Int = 0;
+            Var numStudents: Int;
+        }

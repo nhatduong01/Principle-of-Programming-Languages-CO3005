@@ -1,3 +1,8 @@
-int main () {
-            putIntLn(getInt(4));
+
+        Class Duong
+        {
         }
+        Class Duong
+        {
+        }
+        

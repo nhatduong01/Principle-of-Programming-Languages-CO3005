@@ -1,0 +1,7 @@
+
+        Class Program
+        {
+        $getArea(x,x: Float)
+        {
+        }
+        }
