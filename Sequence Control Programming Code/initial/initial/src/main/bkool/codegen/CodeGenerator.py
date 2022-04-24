@@ -5,7 +5,7 @@
  *   This file provides a simple version of code generator
  *
 '''
-from AST import FloatType, IntType
+from AST import *
 from Utils import *
 from StaticCheck import *
 from StaticError import *
@@ -201,12 +201,89 @@ class CodeGenVisitor(BaseVisitor, Utils):
         frame = ctxt.frame
         return self.emit.emitPUSHFCONST(str(ast.value), frame), FloatType()
     
-    def visitBinOP(self, ast, o):
+    def visitBinOP(self, ctx: BinOP, o):
+        # Exercise 5 Prgramming Code
+        myOp = ctx.op
+        value1, type1 = self.visit(ctx.e1, o)
+        value2, type2 = self.visit(ctx.e2, o)
+        if type(type1) != type(type2):
+            if type(type1) == IntType:
+                value1 = value1 + self.emit.emitI2F(o.frame)
+                type1 = FloatType()
+            else:
+                value2 = value2 + self.emit.emitI2F(o.frame)
+                type2 = FloatType()
+        if myOp in ['+', '-']:
+            return value1 + value2 + self.emit.emitADDOP(myOp, type1, o.frame), type1
+        elif myOp in ['/', '*']:
+            if myOp == '/':
+                print("Type 1", type(type1))
+                print("Type 2", type(type2))
+                return value1 + value2 + self.emit.emitMULOP(myOp,type1, o.frame) + self.emit.emitI2F(o.frame), FloatType()
+            else:
+                return value1 + value2 + self.emit.emitMULOP(myOp, type1, o.frame), type1
+        else:
+            return value1 + value2 + self.emit.emitREOP(myOp, type1, o.frame), BoolType()
+    def visitBinExpr(self, ctx, o):
+        # Exercise 3 Programing Code
         #ast: BinOP
         #o: Any
-        ctxt = o
-        frame = ctxt.frame
-        frame.push()
-        frame.push()
-        myType = FloatType if ast.e1 is FloatType or ast.e2 is FloatType else IntType
-        return self.emit.emitADDOP(ast.op, myType, frame), myType
+        valueE1, typeE1 = self.visit(ctx.e1, o)
+        valueE2, typeE2 = self.visit(ctx.e2, o)
+        myFrame = o.frame
+        myOp = ctx.op
+        returnType = IntType()
+        if isinstance(typeE1, FloatType) or isinstance(typeE2, FloatType):
+            returnType = FloatType()
+        if myOp in ["+", "+."]:
+            return  valueE1 + valueE2 + self.emit.emitADDOP('+', returnType, myFrame), returnType
+        elif myOp in ["-", "-."]:
+            return  valueE1 + valueE2 + self.emit.emitADDOP('-', returnType, myFrame), returnType
+        elif myOp in ['*', '*.']:
+            return  valueE1 + valueE2 + self.emit.emitMULOP('*', returnType, myFrame), returnType
+        else:
+            return  valueE1 + valueE2 + self.emit.emitMULOP('/', returnType, myFrame), returnType
+    
+    def visitId(self, ctx: Id, o):
+        # Exercise 4 Programming Code
+        symbolList = o.sym
+        myFrame = o.frame
+        for eachSymbol in symbolList:
+            if eachSymbol.name == ctx.name:
+                myIndex = eachSymbol.value.value
+                if type(myIndex) == str:
+                    return self.emit.emitGETSTATIC(myIndex + '.' + eachSymbol.name, eachSymbol.mtype, myFrame), eachSymbol.mtype
+                return self.emit.emitREADVAR(eachSymbol.name, eachSymbol.mtype, myIndex, myFrame), eachSymbol.mtype
+    
+    def visitBinExpr2(self, ctx, o):
+        myOp = ctx.op
+        value1, type1 = self.visit(ctx.e1, o)
+        value2, type2 = self.visit(ctx.e2, o)
+        if type(type1) != type(type2):
+            if type(type1) == IntType:
+                value1 = value1 + self.emit.emitI2F(o.frame)
+                type1 = FloatType()
+            else:
+                value2 = value2 + self.emit.emitI2F(o.frame)
+                type2 = FloatType()
+        if myOp in ['+', '-']:
+            return value1 + value2 + self.emit.emitADDOP(myOp, type1, o.frame), type1
+        elif myOp in ['/', '*']:
+            if myOp == '/':
+                return value1 + value2 + self.emit.emitMULOP(myOp, type1, o.frame), type1
+        else:
+            return value1 + value2 + self.emit.emitREOP(myOp, type1, o.frame), BoolType()
+    def visitVarDecl(self,ctx,o):
+        # Exercise 6 Programming Code
+        myFrame  = o.frame
+        if myFrame is None:
+            emittedStr = self.emit.emitATTRIBUTE(ctx.name, ctx.typ, None)
+            self.emit.printout(emittedStr)
+            return Symbol(ctx.name, ctx.typ, CName("MCClass"))
+        else:
+            #myFrame.enterScope(True)
+            emittedStr = self.emit.emitVAR(myFrame.getCurrIndex(), ctx.name, ctx.typ, myFrame.getStartLabel(), myFrame.getEndLabel())
+            self.emit.printout(emittedStr)
+            #myFrame.exitScope()
+            result = Symbol(ctx.name, ctx.typ, Index(myFrame.getNewIndex()))
+            return result

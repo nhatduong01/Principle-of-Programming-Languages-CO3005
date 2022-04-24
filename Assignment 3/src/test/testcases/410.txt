@@ -1,0 +1,6 @@
+
+        Class Moon
+        {
+        Val width: Float =  3;
+        Val height: Float = 10;
+        }

@@ -11,17 +11,21 @@ class CheckerSuite(unittest.TestCase):
         {
         }
         """
-        expect = """[]"""
+        expect = """No Entry Point"""
         self.assertTrue(TestChecker.test(input, expect, 400))
 
     def test_2 (self):
         input = """
-         Class Duong
-         {
-         }
-         Class Duong
-         {
-         }
+        Class Duong
+        {
+        }
+        Class Duong
+        {
+        }
+        Class Program
+        {
+
+        }
         """
         expect = """Redeclared Class: Duong"""
         self.assertTrue(TestChecker.test(input, expect, 401))
@@ -32,11 +36,12 @@ class CheckerSuite(unittest.TestCase):
         Class Duong
         {
         }
-        Class Duong
+        Class Program
         {
+
         }
         """
-        expect = """Redeclared Class: Duong"""
+        expect = """No Entry Point"""
         self.assertTrue(TestChecker.test(input, expect, 402))
 
     def test_4(self):
@@ -80,7 +85,7 @@ class CheckerSuite(unittest.TestCase):
         }"""
         expect = """Redeclared Parameter: x"""
         self.assertTrue(TestChecker.test(input, expect, 406))
-    
+
     def test_8(self):
         input = """
         Class Program
@@ -90,7 +95,7 @@ class CheckerSuite(unittest.TestCase):
         }"""
         expect = """Redeclared Attribute: c"""
         self.assertTrue(TestChecker.test(input, expect, 407))
-    
+
     def test_9(self):
         input = """
         Class Student
@@ -100,31 +105,59 @@ class CheckerSuite(unittest.TestCase):
         }"""
         expect = """Redeclared Attribute: numStudents"""
         self.assertTrue(TestChecker.test(input, expect, 408))
-    #
-    # def test_10(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 409))
-    #
-    # def test_11(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 410))
-    #
-    # def test_12(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 411))
-    #
-    # def test_13(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 412))
-    #
-    # def test_14(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 413))
+
+    def test_10(self):
+        input = """
+        Class Student
+        {
+        Val numStudents: Int;
+        }
+        """
+        expect = """Illegal Constant Expression: None"""
+        self.assertTrue(TestChecker.test(input, expect, 409))
+
+    def test_11(self):
+        input = """
+        Class Moon
+        {
+        Val width: Float =  3;
+        Val height: Float = 10;
+        }"""
+        expect = """No Entry Point"""
+        self.assertTrue(TestChecker.test(input, expect, 410))
+
+    def test_12(self):
+        input = """
+        Class Student
+        {
+        Var $maxHeight : Int = 189.5;
+        }"""
+        expect = """Type Mismatch In Expression: VarDecl(Id($maxHeight),IntType,FloatLit(189.5))"""
+        self.assertTrue(TestChecker.test(input, expect, 411))
+
+    def test_13(self):
+        input = """
+        Class Student : Person
+        {
+        }"""
+        expect = """Undeclared Class: Person"""
+        self.assertTrue(TestChecker.test(input, expect, 412))
+
+    def test_14(self):
+        input = """
+        Class Base
+        {
+        }
+        Class Base1: Base
+        {
+        }
+        Class Base2: Base1
+        {
+        getArea(height, width : Float; type: Shape)
+        {}
+        }"""
+        expect = """Undeclared Class: Shape"""
+        self.assertTrue(TestChecker.test(input, expect, 413))
     #
     # def test_15(self):
     #     input = """"""

@@ -2,7 +2,8 @@
         Class Duong
         {
         }
-        Class Duong
+        Class Program
         {
+
         }
         

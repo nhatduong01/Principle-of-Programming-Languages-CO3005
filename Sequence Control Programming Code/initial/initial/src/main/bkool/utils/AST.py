@@ -60,6 +60,13 @@ class FloatType(Type):
     def accept(self, v, param):
         return v.visitFloatType(self, param)
 
+class BoolType(Type):
+    def __str__(self):
+        return "BoolType"
+
+    def accept(self, v, param):
+        return v.visitFloatType(self, param)
+
 class VoidType(Type):
     def __str__(self):
         return "VoidType"

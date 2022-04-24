@@ -364,6 +364,7 @@ class Emitter():
                 return self.jvm.emitFMUL()
         else:
             if type(in_) is IntType:
+                print("I am called heree in inttype")
                 return self.jvm.emitIDIV()
             else:
                 return self.jvm.emitFDIV()

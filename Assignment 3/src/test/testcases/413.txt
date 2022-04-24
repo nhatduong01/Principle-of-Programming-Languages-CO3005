@@ -1,0 +1,12 @@
+
+        Class Base
+        {
+        }
+        Class Base1: Base
+        {
+        }
+        Class Base2: Base1
+        {
+        getArea(height, width : Float; type: Shape)
+        {}
+        }

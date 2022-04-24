@@ -5,6 +5,11 @@
 .method public static main([Ljava/lang/String;)V
 .var 0 is args [Ljava/lang/String; from Label0 to Label1
 Label0:
+	bipush 6
+	iconst_3
+	idiv
+	i2f
+	invokestatic io/putFloat(F)V
 Label1:
 	return
 .limit stack 2

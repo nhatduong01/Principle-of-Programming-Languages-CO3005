@@ -14,9 +14,9 @@ GENERATE_DIR = 'main/d96/parser'
 
 def main():
     os.system('python run.py gen')
-    shutil.copy('../target/D96Parser.py','main/d96/astgen/D96Parser.py')
+    shutil.copy('../target/D96Parser.py', 'main/d96/astgen/D96Parser.py')
     shutil.copy('../target/D96Visitor.py', 'main/d96/astgen/D96Visitor.py')
-    shutil.copy('main/d96/utils/AST.py','main/d96/astgen/AST.py')
+    shutil.copy('main/d96/utils/AST.py', 'main/d96/astgen/AST.py')
     shutil.copy('main/d96/utils/AST.py', 'test/AST.py')
     shutil.copy('main/d96/utils/Visitor.py', 'main/d96/astgen/Visitor.py')
 
@@ -46,7 +46,6 @@ def test(suite):
     pprint(result.failures)
     stream.seek(0)
     print('Test output\n', stream.read())
-
 
 
 if __name__ == "__main__":
