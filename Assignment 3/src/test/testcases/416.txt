@@ -1,0 +1,19 @@
+
+        Class Base
+        {
+        }
+        Class Base1: Base
+        {
+        }
+        Class Base2: Base1
+        {
+        }
+        Class Program
+        {
+        main()
+        {
+        Var var1 : Base2;
+        Var var2: Base = var1;
+        Var var3: Base2 = var2;
+        }
+        }

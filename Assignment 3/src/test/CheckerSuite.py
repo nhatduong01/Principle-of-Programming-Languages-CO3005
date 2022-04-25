@@ -158,21 +158,57 @@ class CheckerSuite(unittest.TestCase):
         }"""
         expect = """Undeclared Class: Shape"""
         self.assertTrue(TestChecker.test(input, expect, 413))
-    #
-    # def test_15(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 414))
-    #
-    # def test_16(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 415))
-    #
-    # def test_17(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 416))
+
+    def test_15(self):
+        input = """
+        Class Student
+        {
+        Var $maxHeight : Float;
+        Var height: Float;
+        compareHeight(studentA, studentB : Student)
+        {
+        Var a: Float = 1.2;
+        Var a: Int = 2;
+        }
+        }"""
+        expect = """Redeclared Variable: a"""
+        self.assertTrue(TestChecker.test(input, expect, 414))
+
+    def test_16(self):
+        input = """Class Program
+        {
+        main()
+        {
+        Var a: Int = 1;
+        Var b: Float = a;
+        Val c: Float = a;
+        }
+        }"""
+        expect = """Illegal Constant Expression: Id(a)"""
+        self.assertTrue(TestChecker.test(input, expect, 415))
+
+    def test_17(self):
+        input = """
+        Class Base
+        {
+        }
+        Class Base1: Base
+        {
+        }
+        Class Base2: Base1
+        {
+        }
+        Class Program
+        {
+        main()
+        {
+        Var var1 : Base2;
+        Var var2: Base = var1;
+        Var var3: Base2 = var2;
+        }
+        }"""
+        expect = """Type Mismatch In Statement: VarDecl(Id(var3),ClassType(Id(Base2)),Id(var2))"""
+        self.assertTrue(TestChecker.test(input, expect, 416))
     #
     # def test_18(self):
     #     input = """"""

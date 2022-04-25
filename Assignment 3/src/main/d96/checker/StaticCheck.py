@@ -28,6 +28,7 @@ class StaticChecker(BaseVisitor, Utils):
 
     def __init__(self, ast):
         self.ast = ast
+        self.isInConsDecl = False
 
     def check(self):
         return self.visit(self.ast, StaticChecker.global_envi)
@@ -41,14 +42,20 @@ class StaticChecker(BaseVisitor, Utils):
             return self.checkSubClass(programContext, programContext[subClass]["parentClass"], parentClass)
 
     def checkAssignment(self, programContext, leftType, rightType):
-        if type(leftType) == type(rightType):
-            return True
-        elif type(leftType) == FloatType and type(rightType) == IntType:
-            return True
-        elif type(leftType) == ClassType and type(rightType) == ClassType:
+        if type(leftType) == type(rightType) and type(leftType) is ClassType:
             return self.checkSubClass(programContext, rightType.classname.name, leftType.classname.name)
+        elif type(leftType) is FloatType and type(rightType) is IntType:
+            return True
+        elif type(leftType) == type(rightType) and type(leftType) is not ClassType:
+            return True
         else:
             return False
+
+    def lookUpSymbol(self, varStack, symbols):
+        for i in range(len(varStack))[::-1]:
+            if varStack[i] == symbols:
+                return i
+        raise Undeclared(Variable(), symbols)
 
     def visitProgram(self, ast: Program, c):
         programContext = {}
@@ -89,7 +96,8 @@ class StaticChecker(BaseVisitor, Utils):
                     raise Redeclared(Parameter(), eachParam.variable.name)
                 else:
                     varStack.append(eachParam.variable.name)
-                    symbolStack.append((eachParam.variable.name, eachParam.varType, eachParam.varInit))
+                    # False because parameter is considered variable not constant
+                    symbolStack.append((eachParam.variable.name, eachParam.varType, eachParam.varInit, False))
                     self.visit(eachParam.varType, c)
             self.visit(ast.body, (c, symbolStack, varStack, scopeStack))
         else:
@@ -112,32 +120,76 @@ class StaticChecker(BaseVisitor, Utils):
                 raise Redeclared(Attribute(), ast.decl.constant.name)
 
     def visitVarDecl(self, ast: VarDecl, param):
-        programContext = param[0][-1]
-        className = param[1]
-        attributeObject = programContext[className][ast.variable.name]
-        if type(attributeObject.kind) is Static:
-            if attributeObject.decl.varInit is not None:
-                typeVarInit = self.visit(attributeObject.decl.varInit, param)
-                if not self.checkAssignment(programContext, ast.varType, typeVarInit):
-                    raise TypeMismatchInExpression(ast)
-        # TODO: If it is an instance variable but It has init value, what is
-        # the error then
+        if len(param) == 2:
+            # We are in a class
+            programContext = param[0][-1]
+            className = param[1]
+            attributeObject = programContext[className][ast.variable.name]
+            if type(attributeObject.kind) is Static:
+                if attributeObject.decl.varInit is not None:
+                    varType = self.visit(ast.varType, param)
+                    typeVarInit = self.visit(attributeObject.decl.varInit, param)
+                    if not self.checkAssignment(programContext, varType, typeVarInit):
+                        raise TypeMismatchInExpression(ast)
+            # TODO: If it is an instance variable but It has init value, what is
+            # the error then
+        elif len(param) == 4:
+            # We are in a method
+            programContext = param[0][0][-1]
+            className = param[0][1]
+            symbolStack = param[1]
+            varStack = param[2]
+            scopeStack = param[3]
+            if ast.variable.name in varStack[scopeStack[-1]:]:
+                raise Redeclared(Variable(), ast.variable.name)
+            if ast.varInit is not None and type(ast.varInit) is not NullLiteral:
+                varType = self.visit(ast.varType, param[0])
+                varInitType = self.visit(ast.varInit, param)
+                if not self.checkAssignment(programContext, varType, varInitType):
+                    raise TypeMismatchInStatement(ast)
+            varStack.append(ast.variable.name)
+            symbolStack.append((ast.variable.name, ast.varType, ast.varInit, False))
 
     def visitConstDecl(self, ast: ConstDecl, param):
-        """
-        I assume that:
-        1) If it does not have an init value => raise IllegalConstantExpression()
-        2) If the init value does not match the type => raise TypeMismatchInConstant()
-        TODO: I have not handle the case it is the combination of immutable attribute
-        """
-        programContext = param[0][-1]
-        typeValue = ast.value
-        if typeValue is None:
-            raise IllegalConstantExpression(None)
-        else:
-            typeValue = self.visit(ast.value, param)
-            if not self.checkAssignment(programContext, ast.constType, typeValue):
-                raise TypeMismatchInConstant(ast)
+        self.isInConsDecl = True
+        if len(param) == 2:
+            """
+            We are in a function, I assume that:
+            1) If it does not have an init value => raise IllegalConstantExpression()
+            2) If the init value does not match the type => raise TypeMismatchInConstant()
+            TODO: I have not handle the case it is the combination of immutable attribute
+            """
+            programContext = param[0][-1]
+            typeValue = ast.value
+            if typeValue is None:
+                raise IllegalConstantExpression(None)
+            else:
+                typeValue = self.visit(ast.value, param)
+                constType = self.visit(ast.constType, param)
+                if not self.checkAssignment(programContext, constType, typeValue):
+                    raise TypeMismatchInConstant(ast)
+        elif len(param) == 4:
+            """
+            We are in a method,
+            TODO: I have not handle the case it is the combination of immutable attribute
+            """
+            programContext = param[0][0][-1]
+            className = param[0][1]
+            symbolStack = param[1]
+            varStack = param[2]
+            scopeStack = param[3]
+            if ast.constant.name in varStack[scopeStack[-1]:]:
+                raise Redeclared(Constant(), ast.constant.name)
+            elif ast.value is None:
+                raise IllegalConstantExpression(None)
+            else:
+                constType = self.visit(ast.constType, param[0])
+                valueType = self.visit(ast.value, param)
+                if not self.checkAssignment(programContext, constType, valueType):
+                    raise TypeMismatchInConstant(ast)
+            varStack.append(ast.constant.name)
+            symbolStack.append((ast.constant.name, ast.constType, ast.value, True))
+        self.isInConsDecl = False
 
     def visitBlock(self, ast: Block, param):
         [self.visit(x, param) for x in ast.inst]
@@ -154,12 +206,29 @@ class StaticChecker(BaseVisitor, Utils):
     def visitFloatLiteral(self, ast: FloatLiteral, param):
         return FloatType()
 
+    def visitNullLiteral(self, ast: NullLiteral, param):
+        return None
+
     def visitClassType(self, ast: ClassType, param):
         programContext = param[0][-1]
         if programContext.get(ast.classname.name) is None:
             raise Undeclared(Class(), ast.classname.name)
+        return ast
 
     def visitFloatType(self, ast: FloatType, param):
         return FloatType()
 
+    def visitIntType(self, ast: IntType, param):
+        return IntType()
 
+    def visitStringType(self, ast: StringType, param):
+        return StringType()
+    
+    def visitId(self, ast: Id, param):
+        symbolStack = param[1]
+        varStack = param[2]
+        symbolIdx = self.lookUpSymbol(varStack, ast.name)
+        if self.isInConsDecl:
+            if not symbolStack[symbolIdx][3]:
+                raise IllegalConstantExpression(ast)
+        return symbolStack[symbolIdx][1]

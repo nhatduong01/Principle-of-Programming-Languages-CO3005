@@ -1,5 +1,5 @@
 
-        Class Student 
+        Class Student
         {
         Var $maxHeight : Int = 189.5;
         }

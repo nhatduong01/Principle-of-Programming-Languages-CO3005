@@ -1,0 +1,11 @@
+
+        Class Student
+        {
+        Var $maxHeight : Float;
+        Var height: Float;
+        compareHeight(studentA, studentB : Student)
+        {
+        Var a: Float = 1.2;
+        Var a: Int = 2;
+        }
+        }

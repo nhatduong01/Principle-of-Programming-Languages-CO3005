@@ -1,0 +1,9 @@
+Class Program
+        {
+        main()
+        {
+        Var a: Int = 1;
+        Var b: Float = a;
+        Val c: Float = a;
+        }
+        }
