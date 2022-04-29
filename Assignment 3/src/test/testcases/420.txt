@@ -1,0 +1,7 @@
+
+        Class Student
+        {
+            Var $maxHeight: Float = -1 + 80.0;
+            Val $isTall: Boolean = ! True;
+            Val $isShort: Int = 1 + False;
+        }

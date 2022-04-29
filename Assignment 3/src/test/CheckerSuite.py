@@ -14,7 +14,7 @@ class CheckerSuite(unittest.TestCase):
         expect = """No Entry Point"""
         self.assertTrue(TestChecker.test(input, expect, 400))
 
-    def test_2 (self):
+    def test_2(self):
         input = """
         Class Duong
         {
@@ -209,27 +209,70 @@ class CheckerSuite(unittest.TestCase):
         }"""
         expect = """Type Mismatch In Statement: VarDecl(Id(var3),ClassType(Id(Base2)),Id(var2))"""
         self.assertTrue(TestChecker.test(input, expect, 416))
-    #
-    # def test_18(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 417))
-    #
-    # def test_19(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 418))
-    #
-    # def test_20(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 419))
-    #
-    # def test_21(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 420))
-    #
+
+    def test_18(self):
+        input = """
+        Class Student
+        {
+        foo(a, b : Int ; c: String)
+        {
+        Var temp: Int;
+        {
+        Var temp: Int;
+        Var goo: Float;
+        Var goo: Int;
+        }
+        }
+        }
+        """
+        expect = """Redeclared Variable: goo"""
+        self.assertTrue(TestChecker.test(input, expect, 417))
+
+    def test_19(self):
+        input = """
+        Class Student
+        {
+            main()
+            {
+                Var a: Int;
+                {
+                    Var a : Int;
+                    {
+                        Var a: Int;
+                        Var b: Int;
+                    }
+                    Var b: Int;
+                }
+            }
+        }"""
+        expect = """No Entry Point"""
+        self.assertTrue(TestChecker.test(input, expect, 418))
+
+    def test_20(self):
+        input = """
+        Class Program
+        {
+            main()
+            {
+                Var a: Float = 1 + 2;
+                Var b: Float = a + 5;
+                Var c: Boolean = a + True;
+            }
+        }"""
+        expect = """Type Mismatch In Expression: BinaryOp(+,Id(a),BooleanLit(True))"""
+        self.assertTrue(TestChecker.test(input, expect, 419))
+
+    def test_21(self):
+        input = """
+        Class Student
+        {
+            Var $maxHeight: Float = -1 + 80.0;
+            Val $isTall: Boolean = ! True;
+            Val $isShort: Int = 1 + False;
+        }"""
+        expect = """Type Mismatch In Expression: BinaryOp(+,IntLit(1),BooleanLit(False))"""
+        self.assertTrue(TestChecker.test(input, expect, 420))
+
     # def test_22(self):
     #     input = """"""
     #     expect = """"""

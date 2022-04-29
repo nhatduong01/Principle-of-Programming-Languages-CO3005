@@ -1,0 +1,14 @@
+
+        Class Student
+        {
+        foo(a, b : Int ; c: String)
+        {
+        Var temp: Int;
+        {
+        Var temp: Int;
+        Var goo: Float;
+        Var goo: Int;
+        }
+        }
+        }
+        

@@ -1,0 +1,10 @@
+
+        Class Program
+        {
+            main()
+            {
+                Var a: Float = 1 + 2;
+                Var b: Float = a + 5;
+                Var c: Boolean = a + True;
+            }
+        }

@@ -65,9 +65,6 @@ class StaticChecker(BaseVisitor, Utils):
             raise NoEntryPoint()
         if programContext["Program"].get("main") is None:
             raise NoEntryPoint()
-        elif type(programContext["Program"]["main"].kind) != Static or len(
-                programContext["Program"]["main"].param) != 0:
-            raise NoEntryPoint()
         return ''
 
     def visitClassDecl(self, ast: ClassDecl, c):
@@ -78,16 +75,21 @@ class StaticChecker(BaseVisitor, Utils):
                 raise Undeclared(Class(), ast.parentname.name)
             programContext[ast.classname.name][
                 "parentClass"] = ast.parentname.name if ast.parentname is not None else ast.parentname
-            [self.visit(x, (c, ast.classname.name)) for x in ast.memlist]
+                # None passed to c is the name of the method
+            [self.visit(x, [c, ast.classname.name, None]) for x in ast.memlist]
         else:
             raise Redeclared(Class(), ast.classname.name)
 
-    def visitMethodDecl(self, ast, c):
+    def visitMethodDecl(self, ast : MethodDecl, c):
         programContext = c[0][-1]
+        methodName = c[2] = ast.name.name # Assign name 
         className = c[1]
+        if className == "Program" and methodName == "main":
+            if len(ast.param) != 0:
+                raise NoEntryPoint()
         if programContext[className].get(ast.name.name) is None:
             # TODO: Here we consider if the method and attribute has the same name, we must raise it too
-            programContext[className][ast.name.name] = ast
+            programContext[className][ast.name.name] = [ast, NullLiteral()]
             symbolStack = []
             scopeStack = [0]
             varStack = []
@@ -97,9 +99,10 @@ class StaticChecker(BaseVisitor, Utils):
                 else:
                     varStack.append(eachParam.variable.name)
                     # False because parameter is considered variable not constant
-                    symbolStack.append((eachParam.variable.name, eachParam.varType, eachParam.varInit, False))
+                    symbolStack.append([eachParam.variable.name, eachParam.varType, eachParam.varInit, False])
                     self.visit(eachParam.varType, c)
-            self.visit(ast.body, (c, symbolStack, varStack, scopeStack))
+            self.visit(ast.body, [c, symbolStack, varStack, scopeStack, True])
+            c[2] = None
         else:
             raise Redeclared(Method(), ast.name.name)
 
@@ -120,7 +123,7 @@ class StaticChecker(BaseVisitor, Utils):
                 raise Redeclared(Attribute(), ast.decl.constant.name)
 
     def visitVarDecl(self, ast: VarDecl, param):
-        if len(param) == 2:
+        if len(param) == 3:
             # We are in a class
             programContext = param[0][-1]
             className = param[1]
@@ -133,7 +136,7 @@ class StaticChecker(BaseVisitor, Utils):
                         raise TypeMismatchInExpression(ast)
             # TODO: If it is an instance variable but It has init value, what is
             # the error then
-        elif len(param) == 4:
+        elif len(param) == 5:
             # We are in a method
             programContext = param[0][0][-1]
             className = param[0][1]
@@ -152,9 +155,9 @@ class StaticChecker(BaseVisitor, Utils):
 
     def visitConstDecl(self, ast: ConstDecl, param):
         self.isInConsDecl = True
-        if len(param) == 2:
+        if len(param) == 3:
             """
-            We are in a function, I assume that:
+            We are in a class, I assume that:
             1) If it does not have an init value => raise IllegalConstantExpression()
             2) If the init value does not match the type => raise TypeMismatchInConstant()
             TODO: I have not handle the case it is the combination of immutable attribute
@@ -168,7 +171,7 @@ class StaticChecker(BaseVisitor, Utils):
                 constType = self.visit(ast.constType, param)
                 if not self.checkAssignment(programContext, constType, typeValue):
                     raise TypeMismatchInConstant(ast)
-        elif len(param) == 4:
+        elif len(param) == 5:
             """
             We are in a method,
             TODO: I have not handle the case it is the combination of immutable attribute
@@ -192,13 +195,70 @@ class StaticChecker(BaseVisitor, Utils):
         self.isInConsDecl = False
 
     def visitBlock(self, ast: Block, param):
-        [self.visit(x, param) for x in ast.inst]
-
-    def visitBinaryOp(self, ast: BinaryOp, param):
-        programContext = param[0][-1]
-        symbolStack = param[1]
         varStack = param[2]
         scopeStack = param[3]
+        symbolStack = param[1]
+        isCalledFromMethod = param[4]
+        if not isCalledFromMethod:
+            scopeStack.append(len(varStack))
+            [self.visit(x, param) for x in ast.inst]
+            param[2] = varStack[: scopeStack[-1]]
+            param[1] = symbolStack[: scopeStack[-1]]
+            scopeStack.pop()
+        else:
+            param.pop()
+            param.append(False)
+            [self.visit(x, param) for x in ast.inst]
+
+    """
+    Expression
+    """
+    def visitBinaryOp(self, ast: BinaryOp, param):
+        typeE1 = self.visit(ast.left, param)
+        typeE2 = self.visit(ast.right, param)
+        myOp = ast.op
+        if type(typeE1) is StringType and type(typeE2) is StringType:
+            if myOp in ['+.', '==.']:
+                return StringType()
+            else:
+                raise TypeMismatchInExpression(ast)
+        elif type(typeE1) is BoolType and type(typeE2) is BoolType:
+            if myOp in ['&&', '||', '==', '!=']:
+                return BoolType()
+            else:
+                raise TypeMismatchInExpression(ast)
+        elif type(typeE1) is IntType and type(typeE2) is IntType:
+            if myOp in ['+', '-', '*', '/', '%']:
+                return IntType()
+            elif myOp in ['==', '!=', '>', '>=', '<', '<=']:
+                return BoolType()
+            else:
+                raise TypeMismatchInExpression(ast)
+        elif ((type(typeE1) is FloatType and type(typeE2) is FloatType)
+              or (type(typeE1) is FloatType and type(typeE2) is IntType) or
+              (type(typeE1) is IntType and type(typeE2) is FloatType)):
+            if myOp in ['+', '-', '*', '/']:
+                return FloatType()
+            elif myOp in ['>', '>=', '<', '<=']:
+                return BoolType()
+            else:
+                raise TypeMismatchInExpression(ast)
+        else:
+            raise TypeMismatchInExpression(ast)
+    
+    def visitUnaryOp(self, ast: UnaryOp, param):
+        typeBody = self.visit(ast.body, param)
+        myOp = ast.op
+        if myOp == '!':
+            if type(typeBody) is BoolType:
+                return BoolType()
+            else:
+                raise TypeMismatchInExpression(ast)
+        elif myOp == '-':
+            if type(typeBody) is FloatType or type(typeBody) is IntType:
+                return typeBody
+            else:
+                raise TypeMismatchInExpression(ast)
 
     def visitIntLiteral(self, ast: IntLiteral, param):
         return IntType()
@@ -208,6 +268,9 @@ class StaticChecker(BaseVisitor, Utils):
 
     def visitNullLiteral(self, ast: NullLiteral, param):
         return None
+
+    def visitBooleanLiteral(self, ast: BooleanLiteral, param):
+        return BoolType()
 
     def visitClassType(self, ast: ClassType, param):
         programContext = param[0][-1]
@@ -223,7 +286,10 @@ class StaticChecker(BaseVisitor, Utils):
 
     def visitStringType(self, ast: StringType, param):
         return StringType()
-    
+
+    def visitBoolType(self, ast: BoolType, param):
+        return BoolType()
+
     def visitId(self, ast: Id, param):
         symbolStack = param[1]
         varStack = param[2]
@@ -232,3 +298,19 @@ class StaticChecker(BaseVisitor, Utils):
             if not symbolStack[symbolIdx][3]:
                 raise IllegalConstantExpression(ast)
         return symbolStack[symbolIdx][1]
+    
+    def visitCallExpr(self, ast: CallExpr, param):
+        pass
+    """
+    Statement
+    """
+
+    def visitReturn(self, ast: Return, param):
+        returnedType = self.visit(ast.expr, param)
+        programContext = param[0][0][-1]
+        className = param[0][1]
+        methodName = param[0][2]
+        if className == "Program" and methodName == "main" and ast.expr is not None:
+            raise NoEntryPoint
+        programContext[className][methodName][1] = returnedType
+
