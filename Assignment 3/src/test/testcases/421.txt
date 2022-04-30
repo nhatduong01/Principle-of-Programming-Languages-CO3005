@@ -1,0 +1,8 @@
+
+        Class Student
+        {
+            getScore()
+            {
+                Val a: Int = (1 + 2).getScore();
+            }
+        }

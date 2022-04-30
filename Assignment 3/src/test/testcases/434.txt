@@ -1,0 +1,22 @@
+
+        Class Base
+        {
+
+        }
+        Class Derived: Base
+        {
+            foo(myBase: Base ; a: Int)
+            {
+                Return a + 1;
+            }
+        }
+        Class Program
+        {
+            main()
+            {
+                Var myInt: Int = 5;
+                Var derivedClass : Derived ;
+                derivedClass.foo(derivedClass, myInt);
+            }
+        }
+        

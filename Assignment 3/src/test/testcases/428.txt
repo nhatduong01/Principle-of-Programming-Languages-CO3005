@@ -1,0 +1,13 @@
+
+        Class Flower
+        {
+            Var height: Float;
+            getHeight()
+            {
+                Return 10.2;
+            }
+            getPrice()
+            {
+                Return True * Self.getHeight();
+            }
+        }

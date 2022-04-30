@@ -1,0 +1,12 @@
+
+        Class Program
+        {
+            foo()
+            {
+
+            }
+            main()
+            {
+                Self.goo();
+            }
+        }

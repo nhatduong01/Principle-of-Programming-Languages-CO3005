@@ -1,0 +1,1 @@
+Type Mismatch In Expression: BinaryOp(*,BooleanLit(True),CallExpr(Self(),Id(getHeight),[]))

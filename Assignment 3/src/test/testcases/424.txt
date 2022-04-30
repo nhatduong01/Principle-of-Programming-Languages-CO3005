@@ -1,0 +1,12 @@
+
+        Class Person
+        {
+            Var name: String;
+        }
+        Class Student : Person
+        {
+            getName()
+            {
+                Return Person::$getName();
+            }
+        }

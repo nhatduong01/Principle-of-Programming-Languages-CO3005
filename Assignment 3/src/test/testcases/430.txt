@@ -1,0 +1,12 @@
+
+        Class Program
+        {
+            getArea(a, b: Float)
+            {
+                Return a*b;
+            }
+            main()
+            {
+                Val myArea: Float = Self.getArea();
+            }
+        }

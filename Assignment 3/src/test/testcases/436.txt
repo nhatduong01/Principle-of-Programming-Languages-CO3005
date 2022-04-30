@@ -1,0 +1,25 @@
+
+        Class Base
+        {
+            foo (a, b: String)
+            {
+                Return a ==. b;
+            }
+        }
+        Class Derived1 : Base
+        {
+
+        }
+        Class Derived2: Derived1
+        {
+
+        }
+        Class Program
+        {
+            main()
+            {
+                Var a: Derived2;
+                Var b: Boolean =  a.foo("Hello", "World");
+                Return b;
+            }
+        }

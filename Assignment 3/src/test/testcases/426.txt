@@ -1,0 +1,26 @@
+
+        Class Flower
+        {
+            Var name: String;
+            getName()
+            {
+                Return "String";
+            }
+        }
+        Class Children
+        {
+            growFlower()
+            {
+                Var newFlower : Flower;
+                Return newFlower;
+            }
+        }
+        Class Program
+        {
+            main()
+            {
+                Var oneChild: Children;
+                Var newFlower : Int = oneChild.growFlower().getName();
+            }
+        }
+        

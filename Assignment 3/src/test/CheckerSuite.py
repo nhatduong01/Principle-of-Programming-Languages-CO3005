@@ -273,90 +273,344 @@ class CheckerSuite(unittest.TestCase):
         expect = """Type Mismatch In Expression: BinaryOp(+,IntLit(1),BooleanLit(False))"""
         self.assertTrue(TestChecker.test(input, expect, 420))
 
-    # def test_22(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 421))
-    #
-    # def test_23(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 422))
-    #
-    # def test_24(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 423))
-    #
-    # def test_25(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 424))
-    #
-    # def test_26(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 425))
-    #
-    # def test_27(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 426))
-    #
-    # def test_28(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 427))
-    #
-    # def test_29(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 428))
-    #
-    # def test_30(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 429))
-    #
-    # def test_31(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 430))
-    #
-    # def test_32(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 431))
-    #
-    # def test_33(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 432))
-    #
-    # def test_34(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 433))
-    #
-    # def test_35(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 434))
-    #
-    # def test_36(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 435))
-    #
-    # def test_37(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 436))
-    #
-    # def test_38(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 437))
+    def test_22(self):
+        input = """
+        Class Student
+        {
+            getScore()
+            {
+                Val a: Int = (1 + 2).getScore();
+            }
+        }"""
+        expect = """Type Mismatch In Expression: CallExpr(BinaryOp(+,IntLit(1),IntLit(2)),Id(getScore),[])"""
+        self.assertTrue(TestChecker.test(input, expect, 421))
+
+    def test_23(self):
+        input = """
+        Class Flower
+        {
+            water()
+            {
+                Var isWatered: Boolean = Person::$waterFlower();
+            }
+        }"""
+        expect = """Undeclared Class: Person"""
+        self.assertTrue(TestChecker.test(input, expect, 422))
+
+    def test_24(self):
+        input = """
+        Class Person
+        {
+            Var name: String;
+        }
+        Class Dog
+        {
+            goOut(myPerson: String)
+            {
+                Val owner: String = myPerson.getName();
+            }
+        }"""
+        expect = """Type Mismatch In Expression: CallExpr(Id(myPerson),Id(getName),[])"""
+        self.assertTrue(TestChecker.test(input, expect, 423))
+
+    def test_25(self):
+        input = """
+        Class Person
+        {
+            Var name: String;
+        }
+        Class Student : Person
+        {
+            getName()
+            {
+                Return Person::$getName();
+            }
+        }"""
+        expect = """Undeclared Method: $getName"""
+        self.assertTrue(TestChecker.test(input, expect, 424))
+
+    def test_26(self):
+        input = """
+        Class Person
+        {
+            Var name: String;
+        }
+        Class Dog
+        {
+            goOut(myPerson: Person)
+            {
+                Val owner: String = myPerson.getName();
+            }
+        }"""
+        expect = """Undeclared Method: getName"""
+        self.assertTrue(TestChecker.test(input, expect, 425))
+
+    def test_27(self):
+        input = """
+        Class Flower
+        {
+            Var name: String;
+            getName()
+            {
+                Return "String";
+            }
+        }
+        Class Children
+        {
+            growFlower()
+            {
+                Var newFlower : Flower;
+                Return newFlower;
+            }
+        }
+        Class Program
+        {
+            main()
+            {
+                Var oneChild: Children;
+                Var newFlower : Int = oneChild.growFlower().getName();
+            }
+        }
+        """
+        expect = """Type Mismatch In Statement: VarDecl(Id(newFlower),IntType,CallExpr(CallExpr(Id(oneChild),Id(growFlower),[]),Id(getName),[]))"""
+        self.assertTrue(TestChecker.test(input, expect, 426))
+
+    def test_28(self):
+        input = """
+        Class Flower
+        {
+            Var height: Float;
+            getHeight()
+            {
+                Return 10.2;
+            }
+            getPrice()
+            {
+                Return 10.2 * Self.getHeight();
+            }
+        }
+        Class Program
+        {
+            main()
+            {
+                Var myFlower: Flower;
+                Var myHeight: Int = myFlower.getPrice();
+            }
+        }"""
+        expect = """Type Mismatch In Statement: VarDecl(Id(myHeight),IntType,CallExpr(Id(myFlower),Id(getPrice),[]))"""
+        self.assertTrue(TestChecker.test(input, expect, 427))
+
+    def test_29(self):
+        input = """
+        Class Flower
+        {
+            Var height: Float;
+            getHeight()
+            {
+                Return 10.2;
+            }
+            getPrice()
+            {
+                Return True * Self.getHeight();
+            }
+        }"""
+        expect = """Type Mismatch In Expression: BinaryOp(*,BooleanLit(True),CallExpr(Self(),Id(getHeight),[]))"""
+        self.assertTrue(TestChecker.test(input, expect, 428))
+    
+    def test_30(self):
+        input = """
+        Class Bird
+        {
+            Var name: String;
+            Var age: Int;
+            foo()
+            {
+
+            }
+            goo()
+            {
+                Var a: Int = Self.foo();
+            }
+        }"""
+        expect = """Type Mismatch In Expression: CallExpr(Self(),Id(foo),[])"""
+        self.assertTrue(TestChecker.test(input, expect, 429))
+
+    def test_31(self):
+        input = """
+        Class Program
+        {
+            getArea(a, b: Float)
+            {
+                Return a*b;
+            }
+            main()
+            {
+                Val myArea: Float = Self.getArea();
+            }
+        }"""
+        expect = """Type Mismatch In Expression: CallExpr(Self(),Id(getArea),[])"""
+        self.assertTrue(TestChecker.test(input, expect, 430))
+    
+    def test_32(self):
+        input = """
+        Class Program
+        {
+            getArea(a, b: Float)
+            {
+                Return a*b;
+            }
+            main()
+            {
+                Var height: Int = 5;
+                Var width: Int = 6;
+                Var myArea: Float = Self.getArea(height, width);
+                Return myArea;
+            }
+        }"""
+        expect = """No Entry Point"""
+        self.assertTrue(TestChecker.test(input, expect, 431))
+
+    def test_33(self):
+        input = """
+        Class Program
+        {
+            getArea(a, b: Float)
+            {
+                Return a*b;
+            }
+            main()
+            {
+                Var height: Int = 5;
+                Var width: Boolean = True;
+                Var myArea: Float = Self.getArea(height, width);
+                Return myArea;
+            }
+        }"""
+        expect = """Type Mismatch In Expression: CallExpr(Self(),Id(getArea),[Id(height),Id(width)])"""
+        self.assertTrue(TestChecker.test(input, expect, 432))
+
+    def test_34(self):
+        input = """
+        Class Program
+        {
+            foo()
+            {
+
+            }
+            main()
+            {
+                Self.goo();
+            }
+        }"""
+        expect = """Undeclared Method: goo"""
+        self.assertTrue(TestChecker.test(input, expect, 433))
+
+    def test_35(self):
+        input = """
+        Class Base
+        {
+
+        }
+        Class Derived: Base
+        {
+            foo(myBase: Base ; a: Int)
+            {
+                Return a + 1;
+            }
+        }
+        Class Program
+        {
+            main()
+            {
+                Var myInt: Int = 5;
+                Var derivedClass : Derived ;
+                derivedClass.foo(derivedClass, myInt);
+            }
+        }
+        """
+        expect = """Type Mismatch In Statement: Call(Id(derivedClass),Id(foo),[Id(derivedClass),Id(myInt)])"""
+        self.assertTrue(TestChecker.test(input, expect, 434))
+    
+    def test_36(self):
+        input = """
+        Class Base
+        {
+            foo(a, b: Float)
+            {
+                Return a >= b;
+            }
+        }
+        Class Derived: Base
+        {
+
+        }
+        Class Program
+        {
+            main()
+            {
+                Var myClass: Derived;
+                Var a: Int = myClass.foo(4,5);
+            }
+        }"""
+        expect = """Type Mismatch In Statement: VarDecl(Id(a),IntType,CallExpr(Id(myClass),Id(foo),[IntLit(4),IntLit(5)]))"""
+        self.assertTrue(TestChecker.test(input, expect, 435))
+    
+    def test_37(self):
+        input = """
+        Class Base
+        {
+            foo (a, b: String)
+            {
+                Return a ==. b;
+            }
+        }
+        Class Derived1 : Base
+        {
+
+        }
+        Class Derived2: Derived1
+        {
+
+        }
+        Class Program
+        {
+            main()
+            {
+                Var a: Derived2;
+                Var b: Boolean =  a.foo("Hello", "World");
+                Return b;
+            }
+        }"""
+        expect = """No Entry Point"""
+        self.assertTrue(TestChecker.test(input, expect, 436))
+    
+    def test_38(self):
+        input = """
+        Class Base
+        {
+            hello()
+            {
+                Var a: Int = 6;
+                {
+                    Var a: Int = 7;
+                }
+                Return a;
+            }
+        }
+        Class Person : Base
+        {
+            
+        }
+        Class Program
+        {
+            main()
+            {
+                Var myClass: Person;
+                myClass.hello();
+            }
+        }"""
+        expect = """Type Mismatch In Statement: Call(Id(myClass),Id(hello),[])"""
+        self.assertTrue(TestChecker.test(input, expect, 437))
     #
     # def test_39(self):
     #     input = """"""

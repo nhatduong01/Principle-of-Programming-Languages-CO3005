@@ -75,21 +75,21 @@ class StaticChecker(BaseVisitor, Utils):
                 raise Undeclared(Class(), ast.parentname.name)
             programContext[ast.classname.name][
                 "parentClass"] = ast.parentname.name if ast.parentname is not None else ast.parentname
-                # None passed to c is the name of the method
+            # None passed to c is the name of the method
             [self.visit(x, [c, ast.classname.name, None]) for x in ast.memlist]
         else:
             raise Redeclared(Class(), ast.classname.name)
 
-    def visitMethodDecl(self, ast : MethodDecl, c):
+    def visitMethodDecl(self, ast: MethodDecl, c):
         programContext = c[0][-1]
-        methodName = c[2] = ast.name.name # Assign name 
+        methodName = c[2] = ast.name.name  # Assign name
         className = c[1]
         if className == "Program" and methodName == "main":
             if len(ast.param) != 0:
                 raise NoEntryPoint()
         if programContext[className].get(ast.name.name) is None:
             # TODO: Here we consider if the method and attribute has the same name, we must raise it too
-            programContext[className][ast.name.name] = [ast, NullLiteral()]
+            programContext[className][ast.name.name] = [ast, None]  # None is the return type of the method
             symbolStack = []
             scopeStack = [0]
             varStack = []
@@ -213,13 +213,16 @@ class StaticChecker(BaseVisitor, Utils):
     """
     Expression
     """
+
     def visitBinaryOp(self, ast: BinaryOp, param):
         typeE1 = self.visit(ast.left, param)
         typeE2 = self.visit(ast.right, param)
         myOp = ast.op
         if type(typeE1) is StringType and type(typeE2) is StringType:
-            if myOp in ['+.', '==.']:
+            if myOp  == '+.':
                 return StringType()
+            elif myOp == '==.':
+                return BoolType()
             else:
                 raise TypeMismatchInExpression(ast)
         elif type(typeE1) is BoolType and type(typeE2) is BoolType:
@@ -245,7 +248,7 @@ class StaticChecker(BaseVisitor, Utils):
                 raise TypeMismatchInExpression(ast)
         else:
             raise TypeMismatchInExpression(ast)
-    
+
     def visitUnaryOp(self, ast: UnaryOp, param):
         typeBody = self.visit(ast.body, param)
         myOp = ast.op
@@ -271,6 +274,12 @@ class StaticChecker(BaseVisitor, Utils):
 
     def visitBooleanLiteral(self, ast: BooleanLiteral, param):
         return BoolType()
+
+    def visitSelfLiteral(self, ast: SelfLiteral, param):
+        return SelfLiteral()
+
+    def visitStringLiteral(self, ast: StringLiteral, paran):
+        return StringType()
 
     def visitClassType(self, ast: ClassType, param):
         programContext = param[0][-1]
@@ -298,12 +307,121 @@ class StaticChecker(BaseVisitor, Utils):
             if not symbolStack[symbolIdx][3]:
                 raise IllegalConstantExpression(ast)
         return symbolStack[symbolIdx][1]
-    
+
     def visitCallExpr(self, ast: CallExpr, param):
-        pass
+        varStack = param[2]
+        scopeStack = param[3]
+        symbolStack = param[1]
+        programContext = param[0][0][-1]
+        className = param[0][1]
+        methodName = ast.method.name
+        objName = ast.obj
+        # TODO: I just handle the situation where the exp is ID only
+        if methodName[0] == '$':
+            if type(objName) is not Id:
+                raise TypeMismatchInExpression(ast)
+            if programContext.get(objName.name) is None:
+                raise Undeclared(Class(), objName.name)
+            elif programContext[objName.name].get(methodName) is None:
+                raise Undeclared(Method(), methodName)
+            else:
+                methodInfo = programContext[objName.name][methodName]
+        else:
+            if type(objName) is Id:
+                symbolIdx = self.lookUpSymbol(varStack, objName.name)
+                objType = symbolStack[symbolIdx][1]
+                if type(objType) is not ClassType:
+                    raise TypeMismatchInExpression(ast)
+                objClass = objType.classname.name
+            else:
+                objName = self.visit(ast.obj, param)
+                if type(objName) is SelfLiteral:
+                    objClass = className
+                elif type(objName) is not ClassType:
+                    raise TypeMismatchInExpression(ast)
+                else:
+                    objClass = objName.classname.name
+            while True:
+                if programContext[objClass].get(methodName) is not None:
+                    methodInfo = programContext[objClass][methodName]
+                    break
+                else:
+                    if programContext[objClass]["parentClass"] is None:
+                        raise Undeclared(Method(), methodName)
+                    else:
+                        objClass = programContext[objClass]["parentClass"]
+
+        if methodInfo[1] is None:
+            raise TypeMismatchInExpression(ast)
+        passedParam = ast.param
+        methodParams = methodInfo[0].param
+        if len(passedParam) != len(methodParams):
+            raise TypeMismatchInExpression(ast)
+        for leftSide, rightSide in zip(methodParams, passedParam):
+            leftType = self.visit(leftSide.varType, param)
+            rightType = self.visit(rightSide, param)
+            if not self.checkAssignment(programContext, leftType, rightType):
+                raise TypeMismatchInExpression(ast)
+        return methodInfo[1]
+
     """
     Statement
     """
+
+    def visitCallStmt(self, ast: CallStmt, param):
+        varStack = param[2]
+        scopeStack = param[3]
+        symbolStack = param[1]
+        programContext = param[0][0][-1]
+        className = param[0][1]
+        methodName = ast.method.name
+        objName = ast.obj
+        # TODO: I just handle the situation where the exp is ID only
+        if methodName[0] == '$':
+            if type(objName) is not Id:
+                raise TypeMismatchInStatement(ast)
+            if programContext.get(objName.name) is None:
+                raise Undeclared(Class(), objName.name)
+            elif programContext[objName.name].get(methodName) is None:
+                raise Undeclared(Method(), methodName)
+            else:
+                methodInfo = programContext[objName.name][methodName]
+        else:
+            if type(objName) is Id:
+                symbolIdx = self.lookUpSymbol(varStack, objName.name)
+                objType = symbolStack[symbolIdx][1]
+                if type(objType) is not ClassType:
+                    raise TypeMismatchInStatement(ast)
+                objClass = objType.classname.name
+            else:
+                objName = self.visit(ast.obj, param)
+                if type(objName) is SelfLiteral:
+                    objClass = className
+                elif type(objName) is not ClassType:
+                    raise TypeMismatchInStatement(ast)
+                else:
+                    objClass = objName.classname.name
+            while True:
+                if programContext[objClass].get(methodName) is not None:
+                    methodInfo = programContext[objClass][methodName]
+                    break
+                else:
+                    if programContext[objClass]["parentClass"] is None:
+                        raise Undeclared(Method(), methodName)
+                    else:
+                        objClass = programContext[objClass]["parentClass"]
+
+        if methodInfo[1] is not None:
+            raise TypeMismatchInStatement(ast)
+        passedParam = ast.param
+        methodParams = methodInfo[0].param
+        if len(passedParam) != len(methodParams):
+            raise TypeMismatchInStatement(ast)
+        for leftSide, rightSide in zip(methodParams, passedParam):
+            leftType = self.visit(leftSide.varType, param)
+            rightType = self.visit(rightSide, param)
+            if not self.checkAssignment(programContext, leftType, rightType):
+                raise TypeMismatchInStatement(ast)
 
     def visitReturn(self, ast: Return, param):
         returnedType = self.visit(ast.expr, param)
@@ -313,4 +431,3 @@ class StaticChecker(BaseVisitor, Utils):
         if className == "Program" and methodName == "main" and ast.expr is not None:
             raise NoEntryPoint
         programContext[className][methodName][1] = returnedType
-

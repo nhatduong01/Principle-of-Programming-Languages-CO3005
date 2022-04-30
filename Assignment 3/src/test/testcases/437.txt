@@ -1,0 +1,24 @@
+
+        Class Base
+        {
+            hello()
+            {
+                Var a: Int = 6;
+                {
+                    Var a: Int = 7;
+                }
+                Return a;
+            }
+        }
+        Class Person : Base
+        {
+            
+        }
+        Class Program
+        {
+            main()
+            {
+                Var myClass: Person;
+                myClass.hello();
+            }
+        }

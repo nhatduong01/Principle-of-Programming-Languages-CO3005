@@ -1,0 +1,8 @@
+
+        Class Flower
+        {
+            water()
+            {
+                Var isWatered: Boolean = Person::$waterFlower();
+            }
+        }

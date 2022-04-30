@@ -1,0 +1,14 @@
+
+        Class Bird
+        {
+            Var name: String;
+            Var age: Int;
+            foo()
+            {
+
+            }
+            goo()
+            {
+                Var a: Int = Self.foo();
+            }
+        }

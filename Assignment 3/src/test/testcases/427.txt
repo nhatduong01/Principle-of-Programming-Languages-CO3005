@@ -1,0 +1,21 @@
+
+        Class Flower
+        {
+            Var height: Float;
+            getHeight()
+            {
+                Return 10.2;
+            }
+            getPrice()
+            {
+                Return 10.2 * Self.getHeight();
+            }
+        }
+        Class Program
+        {
+            main()
+            {
+                Var myFlower: Flower;
+                Var myHeight: Int = myFlower.getPrice();
+            }
+        }
