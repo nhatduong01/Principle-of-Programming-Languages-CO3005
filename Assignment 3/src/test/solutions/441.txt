@@ -1,0 +1,1 @@
+Type Mismatch In Constant Declaration: ConstDecl(Id(Bird),ArrayType(5,StringType),IntLit(5))

@@ -1,0 +1,6 @@
+
+        Class Program
+        {
+            Val myArray: Array[Int, 5] = Array(1,2,3,4,5);
+            Var $myArray2: Array[Boolean, 2] = Array(True, False);
+        }

@@ -131,9 +131,15 @@ class StaticChecker(BaseVisitor, Utils):
             if type(attributeObject.kind) is Static:
                 if attributeObject.decl.varInit is not None:
                     varType = self.visit(ast.varType, param)
-                    typeVarInit = self.visit(attributeObject.decl.varInit, param)
-                    if not self.checkAssignment(programContext, varType, typeVarInit):
-                        raise TypeMismatchInExpression(ast)
+                    if not isinstance(varType, ArrayType):
+                        typeVarInit = self.visit(attributeObject.decl.varInit, param)
+                        if not self.checkAssignment(programContext, varType, typeVarInit):
+                            raise TypeMismatchInExpression(ast)
+                    else:
+                        param.append(varType)
+                        typeVarInit = self.visit(attributeObject.decl.varInit, param)
+                        if not isinstance(typeVarInit, ArrayLiteral):
+                            raise TypeMismatchInStatement(ast)
             # TODO: If it is an instance variable but It has init value, what is
             # the error then
         elif len(param) == 5:
@@ -147,9 +153,15 @@ class StaticChecker(BaseVisitor, Utils):
                 raise Redeclared(Variable(), ast.variable.name)
             if ast.varInit is not None and type(ast.varInit) is not NullLiteral:
                 varType = self.visit(ast.varType, param[0])
-                varInitType = self.visit(ast.varInit, param)
-                if not self.checkAssignment(programContext, varType, varInitType):
-                    raise TypeMismatchInStatement(ast)
+                if type(varType) is not ArrayType:
+                    varInitType = self.visit(ast.varInit, param)
+                    if not self.checkAssignment(programContext, varType, varInitType):
+                        raise TypeMismatchInStatement(ast)
+                else:
+                    param.append(ast.varType)
+                    varInitType = self.visit(ast.varInit, param)
+                    if not isinstance(varInitType, ArrayLiteral):
+                        raise TypeMismatchInStatement(ast)
             varStack.append(ast.variable.name)
             symbolStack.append((ast.variable.name, ast.varType, ast.varInit, False))
 
@@ -167,10 +179,16 @@ class StaticChecker(BaseVisitor, Utils):
             if typeValue is None:
                 raise IllegalConstantExpression(None)
             else:
-                typeValue = self.visit(ast.value, param)
                 constType = self.visit(ast.constType, param)
-                if not self.checkAssignment(programContext, constType, typeValue):
-                    raise TypeMismatchInConstant(ast)
+                if not isinstance(constType, ArrayType):
+                    typeValue = self.visit(ast.value, param)
+                    if not self.checkAssignment(programContext, constType, typeValue):
+                        raise TypeMismatchInConstant(ast)
+                else:
+                    param.append(constType)
+                    typeValue = self.visit(ast.value, param)
+                    if type(typeValue) is not ArrayLiteral:
+                        raise TypeMismatchInConstant(ast)
         elif len(param) == 5:
             """
             We are in a method,
@@ -187,9 +205,15 @@ class StaticChecker(BaseVisitor, Utils):
                 raise IllegalConstantExpression(None)
             else:
                 constType = self.visit(ast.constType, param[0])
-                valueType = self.visit(ast.value, param)
-                if not self.checkAssignment(programContext, constType, valueType):
-                    raise TypeMismatchInConstant(ast)
+                if not isinstance(constType, ArrayType):
+                    valueType = self.visit(ast.value, param)
+                    if not self.checkAssignment(programContext, constType, valueType):
+                        raise TypeMismatchInConstant(ast)
+                else:
+                    param.append(constType)
+                    valueType = self.visit(ast.value, param)
+                    if type(valueType) is not ArrayLiteral:
+                        raise TypeMismatchInConstant(ast)
             varStack.append(ast.constant.name)
             symbolStack.append((ast.constant.name, ast.constType, ast.value, True))
         self.isInConsDecl = False
@@ -278,8 +302,27 @@ class StaticChecker(BaseVisitor, Utils):
     def visitSelfLiteral(self, ast: SelfLiteral, param):
         return SelfLiteral()
 
-    def visitStringLiteral(self, ast: StringLiteral, paran):
+    def visitStringLiteral(self, ast: StringLiteral, param):
         return StringType()
+    
+    def visitArrayLiteral(self, ast: ArrayLiteral, param):
+        arrayType = param[-1]
+        if not isinstance(arrayType, ArrayType):
+            return NullLiteral()
+        if len(ast.value) != arrayType.size:
+            raise IllegalArrayLiteral(ast)
+        for eachEle in ast.value:
+            if type(eachEle) is ArrayLiteral:
+                if not isinstance(arrayType.eleType, ArrayType):
+                    raise IllegalArrayLiteral(ast)
+                param.append(arrayType.eleType)
+                self.visit(eachEle, param)
+            else:
+                eachEleType = self.visit(eachEle, param[:-1])
+                if not type(eachEleType) is type(arrayType.eleType):
+                    raise IllegalArrayLiteral(ast)
+        param.pop()
+        return ast
 
     def visitClassType(self, ast: ClassType, param):
         programContext = param[0][-1]
@@ -298,6 +341,9 @@ class StaticChecker(BaseVisitor, Utils):
 
     def visitBoolType(self, ast: BoolType, param):
         return BoolType()
+    
+    def visitArrayType(self, ast: ArrayType, param):
+        return ast
 
     def visitId(self, ast: Id, param):
         symbolStack = param[1]
@@ -364,10 +410,17 @@ class StaticChecker(BaseVisitor, Utils):
                 raise TypeMismatchInExpression(ast)
         return methodInfo[1]
 
+    def visitNewExpr(self, ast: NewExpr, param):
+        pass
+
+    def visitArrayCell(self, ast: ArrayCell, param):
+        pass
+
+    def visitFieldAccess(self, ast: FieldAccess, param):
+        pass
     """
     Statement
     """
-
     def visitCallStmt(self, ast: CallStmt, param):
         varStack = param[2]
         scopeStack = param[3]

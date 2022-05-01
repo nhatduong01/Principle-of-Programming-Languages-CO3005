@@ -1,0 +1,18 @@
+
+        Class Program
+        {
+            main()
+            {
+                Var a: Array[Array[Array[Int,4],2],2] = Array(
+                    Array(
+                        Array(1,2,3,4),
+                        Array(1,2,3,4)
+                    ),
+                    Array(
+                        Array(1,2,3,4),
+                        Array(1,2,3,4)
+                    )
+                );
+                Return a;
+            }
+        }

@@ -1,0 +1,9 @@
+
+        Class Program
+        {
+            main()
+            {
+                Var b: Array[Boolean, 3] = Array(True, False. True);
+                Var a: Array[Int, 2] = Array(True, False);
+            }
+        }

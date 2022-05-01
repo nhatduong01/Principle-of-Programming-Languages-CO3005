@@ -416,7 +416,7 @@ class CheckerSuite(unittest.TestCase):
         }"""
         expect = """Type Mismatch In Expression: BinaryOp(*,BooleanLit(True),CallExpr(Self(),Id(getHeight),[]))"""
         self.assertTrue(TestChecker.test(input, expect, 428))
-    
+
     def test_30(self):
         input = """
         Class Bird
@@ -450,7 +450,7 @@ class CheckerSuite(unittest.TestCase):
         }"""
         expect = """Type Mismatch In Expression: CallExpr(Self(),Id(getArea),[])"""
         self.assertTrue(TestChecker.test(input, expect, 430))
-    
+
     def test_32(self):
         input = """
         Class Program
@@ -530,7 +530,7 @@ class CheckerSuite(unittest.TestCase):
         """
         expect = """Type Mismatch In Statement: Call(Id(derivedClass),Id(foo),[Id(derivedClass),Id(myInt)])"""
         self.assertTrue(TestChecker.test(input, expect, 434))
-    
+
     def test_36(self):
         input = """
         Class Base
@@ -554,7 +554,7 @@ class CheckerSuite(unittest.TestCase):
         }"""
         expect = """Type Mismatch In Statement: VarDecl(Id(a),IntType,CallExpr(Id(myClass),Id(foo),[IntLit(4),IntLit(5)]))"""
         self.assertTrue(TestChecker.test(input, expect, 435))
-    
+
     def test_37(self):
         input = """
         Class Base
@@ -583,7 +583,7 @@ class CheckerSuite(unittest.TestCase):
         }"""
         expect = """No Entry Point"""
         self.assertTrue(TestChecker.test(input, expect, 436))
-    
+
     def test_38(self):
         input = """
         Class Base
@@ -599,7 +599,7 @@ class CheckerSuite(unittest.TestCase):
         }
         Class Person : Base
         {
-            
+
         }
         Class Program
         {
@@ -611,61 +611,178 @@ class CheckerSuite(unittest.TestCase):
         }"""
         expect = """Type Mismatch In Statement: Call(Id(myClass),Id(hello),[])"""
         self.assertTrue(TestChecker.test(input, expect, 437))
-    #
-    # def test_39(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 438))
-    #
-    # def test_40(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 439))
-    #
-    # def test_41(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 440))
-    #
-    # def test_42(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 441))
-    #
-    # def test_43(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 442))
-    #
-    # def test_44(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 443))
-    #
-    # def test_45(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 444))
-    #
-    # def test_46(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 445))
-    #
-    # def test_47(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 446))
-    #
-    # def test_48(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 447))
-    #
-    # def test_49(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 448))
+
+    def test_39(self):
+        input = """
+        Class Program
+        {
+            Val myArray: Array[Int, 5] = Array(1,2,3,4,5);
+            Var $myArray2: Array[Boolean, 2] = Array(True, False);
+        }"""
+        expect = """No Entry Point"""
+        self.assertTrue(TestChecker.test(input, expect, 438))
+
+    def test_40(self):
+        input = """
+        Class Program
+        {
+            Val $Color : Array[String, 3] = Array("Red", "Blue", "Yellow");
+            Val $score : Array[Float, 3] = Array(1,2, 3.4, 5);
+        }
+        """
+        expect = """Illegal Array Literal: [IntLit(1),IntLit(2),FloatLit(3.4),IntLit(5)]"""
+        self.assertTrue(TestChecker.test(input, expect, 439))
+
+    def test_41(self):
+        input = """
+        Class Program
+        {
+            main()
+            {
+                Var b: Array[Boolean, 3] = Array(True, False. True);
+                Var a: Array[Int, 2] = Array(True, False);
+            }
+        }"""
+        expect = """Illegal Array Literal: [BooleanLit(True),FieldAccess(BooleanLit(False),BooleanLit(True))]"""
+        self.assertTrue(TestChecker.test(input, expect, 440))
+
+    def test_42(self):
+        input = """
+        Class Program
+        {
+            Var myArray : Array[Int, 5];
+            main()
+            {
+                Val Bird: Array[String, 5] = 5;
+            }
+        }"""
+        expect = """Type Mismatch In Constant Declaration: ConstDecl(Id(Bird),ArrayType(5,StringType),IntLit(5))"""
+        self.assertTrue(TestChecker.test(input, expect, 441))
+
+    def test_43(self):
+        input = """
+        Class Program
+        {
+            main()
+            {
+                Var a: Array[Array[Array[Int,4],2],2] = Array(
+                    Array(
+                        Array(1,2,3,4),
+                        Array(1,2,3,4)
+                    ),
+                    Array(
+                        Array(1,2,3,4),
+                        Array(1,2,3,4)
+                    )
+                );
+                Return a;
+            }
+        }"""
+        expect = """No Entry Point"""
+        self.assertTrue(TestChecker.test(input, expect, 442))
+    
+    def test_44(self):
+        input = """
+        Class Program
+        {
+            main()
+            {
+                Var a: Array[Array[Array[Int,4],2],2] = Array(
+                    Array(
+                        Array(1,2,3,4),
+                        Array(1,2,3,4)
+                    ),
+                    Array(
+                        Array(1,2,3,4),
+                        Array(1,2,3,4)
+                    )
+                );
+                Return a;
+            }
+        }"""
+        expect = """No Entry Point"""
+        self.assertTrue(TestChecker.test(input, expect, 443))
+
+    def test_45(self):
+        input = """
+        Class Program
+        {
+            Val $myArray: Array[Array[Array[Int,5],2],2] = Array(
+                    Array(
+                        Array(1,2,3,4),
+                        Array(1,2,3,4)
+                    ),
+                    Array(
+                        Array(1,2,3,4),
+                        Array(1,2,3,4)
+                    )
+                );
+        }"""
+        expect = """Illegal Array Literal: [IntLit(1),IntLit(2),IntLit(3),IntLit(4)]"""
+        self.assertTrue(TestChecker.test(input, expect, 444))
+    
+    def test_46(self):
+        input = """
+        Class Program
+        {
+            Var $myArray: Array[Array[Array[Int,4],2],3] = Array(
+                    Array(
+                        Array(1,2,3,4),
+                        Array(1,2,3,4)
+                    ),
+                    Array(
+                        Array(1,2,3,4),
+                        Array(1,2,3,4)
+                    )
+                );
+        }"""
+        expect = """Illegal Array Literal: [[[IntLit(1),IntLit(2),IntLit(3),IntLit(4)],[IntLit(1),IntLit(2),IntLit(3),IntLit(4)]],[[IntLit(1),IntLit(2),IntLit(3),IntLit(4)],[IntLit(1),IntLit(2),IntLit(3),IntLit(4)]]]"""
+        self.assertTrue(TestChecker.test(input, expect, 445))
+    
+    def test_47(self):
+        input = """
+        Class Program
+        {
+            Var $myArray: Array[Array[Array[Int,4],2],2] = Array(
+                    Array(
+                        Array(1,2,3,4),
+                        Array(5,6,7,8)
+                    ),
+                    Array(
+                        Array(-1,-2,-3,-4),
+                        Array(-5,-6,-7, False)
+                    )
+                );
+        }"""
+        expect = """Illegal Array Literal: [UnaryOp(-,IntLit(5)),UnaryOp(-,IntLit(6)),UnaryOp(-,IntLit(7)),BooleanLit(False)]"""
+        self.assertTrue(TestChecker.test(input, expect, 446))
+    
+    def test_48(self):
+        input = """
+        Class Program
+        {
+            Var a: Int;
+            main()
+            {
+                Var a: Int = Array(1,2,3,4,5);
+            }
+        }"""
+        expect = """Type Mismatch In Statement: VarDecl(Id(a),IntType,[IntLit(1),IntLit(2),IntLit(3),IntLit(4),IntLit(5)])"""
+        self.assertTrue(TestChecker.test(input, expect, 447))
+
+    def test_49(self):
+        input = """
+        Class Program
+        {
+            Val $myArray : Array[Int, 2] =
+            Array
+            (
+                Array(1,2,3,4),
+                Array(5,6,7,8)
+            );
+        }"""
+        expect = """Illegal Array Literal: [[IntLit(1),IntLit(2),IntLit(3),IntLit(4)],[IntLit(5),IntLit(6),IntLit(7),IntLit(8)]]"""
+        self.assertTrue(TestChecker.test(input, expect, 448))
     #
     # def test_50(self):
     #     input = """"""

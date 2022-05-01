@@ -12,7 +12,7 @@
         }
         Class Person : Base
         {
-            
+
         }
         Class Program
         {
