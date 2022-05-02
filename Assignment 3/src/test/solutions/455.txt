@@ -1,0 +1,1 @@
+Type Mismatch In Statement: FieldAccess(Id(a),Id(maxSize))

@@ -1,0 +1,14 @@
+
+        Class Animal
+        {
+            Var limbs: Int;
+            Var hasWings: Boolean;
+        }
+        Class Human: Animal
+        {
+            Var name:String;
+            create()
+            {
+                Var b: String = Self.limbs + Self.hasWings;
+            }
+        }

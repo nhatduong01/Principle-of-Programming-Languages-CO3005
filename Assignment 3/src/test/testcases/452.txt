@@ -1,0 +1,15 @@
+
+        Class SonTungMTP
+        {
+            Val isCopied: Boolean = True;
+            compose()
+            {
+            }
+        }
+        Class Program
+        {
+        main()
+        {
+            SonTungMTP.compose();
+        }
+        }

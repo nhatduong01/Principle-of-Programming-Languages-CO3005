@@ -1,0 +1,17 @@
+
+        Class Flower
+        {
+            Var height: Float;
+            Var width: Float;
+            getPrice( height, width: Float)
+            {
+                Return height * width;
+            }
+        }
+        Class Program
+        {
+            main()
+            {
+                Var myPrice: Float = Flower.getPrice(5,4);
+            }
+        }

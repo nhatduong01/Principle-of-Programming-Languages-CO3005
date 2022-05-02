@@ -1,0 +1,14 @@
+
+        Class Student
+        {
+            Var $Size: Int = 0;
+            Var name: String;
+        }
+        Class Program
+        {
+            main()
+            {
+                Val currSize : Float = Student::$Size;
+                Val name: String = Student.name;
+            }
+        }

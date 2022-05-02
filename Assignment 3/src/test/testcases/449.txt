@@ -1,0 +1,17 @@
+
+        Class Student
+        {
+            Var $numStudent: Int = 0;
+            $getNumStudent()
+            {
+                Return 0;
+            }
+        }
+        Class Program
+        {
+            main()
+            {
+                Var myStudent: Student;
+                Val currSize: Int = myStudent::$getNumStudent();
+            }
+        }

@@ -1,0 +1,19 @@
+
+        Class Rectangle
+        {
+            Var height: Float;
+            Var weight: Float;
+            getArea()
+            {
+                Return Self.height * Self.weight;
+            }
+        }
+        Class Program
+        {
+            main()
+            {
+                Var myShape : Rectangle ;
+                Var b: Int = myShape.getArea();
+            }
+
+        }

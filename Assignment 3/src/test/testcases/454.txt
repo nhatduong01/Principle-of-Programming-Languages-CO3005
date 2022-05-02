@@ -1,0 +1,20 @@
+
+        Class Person
+        {
+            $goSleep()
+            {
+
+            }
+        }
+        Class Student : Person
+        {
+
+        }
+        Class Program
+        {
+            main()
+            {
+            Student::$goSleep();
+            Student::$goPooing();
+            }
+        }

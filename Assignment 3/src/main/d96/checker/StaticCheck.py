@@ -57,6 +57,12 @@ class StaticChecker(BaseVisitor, Utils):
                 return i
         raise Undeclared(Variable(), symbols)
 
+    def lookUpInstance(self, varStack, symbols):
+        for i in range(len(varStack))[::-1]:
+            if varStack[i] == symbols:
+                return i
+        return None
+
     def visitProgram(self, ast: Program, c):
         programContext = {}
         c.append(programContext)
@@ -243,7 +249,7 @@ class StaticChecker(BaseVisitor, Utils):
         typeE2 = self.visit(ast.right, param)
         myOp = ast.op
         if type(typeE1) is StringType and type(typeE2) is StringType:
-            if myOp  == '+.':
+            if myOp == '+.':
                 return StringType()
             elif myOp == '==.':
                 return BoolType()
@@ -304,7 +310,7 @@ class StaticChecker(BaseVisitor, Utils):
 
     def visitStringLiteral(self, ast: StringLiteral, param):
         return StringType()
-    
+
     def visitArrayLiteral(self, ast: ArrayLiteral, param):
         arrayType = param[-1]
         if not isinstance(arrayType, ArrayType):
@@ -341,7 +347,7 @@ class StaticChecker(BaseVisitor, Utils):
 
     def visitBoolType(self, ast: BoolType, param):
         return BoolType()
-    
+
     def visitArrayType(self, ast: ArrayType, param):
         return ast
 
@@ -367,18 +373,42 @@ class StaticChecker(BaseVisitor, Utils):
             if type(objName) is not Id:
                 raise TypeMismatchInExpression(ast)
             if programContext.get(objName.name) is None:
+                """
+                If the object is an instance, I assume the method must exist
+                """
+                symbolIdx = self.lookUpInstance(varStack, objName.name)
+                if symbolIdx is not None:
+                    objType = symbolStack[symbolIdx][1]
+                    if type(objType) is ClassType:
+                        raise IllegalMemberAccess(ast)
                 raise Undeclared(Class(), objName.name)
-            elif programContext[objName.name].get(methodName) is None:
-                raise Undeclared(Method(), methodName)
-            else:
-                methodInfo = programContext[objName.name][methodName]
+            currClass = objName.name
+            while True:
+                if programContext[currClass].get(methodName) is not None:
+                    methodInfo = programContext[currClass][methodName]
+                    break
+                else:
+                    if programContext[currClass]["parentClass"] is None:
+                        raise Undeclared(Method(), methodName)
+                    else:
+                        currClass = programContext[currClass]["parentClass"]
         else:
             if type(objName) is Id:
-                symbolIdx = self.lookUpSymbol(varStack, objName.name)
-                objType = symbolStack[symbolIdx][1]
-                if type(objType) is not ClassType:
-                    raise TypeMismatchInExpression(ast)
-                objClass = objType.classname.name
+                symbolIdx = self.lookUpInstance(varStack, objName.name)
+                if symbolIdx is not None:
+                    objType = symbolStack[symbolIdx][1]
+                    if type(objType) is not ClassType:
+                        raise TypeMismatchInExpression(ast)
+                    objClass = objType.classname.name
+                else:
+                    """
+                    I assume that if the object is a class,
+                    It must have that method
+                    """
+                    if programContext[objName.name] is not None:
+                        raise IllegalMemberAccess(ast)
+                    else:
+                        raise Undeclared(Variable(), objName.name)
             else:
                 objName = self.visit(ast.obj, param)
                 if type(objName) is SelfLiteral:
@@ -417,10 +447,75 @@ class StaticChecker(BaseVisitor, Utils):
         pass
 
     def visitFieldAccess(self, ast: FieldAccess, param):
-        pass
+        varStack = param[2]
+        scopeStack = param[3]
+        symbolStack = param[1]
+        programContext = param[0][0][-1]
+        className = param[0][1]
+        fieldName = ast.fieldname.name
+        myObject = ast.obj
+        if fieldName[0] == '$':
+            if type(myObject) is not Id:
+                raise TypeMismatchInStatement(ast)
+            if programContext.get(myObject.name) is None:
+                symbolIdx = self.lookUpInstance(varStack, myObject.name)
+                if symbolIdx is not None:
+                    objType = symbolStack[symbolIdx][1]
+                    if type(objType) is ClassType:
+                        raise IllegalMemberAccess(ast)
+                raise Undeclared(Class(), myObject.name)
+            currClass = myObject.name
+            while True:
+                if programContext[currClass].get(fieldName) is not None:
+                    returnedObject = programContext[currClass][fieldName].decl
+                    if type(returnedObject) == ConstDecl:
+                        return returnedObject.constType
+                    else:
+                        return returnedObject.varType
+                else:
+                    if programContext[currClass]["parentClass"] is None:
+                        raise Undeclared(Attribute(), fieldName)
+                    else:
+                        currClass = programContext[currClass]["parentClass"]
+        else:
+            if type(myObject) is Id:
+                symbolIdx = self.lookUpInstance(varStack, myObject.name)
+                if symbolIdx is not None:
+                    objType = symbolStack[symbolIdx][1]
+                    if type(objType) is not ClassType:
+                        raise TypeMismatchInStatement(ast)
+                    objClass = objType.classname.name
+                else:
+                    if programContext[myObject.name] is not None:
+                        raise IllegalMemberAccess(ast)
+                    else:
+                        #  TODO: Check Huy's post on forum
+                        raise Undeclared(Variable(), myObject.name)
+            else:
+                objName = self.visit(ast.obj, param)
+                if type(objName) is SelfLiteral:
+                    objClass = className
+                elif type(objName) is not ClassType:
+                    raise TypeMismatchInStatement(ast)
+                else:
+                    objClass = objName.classname.name
+            currClass = objClass
+            while True:
+                if programContext[currClass].get(fieldName) is not None:
+                    returnedObject = programContext[currClass][fieldName].decl
+                    if type(returnedObject) == ConstDecl:
+                        return returnedObject.constType
+                    else:
+                        return returnedObject.varType
+                else:
+                    if programContext[currClass]["parentClass"] is None:
+                        raise Undeclared(Attribute(), fieldName)
+                    else:
+                        currClass = programContext[currClass]["parentClass"]
     """
     Statement
     """
+
     def visitCallStmt(self, ast: CallStmt, param):
         varStack = param[2]
         scopeStack = param[3]
@@ -434,18 +529,39 @@ class StaticChecker(BaseVisitor, Utils):
             if type(objName) is not Id:
                 raise TypeMismatchInStatement(ast)
             if programContext.get(objName.name) is None:
+                symbolIdx = self.lookUpInstance(varStack, objName.name)
+                if symbolIdx is not None:
+                    objType = symbolStack[symbolIdx][1]
+                    if type(objType) is ClassType:
+                        raise IllegalMemberAccess(ast)
                 raise Undeclared(Class(), objName.name)
-            elif programContext[objName.name].get(methodName) is None:
-                raise Undeclared(Method(), methodName)
-            else:
-                methodInfo = programContext[objName.name][methodName]
+            currClass = objName.name
+            while True:
+                if programContext[currClass].get(methodName) is not None:
+                    methodInfo = programContext[currClass][methodName]
+                    break
+                else:
+                    if programContext[currClass]["parentClass"] is None:
+                        raise Undeclared(Method(), methodName)
+                    else:
+                        currClass = programContext[currClass]["parentClass"]
         else:
             if type(objName) is Id:
-                symbolIdx = self.lookUpSymbol(varStack, objName.name)
-                objType = symbolStack[symbolIdx][1]
-                if type(objType) is not ClassType:
-                    raise TypeMismatchInStatement(ast)
-                objClass = objType.classname.name
+                symbolIdx = self.lookUpInstance(varStack, objName.name)
+                if symbolIdx is not None:
+                    objType = symbolStack[symbolIdx][1]
+                    if type(objType) is not ClassType:
+                        raise TypeMismatchInExpression(ast)
+                    objClass = objType.classname.name
+                else:
+                    """
+                    I assume that if the object is a class,
+                    It must have that method
+                    """
+                    if programContext[objName.name] is not None:
+                        raise IllegalMemberAccess(ast)
+                    else:
+                        raise Undeclared(Variable(), objName.name)
             else:
                 objName = self.visit(ast.obj, param)
                 if type(objName) is SelfLiteral:

@@ -1,0 +1,20 @@
+
+        Class Base
+        {
+            $foo(a, b: Int)
+            {
+                Return a * b;
+            }
+        }
+        Class Derived: Base
+        {
+
+        }
+        Class Program
+        {
+            main()
+            {
+                Var value: Int = Derived::$foo(4,5);
+                Return value;
+            }
+        }

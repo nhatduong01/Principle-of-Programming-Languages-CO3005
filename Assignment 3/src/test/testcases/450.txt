@@ -1,0 +1,17 @@
+
+        Class Foo
+        {
+            $foo()
+            {
+
+            }
+        }
+        Class Program
+        {
+            main()
+            {
+                Var myFoo : Foo;
+                myFoo::$foo();
+            }
+        }
+        

@@ -783,61 +783,232 @@ class CheckerSuite(unittest.TestCase):
         }"""
         expect = """Illegal Array Literal: [[IntLit(1),IntLit(2),IntLit(3),IntLit(4)],[IntLit(5),IntLit(6),IntLit(7),IntLit(8)]]"""
         self.assertTrue(TestChecker.test(input, expect, 448))
+    
+    def test_50(self):
+        input = """
+        Class Student
+        {
+            Var $numStudent: Int = 0;
+            $getNumStudent()
+            {
+                Return 0;
+            }
+        }
+        Class Program
+        {
+            main()
+            {
+                Var myStudent: Student;
+                Val currSize: Int = myStudent::$getNumStudent();
+            }
+        }"""
+        expect = """Illegal Member Access: CallExpr(Id(myStudent),Id($getNumStudent),[])"""
+        self.assertTrue(TestChecker.test(input, expect, 449))
+    
+    def test_51(self):
+        input = """
+        Class Foo
+        {
+            $foo()
+            {
+
+            }
+        }
+        Class Program
+        {
+            main()
+            {
+                Var myFoo : Foo;
+                myFoo::$foo();
+            }
+        }
+        """
+        expect = """Illegal Member Access: Call(Id(myFoo),Id($foo),[])"""
+        self.assertTrue(TestChecker.test(input, expect, 450))
+    
+    def test_52(self):
+        input = """
+        Class Flower
+        {
+            Var height: Float;
+            Var width: Float;
+            getPrice( height, width: Float)
+            {
+                Return height * width;
+            }
+        }
+        Class Program
+        {
+            main()
+            {
+                Var myPrice: Float = Flower.getPrice(5,4);
+            }
+        }"""
+        expect = """Illegal Member Access: CallExpr(Id(Flower),Id(getPrice),[IntLit(5),IntLit(4)])"""
+        self.assertTrue(TestChecker.test(input, expect, 451))
+    
+    def test_53(self):
+        input = """
+        Class SonTungMTP
+        {
+            Val isCopied: Boolean = True;
+            compose()
+            {
+            }
+        }
+        Class Program
+        {
+        main()
+        {
+            SonTungMTP.compose();
+        }
+        }"""
+        expect = """Illegal Member Access: Call(Id(SonTungMTP),Id(compose),[])"""
+        self.assertTrue(TestChecker.test(input, expect, 452))
+    
+    def test_54(self):
+        input = """
+        Class Base
+        {
+            $foo(a, b: Int)
+            {
+                Return a * b;
+            }
+        }
+        Class Derived: Base
+        {
+
+        }
+        Class Program
+        {
+            main()
+            {
+                Var value: Int = Derived::$foo(4,5);
+                Return value;
+            }
+        }"""
+        expect = """No Entry Point"""
+        self.assertTrue(TestChecker.test(input, expect, 453))
+    
+    def test_55(self):
+        input = """
+        Class Person
+        {
+            $goSleep()
+            {
+
+            }
+        }
+        Class Student : Person
+        {
+
+        }
+        Class Program
+        {
+            main()
+            {
+            Student::$goSleep();
+            Student::$goPooing();
+            }
+        }"""
+        expect = """Undeclared Method: $goPooing"""
+        self.assertTrue(TestChecker.test(input, expect, 454))
+    
+    def test_56(self):
+        input = """
+        Class Program
+        {
+            main()
+            {
+                Var a: Int = 5;
+                Var b: Int = a.maxSize;
+            }
+        }"""
+        expect = """Type Mismatch In Statement: FieldAccess(Id(a),Id(maxSize))"""
+        self.assertTrue(TestChecker.test(input, expect, 455))
+    
+    def test_57(self):
+        input = """
+        Class Rectangle
+        {
+            Var height: Float;
+            Var weight: Float;
+            getArea()
+            {
+                Return Self.height * Self.weight;
+            }
+        }
+        Class Program
+        {
+            main()
+            {
+                Var myShape : Rectangle ;
+                Var b: Int = myShape.getArea();
+            }
+
+        }"""
+        expect = """Type Mismatch In Statement: VarDecl(Id(b),IntType,CallExpr(Id(myShape),Id(getArea),[]))"""
+        self.assertTrue(TestChecker.test(input, expect, 456))
+    
+    def test_58(self):
+        input = """
+        Class Butterfly
+        {
+            Val $maxPrice: Float = 1020.9;
+            Var color: String;
+            Var name: String;
+            isHigh()
+            {
+                Return Self.color ==. "Red";
+            }
+        }
+        Class Program
+        {
+            main()
+            {
+                Var myButterfly : Butterfly;
+                Var isHigh: Boolean = myButterfly.isHigh();
+                Var maxPrice: Float = myButterfly::$maxPrice;
+            }
+        }"""
+        expect = """Illegal Member Access: FieldAccess(Id(myButterfly),Id($maxPrice))"""
+        self.assertTrue(TestChecker.test(input, expect, 457))
+    
+    def test_59(self):
+        input = """
+        Class Animal
+        {
+            Var limbs: Int;
+            Var hasWings: Boolean;
+        }
+        Class Human: Animal
+        {
+            Var name:String;
+            create()
+            {
+                Var b: String = Self.limbs + Self.hasWings;
+            }
+        }"""
+        expect = """Type Mismatch In Expression: BinaryOp(+,FieldAccess(Self(),Id(limbs)),FieldAccess(Self(),Id(hasWings)))"""
+        self.assertTrue(TestChecker.test(input, expect, 458))
     #
-    # def test_50(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 449))
-    #
-    # def test_51(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 450))
-    #
-    # def test_52(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 451))
-    #
-    # def test_53(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 452))
-    #
-    # def test_54(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 453))
-    #
-    # def test_55(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 454))
-    #
-    # def test_56(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 455))
-    #
-    # def test_57(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 456))
-    #
-    # def test_58(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 457))
-    #
-    # def test_59(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 458))
-    #
-    # def test_60(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 459))
+    def test_60(self):
+        input = """
+        Class Student
+        {
+            Var $Size: Int = 0;
+            Var name: String;
+        }
+        Class Program
+        {
+            main()
+            {
+                Val currSize : Float = Student::$Size;
+                Val name: String = Student.name;
+            }
+        }"""
+        expect = """Illegal Member Access: FieldAccess(Id(Student),Id(name))"""
+        self.assertTrue(TestChecker.test(input, expect, 459))
     #
     # def test_61(self):
     #     input = """"""
