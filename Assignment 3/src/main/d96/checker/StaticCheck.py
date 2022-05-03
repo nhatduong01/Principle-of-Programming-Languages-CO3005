@@ -29,6 +29,7 @@ class StaticChecker(BaseVisitor, Utils):
     def __init__(self, ast):
         self.ast = ast
         self.isInConsDecl = False
+        self.isInAssignment = False
 
     def check(self):
         return self.visit(self.ast, StaticChecker.global_envi)
@@ -469,6 +470,8 @@ class StaticChecker(BaseVisitor, Utils):
                 if programContext[currClass].get(fieldName) is not None:
                     returnedObject = programContext[currClass][fieldName].decl
                     if type(returnedObject) == ConstDecl:
+                        if self.isInAssignment:
+                            return -1
                         return returnedObject.constType
                     else:
                         return returnedObject.varType
@@ -504,6 +507,8 @@ class StaticChecker(BaseVisitor, Utils):
                 if programContext[currClass].get(fieldName) is not None:
                     returnedObject = programContext[currClass][fieldName].decl
                     if type(returnedObject) == ConstDecl:
+                        if self.isInAssignment:
+                            return -1
                         return returnedObject.constType
                     else:
                         return returnedObject.varType
@@ -512,6 +517,7 @@ class StaticChecker(BaseVisitor, Utils):
                         raise Undeclared(Attribute(), fieldName)
                     else:
                         currClass = programContext[currClass]["parentClass"]
+
     """
     Statement
     """
@@ -600,3 +606,57 @@ class StaticChecker(BaseVisitor, Utils):
         if className == "Program" and methodName == "main" and ast.expr is not None:
             raise NoEntryPoint
         programContext[className][methodName][1] = returnedType
+
+    def visitAssign(self, ast: Assign, param):
+        varStack = param[2]
+        symbolStack = param[1]
+        programContext = param[0][0][-1]
+        lhs = ast.lhs
+        if type(lhs) is Id:
+            symbolIdx = self.lookUpSymbol(varStack, lhs.name)
+            isImmutable = symbolStack[symbolIdx][3]
+            if isImmutable:
+                raise CannotAssignToConstant(ast)
+            lhsType = symbolStack[symbolIdx][1]
+        elif type(lhs) is ArrayCell:
+            lhsType = self.visit(lhs, param)
+        elif type(lhs) is FieldAccess:
+            self.isInAssignment = True
+            lhsType = self.visit(lhs, param)
+            self.isInAssignment = False
+            if type(lhsType) is int:
+                raise CannotAssignToConstant(ast)
+        rhsType = self.visit(ast.exp, param)
+        if not self.checkAssignment(programContext, lhsType, rhsType):
+            raise TypeMismatchInStatement(ast)
+
+    def visitIf(self, ast: If, param):
+        typeExp = self.visit(ast.expr, param)
+        if type(typeExp) is not BoolType:
+            raise TypeMismatchInStatement(ast)
+        self.visit(ast.thenStmt, param)
+        if ast.elseStmt:
+            self.visit(ast.elseStmt, param)
+
+    def visitFor(self, ast: For, param):
+        # TODO: Do we need to do some thing with the Id
+        varStack = param[2]
+        scopeStack = param[3]
+        symbolStack = param[1]
+        programContext = param[0][0][-1]
+        className = param[0][1]
+        expr1Type = self.visit(ast.expr1, param)
+        expr2Type = self.visit(ast.expr2, param)
+        expr3Type = self.visit(ast.expr3, param) if ast.expr3 else IntType()
+        if (type(expr1Type) is not IntType or type(expr2Type) is not IntType
+                or type(expr3Type) is not IntType):
+            raise TypeMismatchInStatement(ast)
+        scopeStack.append(len(varStack))
+        param.pop()
+        param.append(True)
+        varStack.append(ast.id.name)
+        symbolStack.append([ast.id.name, IntType(), 0, False])
+        self.visit(ast.loop, param)
+        param[2] = varStack[: scopeStack[-1]]
+        param[1] = symbolStack[: scopeStack[-1]]
+        scopeStack.pop()

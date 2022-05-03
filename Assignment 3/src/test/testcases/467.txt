@@ -1,0 +1,20 @@
+
+        Class Program
+        {
+            main()
+            {
+                Val num: Int = 10;
+                If (num >=0)
+                {
+                    Val num : Int = 12;
+                    {
+                        Var num: String = "duong";
+                    } 
+                }
+                Else
+                {
+                    Val num: Int = 13;
+                }
+                num = num * 10;
+            }
+        }

@@ -1,0 +1,23 @@
+
+        Class People
+        {
+            Var $maxHeight : Float;
+            Var name: String;
+            $getMaxHeight()
+            {
+                Return People::$maxHeight;
+            }
+            getName()
+            {
+                Return Self.name;
+            }
+        }
+        Class Program
+        {
+            main()
+            {
+            Var maxHeight : Float = People::$getMaxHeight();
+            Var myPeople : People;
+            Val herName : Int = myPeople.name;
+            }
+        }

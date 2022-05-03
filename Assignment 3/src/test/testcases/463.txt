@@ -1,0 +1,20 @@
+
+        Class Cities
+        {
+            Val $numCities: Int = 100;
+            Var name: String;
+            Var population : Int;
+            Constructor(newName : String; newPopulation:Int)
+            {
+                Self.name = newName;
+                Self.population = newPopulation;
+            }
+        }
+        Class Program
+        {
+            main()
+            {
+                Val currentSize : Int = Cities::$numCities;
+                Cities::$numCities = Cities::$numCities + 1;
+            }
+        }

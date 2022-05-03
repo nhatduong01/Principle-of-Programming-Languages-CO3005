@@ -1,0 +1,16 @@
+
+        Class Program
+        {
+            main()
+            {
+                Foreach(i In 1 .. 100)
+                {
+                    {
+                        Var i : Int = 10;
+                        i = i + 1;
+                    }
+                }
+                Var i : String = "Hello";
+                Return i;
+            }
+        }

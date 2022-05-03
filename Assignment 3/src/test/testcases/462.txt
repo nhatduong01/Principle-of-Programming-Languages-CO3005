@@ -1,0 +1,10 @@
+
+        Class Program
+        {
+            main()
+            {
+                Val sizeOfPeople: Int = 10;
+                Val sizeofAnimals: Int = sizeOfPeople * 2;
+                sizeOfPeople = 6;
+            }
+        }

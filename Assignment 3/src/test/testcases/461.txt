@@ -1,0 +1,11 @@
+
+        Class Student
+        {
+            Var id: Int;
+            Var name: String;
+            Constructor(newId : Int ; newName: Float)
+            {
+                Self.id  = newId;
+                Self.name = newName;
+            }
+        }

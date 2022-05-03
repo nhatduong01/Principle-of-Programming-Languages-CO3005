@@ -1,0 +1,12 @@
+
+        Class Program
+        {
+            main()
+            {
+                Var a: Int = 10;
+                If(a  + 12)
+                    {
+                        a = a + 1;
+                    }
+            }
+        }

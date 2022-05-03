@@ -1,0 +1,15 @@
+
+        Class Student
+        {
+            Var ID:Int;
+            Var GPA: Float;
+        }
+        Class Program
+        {
+            main()
+            {
+                Var myStudent : Student;
+                myStudent.ID = 1952638;
+                myStudent.height = 1.87;
+            }
+        }

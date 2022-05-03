@@ -1,0 +1,28 @@
+
+        Class Program
+        {
+            main()
+            {
+                Var a: Int = 5;
+                If(a == 5)
+                {
+                    {}
+                    Var a: String = "Hiii";
+                }
+                Elseif(a == 6)
+                {
+                    {
+                        Var a : Boolean = True;
+                    }
+                }
+                Elseif(a == 7)
+                {
+                    {}
+                }
+                Else
+                {
+                    {}
+                }
+                Var a : Float = 1.2;
+            }
+        }

@@ -1,0 +1,14 @@
+
+        Class Program
+        {
+            main()
+            {
+                Var counter : Int = 0;
+                Foreach (my_index In 1 .. 8)
+                {
+                    counter = counter + 1;
+                    Var a: Int = 9;
+                }
+                Val a: Int = counter + 2;
+            }
+        }
