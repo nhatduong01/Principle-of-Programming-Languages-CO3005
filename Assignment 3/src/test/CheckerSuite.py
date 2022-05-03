@@ -132,7 +132,7 @@ class CheckerSuite(unittest.TestCase):
         {
         Var $maxHeight : Int = 189.5;
         }"""
-        expect = """Type Mismatch In Expression: VarDecl(Id($maxHeight),IntType,FloatLit(189.5))"""
+        expect = """Type Mismatch In Statement: VarDecl(Id($maxHeight),IntType,FloatLit(189.5))"""
         self.assertTrue(TestChecker.test(input, expect, 411))
 
     def test_13(self):
@@ -991,7 +991,7 @@ class CheckerSuite(unittest.TestCase):
         }"""
         expect = """Type Mismatch In Expression: BinaryOp(+,FieldAccess(Self(),Id(limbs)),FieldAccess(Self(),Id(hasWings)))"""
         self.assertTrue(TestChecker.test(input, expect, 458))
-    #
+    
     def test_60(self):
         input = """
         Class Student

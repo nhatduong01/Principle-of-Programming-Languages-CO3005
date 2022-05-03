@@ -1,1 +1,1 @@
-Type Mismatch In Expression: VarDecl(Id($maxHeight),IntType,FloatLit(189.5))
+Type Mismatch In Statement: VarDecl(Id($maxHeight),IntType,FloatLit(189.5))

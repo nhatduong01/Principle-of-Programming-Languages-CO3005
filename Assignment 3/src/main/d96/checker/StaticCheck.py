@@ -140,7 +140,7 @@ class StaticChecker(BaseVisitor, Utils):
                     if not isinstance(varType, ArrayType):
                         typeVarInit = self.visit(attributeObject.decl.varInit, param)
                         if not self.checkAssignment(programContext, varType, typeVarInit):
-                            raise TypeMismatchInExpression(ast)
+                            raise TypeMismatchInStatement(ast)
                     else:
                         param.append(varType)
                         typeVarInit = self.visit(attributeObject.decl.varInit, param)
