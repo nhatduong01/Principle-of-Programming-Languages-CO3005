@@ -479,6 +479,8 @@ class StaticChecker(BaseVisitor, Utils):
                             return -1
                         return returnedObject.constType
                     else:
+                        if self.isInConsDecl:
+                            self.foundConstant = True
                         return returnedObject.varType
                 else:
                     if programContext[currClass]["parentClass"] is None:
@@ -516,6 +518,8 @@ class StaticChecker(BaseVisitor, Utils):
                             return -1
                         return returnedObject.constType
                     else:
+                        if self.isInConsDecl:
+                            self.foundConstant = True
                         return returnedObject.varType
                 else:
                     if programContext[currClass]["parentClass"] is None:

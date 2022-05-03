@@ -1,1 +1,1 @@
-Illegal Member Access: FieldAccess(Id(Student),Id(name))
+Illegal Constant Expression: FieldAccess(Id(Student),Id($Size))

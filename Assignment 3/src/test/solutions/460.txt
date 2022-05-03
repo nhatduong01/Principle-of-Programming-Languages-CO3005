@@ -1,1 +1,1 @@
-Type Mismatch In Constant Declaration: ConstDecl(Id(herName),IntType,FieldAccess(Id(myPeople),Id(name)))
+Illegal Constant Expression: FieldAccess(Id(myPeople),Id(name))

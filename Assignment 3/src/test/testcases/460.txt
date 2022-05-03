@@ -18,6 +18,6 @@
             {
             Var maxHeight : Float = People::$getMaxHeight();
             Var myPeople : People;
-            Val herName : Int = myPeople.name;
+            Val herName : String = myPeople.name;
             }
         }

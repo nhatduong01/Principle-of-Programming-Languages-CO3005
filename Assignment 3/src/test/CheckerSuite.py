@@ -1007,7 +1007,7 @@ class CheckerSuite(unittest.TestCase):
                 Val name: String = Student.name;
             }
         }"""
-        expect = """Illegal Member Access: FieldAccess(Id(Student),Id(name))"""
+        expect = """Illegal Constant Expression: FieldAccess(Id(Student),Id($Size))"""
         self.assertTrue(TestChecker.test(input, expect, 459))
     
     def test_61(self):
@@ -1031,10 +1031,10 @@ class CheckerSuite(unittest.TestCase):
             {
             Var maxHeight : Float = People::$getMaxHeight();
             Var myPeople : People;
-            Val herName : Int = myPeople.name;
+            Val herName : String = myPeople.name;
             }
         }"""
-        expect = """Type Mismatch In Constant Declaration: ConstDecl(Id(herName),IntType,FieldAccess(Id(myPeople),Id(name)))"""
+        expect = """Illegal Constant Expression: FieldAccess(Id(myPeople),Id(name))"""
         self.assertTrue(TestChecker.test(input, expect, 460))
     
     def test_62(self):
