@@ -1,0 +1,11 @@
+
+        Class Program
+        {
+            main()
+            {
+                Val a : Int = 10;
+                Val b : Int = 20;
+                Var c: Int = 30;
+                Val d: Int = a*c + b;
+            }
+        }

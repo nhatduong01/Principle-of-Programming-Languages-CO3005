@@ -1,1 +1,1 @@
-Illegal Constant Expression: Id(counter)
+Illegal Constant Expression: BinaryOp(+,Id(counter),IntLit(2))

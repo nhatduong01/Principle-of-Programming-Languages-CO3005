@@ -30,6 +30,7 @@ class StaticChecker(BaseVisitor, Utils):
         self.ast = ast
         self.isInConsDecl = False
         self.isInAssignment = False
+        self.foundConstant = False
 
     def check(self):
         return self.visit(self.ast, StaticChecker.global_envi)
@@ -189,6 +190,8 @@ class StaticChecker(BaseVisitor, Utils):
                 constType = self.visit(ast.constType, param)
                 if not isinstance(constType, ArrayType):
                     typeValue = self.visit(ast.value, param)
+                    if self.foundConstant:
+                        raise IllegalConstantExpression(ast)
                     if not self.checkAssignment(programContext, constType, typeValue):
                         raise TypeMismatchInConstant(ast)
                 else:
@@ -214,6 +217,8 @@ class StaticChecker(BaseVisitor, Utils):
                 constType = self.visit(ast.constType, param[0])
                 if not isinstance(constType, ArrayType):
                     valueType = self.visit(ast.value, param)
+                    if self.foundConstant:
+                        raise IllegalConstantExpression(ast.value)
                     if not self.checkAssignment(programContext, constType, valueType):
                         raise TypeMismatchInConstant(ast)
                 else:
@@ -358,7 +363,7 @@ class StaticChecker(BaseVisitor, Utils):
         symbolIdx = self.lookUpSymbol(varStack, ast.name)
         if self.isInConsDecl:
             if not symbolStack[symbolIdx][3]:
-                raise IllegalConstantExpression(ast)
+                self.foundConstant = True
         return symbolStack[symbolIdx][1]
 
     def visitCallExpr(self, ast: CallExpr, param):
