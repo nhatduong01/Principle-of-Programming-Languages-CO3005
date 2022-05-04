@@ -1286,16 +1286,51 @@ class CheckerSuite(unittest.TestCase):
         }"""
         expect = """Illegal Constant Expression: BinaryOp(+,BinaryOp(*,Id(a),Id(c)),Id(b))"""
         self.assertTrue(TestChecker.test(input, expect, 473))
-    #
-    # def test_75(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 474))
-    #
-    # def test_76(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 475))
+    
+    def test_75(self):
+        input = """
+        Class Program
+        {
+            main()
+            {
+                Var sum: Int = 0;
+                Var myArray: Array[Int, 5] = Array(1,2,3,4,5);
+                Foreach(i In 1 .. 5)
+                {
+                    If(sum >= 5)
+                    {
+                        Break;
+                    }
+                    Else
+                    {
+                        Continue;
+                    }
+                }
+                Val result: Int = sum * 2;
+            }
+        }"""
+        expect = """Illegal Constant Expression: BinaryOp(*,Id(sum),IntLit(2))"""
+        self.assertTrue(TestChecker.test(input, expect, 474))
+    
+    def test_76(self):
+        input = """
+        Class Program
+        {
+            main()
+            {
+                Foreach (i In 1 .. 100)
+                {
+                    Foreach(i In 1 .. 5)
+                    {
+                        Break;
+                    }
+                    Break;
+                }
+                Break;
+            }
+        }"""
+        expect = """Break Not In Loop"""
+        self.assertTrue(TestChecker.test(input, expect, 475))
     #
     # def test_77(self):
     #     input = """"""

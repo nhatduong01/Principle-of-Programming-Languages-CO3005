@@ -31,6 +31,7 @@ class StaticChecker(BaseVisitor, Utils):
         self.isInConsDecl = False
         self.isInAssignment = False
         self.foundConstant = False
+        self.numOfLoops = []
 
     def check(self):
         return self.visit(self.ast, StaticChecker.global_envi)
@@ -649,6 +650,7 @@ class StaticChecker(BaseVisitor, Utils):
 
     def visitFor(self, ast: For, param):
         # TODO: Do we need to do some thing with the Id
+        self.numOfLoops.append(1)
         varStack = param[2]
         scopeStack = param[3]
         symbolStack = param[1]
@@ -669,3 +671,12 @@ class StaticChecker(BaseVisitor, Utils):
         param[2] = varStack[: scopeStack[-1]]
         param[1] = symbolStack[: scopeStack[-1]]
         scopeStack.pop()
+        self.numOfLoops.pop()
+    
+    def visitBreak(self, ast: Break, param):
+        if len(self.numOfLoops) == 0:
+            raise MustInLoop(ast)
+
+    def visitContinue(self, ast: Continue, param):
+        if len(self.numOfLoops) == 0:
+            raise MustInLoop(ast)
