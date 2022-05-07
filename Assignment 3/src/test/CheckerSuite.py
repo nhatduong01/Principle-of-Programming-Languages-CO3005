@@ -4,7 +4,7 @@ from AST import *
 
 
 class CheckerSuite(unittest.TestCase):
-    '''def test_1(self):
+    def test_1(self):
         """Simple program: int main() {} """
         input = """
         Class Duong
@@ -626,11 +626,13 @@ class CheckerSuite(unittest.TestCase):
         input = """
         Class Program
         {
-            Val $Color : Array[String, 3] = Array("Red", "Blue", "Yellow");
-            Val $score : Array[Float, 3] = Array(1,2, 3.4, 5);
+            
+                Val $Color : Array[String, 3] = Array("Red", "Blue", "Yellow");
+                Var $score : Array[Float, 3] = Array(1,2, 3.4, 5);    
+            
         }
         """
-        expect = """Illegal Array Literal: [IntLit(1),IntLit(2),FloatLit(3.4),IntLit(5)]"""
+        expect = """Type Mismatch In Statement: VarDecl(Id($score),ArrayType(3,FloatType),[IntLit(1),IntLit(2),FloatLit(3.4),IntLit(5)])"""
         self.assertTrue(TestChecker.test(input, expect, 439))
 
     def test_41(self):
@@ -639,11 +641,11 @@ class CheckerSuite(unittest.TestCase):
         {
             main()
             {
-                Var b: Array[Boolean, 3] = Array(True, False. True);
+                Var b: Array[Boolean, 3] = Array(True, False, True);
                 Var a: Array[Int, 2] = Array(True, False);
             }
         }"""
-        expect = """Illegal Array Literal: [BooleanLit(True),FieldAccess(BooleanLit(False),BooleanLit(True))]"""
+        expect = """Type Mismatch In Statement: VarDecl(Id(a),ArrayType(2,IntType),[BooleanLit(True),BooleanLit(False)])"""
         self.assertTrue(TestChecker.test(input, expect, 440))
 
     def test_42(self):
@@ -697,17 +699,17 @@ class CheckerSuite(unittest.TestCase):
                         Array(1,2,3,4)
                     )
                 );
-                Return a;
+                Var myArray : Array[Int, 5] = Array(1,2,3,4, True);
             }
         }"""
-        expect = """No Entry Point"""
+        expect = """Illegal Array Literal: [IntLit(1),IntLit(2),IntLit(3),IntLit(4),BooleanLit(True)]"""
         self.assertTrue(TestChecker.test(input, expect, 443))
 
     def test_45(self):
         input = """
         Class Program
         {
-            Val $myArray: Array[Array[Array[Int,5],2],2] = Array(
+            Var $myArray: Array[Array[Array[Int,5],2],2] = Array(
                     Array(
                         Array(1,2,3,4),
                         Array(1,2,3,4)
@@ -718,7 +720,7 @@ class CheckerSuite(unittest.TestCase):
                     )
                 );
         }"""
-        expect = """Illegal Array Literal: [IntLit(1),IntLit(2),IntLit(3),IntLit(4)]"""
+        expect = """Type Mismatch In Statement: VarDecl(Id($myArray),ArrayType(2,ArrayType(2,ArrayType(5,IntType))),[[[IntLit(1),IntLit(2),IntLit(3),IntLit(4)],[IntLit(1),IntLit(2),IntLit(3),IntLit(4)]],[[IntLit(1),IntLit(2),IntLit(3),IntLit(4)],[IntLit(1),IntLit(2),IntLit(3),IntLit(4)]]])"""
         self.assertTrue(TestChecker.test(input, expect, 444))
     
     def test_46(self):
@@ -736,7 +738,7 @@ class CheckerSuite(unittest.TestCase):
                     )
                 );
         }"""
-        expect = """Illegal Array Literal: [[[IntLit(1),IntLit(2),IntLit(3),IntLit(4)],[IntLit(1),IntLit(2),IntLit(3),IntLit(4)]],[[IntLit(1),IntLit(2),IntLit(3),IntLit(4)],[IntLit(1),IntLit(2),IntLit(3),IntLit(4)]]]"""
+        expect = """Type Mismatch In Statement: VarDecl(Id($myArray),ArrayType(3,ArrayType(2,ArrayType(4,IntType))),[[[IntLit(1),IntLit(2),IntLit(3),IntLit(4)],[IntLit(1),IntLit(2),IntLit(3),IntLit(4)]],[[IntLit(1),IntLit(2),IntLit(3),IntLit(4)],[IntLit(1),IntLit(2),IntLit(3),IntLit(4)]]])"""
         self.assertTrue(TestChecker.test(input, expect, 445))
     
     def test_47(self):
@@ -754,7 +756,7 @@ class CheckerSuite(unittest.TestCase):
                     )
                 );
         }"""
-        expect = """Illegal Array Literal: [UnaryOp(-,IntLit(5)),UnaryOp(-,IntLit(6)),UnaryOp(-,IntLit(7)),BooleanLit(False)]"""
+        expect = """Illegal Array Literal: [[[IntLit(1),IntLit(2),IntLit(3),IntLit(4)],[IntLit(5),IntLit(6),IntLit(7),IntLit(8)]],[[UnaryOp(-,IntLit(1)),UnaryOp(-,IntLit(2)),UnaryOp(-,IntLit(3)),UnaryOp(-,IntLit(4))],[UnaryOp(-,IntLit(5)),UnaryOp(-,IntLit(6)),UnaryOp(-,IntLit(7)),BooleanLit(False)]]]"""
         self.assertTrue(TestChecker.test(input, expect, 446))
     
     def test_48(self):
@@ -781,7 +783,7 @@ class CheckerSuite(unittest.TestCase):
                 Array(5,6,7,8)
             );
         }"""
-        expect = """Illegal Array Literal: [[IntLit(1),IntLit(2),IntLit(3),IntLit(4)],[IntLit(5),IntLit(6),IntLit(7),IntLit(8)]]"""
+        expect = """Type Mismatch In Statement: [[IntLit(1),IntLit(2),IntLit(3),IntLit(4)],[IntLit(5),IntLit(6),IntLit(7),IntLit(8)]]"""
         self.assertTrue(TestChecker.test(input, expect, 448))
     
     def test_50(self):
@@ -1310,7 +1312,7 @@ class CheckerSuite(unittest.TestCase):
             }
         }"""
         expect = """Illegal Constant Expression: BinaryOp(*,Id(sum),IntLit(2))"""
-        self.assertTrue(TestChecker.test(input, expect, 474))'''
+        self.assertTrue(TestChecker.test(input, expect, 474))
     
     def test_76(self):
         input = """

@@ -13,6 +13,6 @@
                         Array(1,2,3,4)
                     )
                 );
-                Return a;
+                Var myArray : Array[Int, 5] = Array(1,2,3,4, True);
             }
         }

@@ -146,7 +146,7 @@ class StaticChecker(BaseVisitor, Utils):
                             raise TypeMismatchInStatement(ast)
                     else:
                         param.append(varType)
-                        typeVarInit = self.visit(attributeObject.decl.varInit, param)
+                        typeVarInit = self.visit(attributeObject.decl.varInit, (param, ast))
                         if not isinstance(typeVarInit, ArrayLiteral):
                             raise TypeMismatchInStatement(ast)
             # TODO: If it is an instance variable but It has init value, what is
@@ -168,7 +168,7 @@ class StaticChecker(BaseVisitor, Utils):
                         raise TypeMismatchInStatement(ast)
                 else:
                     param.append(ast.varType)
-                    varInitType = self.visit(ast.varInit, param)
+                    varInitType = self.visit(ast.varInit, (param, ast))
                     if not isinstance(varInitType, ArrayLiteral):
                         raise TypeMismatchInStatement(ast)
             varStack.append(ast.variable.name)
@@ -197,7 +197,7 @@ class StaticChecker(BaseVisitor, Utils):
                         raise TypeMismatchInConstant(ast)
                 else:
                     param.append(constType)
-                    typeValue = self.visit(ast.value, param)
+                    typeValue = self.visit(ast.value, (param, ast))
                     if type(typeValue) is not ArrayLiteral:
                         raise TypeMismatchInConstant(ast)
         elif len(param) == 5:
@@ -224,7 +224,7 @@ class StaticChecker(BaseVisitor, Utils):
                         raise TypeMismatchInConstant(ast)
                 else:
                     param.append(constType)
-                    valueType = self.visit(ast.value, param)
+                    valueType = self.visit(ast.value, (param, ast))
                     if type(valueType) is not ArrayLiteral:
                         raise TypeMismatchInConstant(ast)
             varStack.append(ast.constant.name)
@@ -319,22 +319,30 @@ class StaticChecker(BaseVisitor, Utils):
         return StringType()
 
     def visitArrayLiteral(self, ast: ArrayLiteral, param):
-        arrayType = param[-1]
+        arrayType = param[0][-1]
+        stmt = param[1]
         if not isinstance(arrayType, ArrayType):
             return NullLiteral()
         if len(ast.value) != arrayType.size:
-            raise IllegalArrayLiteral(ast)
+            raise TypeMismatchInStatement(stmt)  # We assume that this is wrong IntType does not matter
+        if type(ast.value[0]) is not ArrayLiteral:
+            first_ele = self.visit(ast.value[0], param[0][:-1])
+            if type(first_ele) is not type(arrayType.eleType):
+                raise TypeMismatchInStatement(stmt)
         for eachEle in ast.value:
             if type(eachEle) is ArrayLiteral:
                 if not isinstance(arrayType.eleType, ArrayType):
-                    raise IllegalArrayLiteral(ast)
-                param.append(arrayType.eleType)
-                self.visit(eachEle, param)
+                    raise TypeMismatchInStatement(ast)
+                param[0].append(arrayType.eleType)
+                self.visit(eachEle, (param[0], param[1]))
             else:
-                eachEleType = self.visit(eachEle, param[:-1])
-                if not type(eachEleType) is type(arrayType.eleType):
-                    raise IllegalArrayLiteral(ast)
-        param.pop()
+                eachEleType = self.visit(eachEle, param[0][:-1])
+                if not type(eachEleType) is type(first_ele):
+                    if type(stmt) is ConstDecl:
+                        raise IllegalArrayLiteral(stmt.value)
+                    else:
+                        raise IllegalArrayLiteral(stmt.varInit)
+        param[0].pop()
         return ast
 
     def visitClassType(self, ast: ClassType, param):
@@ -672,7 +680,7 @@ class StaticChecker(BaseVisitor, Utils):
         param[1] = symbolStack[: scopeStack[-1]]
         scopeStack.pop()
         self.numOfLoops.pop()
-    
+
     def visitBreak(self, ast: Break, param):
         if len(self.numOfLoops) == 0:
             raise MustInLoop(ast)
