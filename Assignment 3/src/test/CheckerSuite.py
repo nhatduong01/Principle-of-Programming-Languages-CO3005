@@ -4,7 +4,7 @@ from AST import *
 
 
 class CheckerSuite(unittest.TestCase):
-    def test_1(self):
+    '''def test_1(self):
         """Simple program: int main() {} """
         input = """
         Class Duong
@@ -1310,7 +1310,7 @@ class CheckerSuite(unittest.TestCase):
             }
         }"""
         expect = """Illegal Constant Expression: BinaryOp(*,Id(sum),IntLit(2))"""
-        self.assertTrue(TestChecker.test(input, expect, 474))
+        self.assertTrue(TestChecker.test(input, expect, 474))'''
     
     def test_76(self):
         input = """
