@@ -1,0 +1,1 @@
+Cannot Assign To Constant: AssignStmt(ArrayCell(FieldAccess(Id(Program),Id($myAnimal)),[IntLit(1)]),StringLit(Parrot))

@@ -9,7 +9,7 @@
                     Val num : Int = 12;
                     {
                         Var num: String = "duong";
-                    } 
+                    }
                 }
                 Else
                 {

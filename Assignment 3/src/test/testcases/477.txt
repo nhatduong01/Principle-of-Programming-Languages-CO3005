@@ -1,0 +1,33 @@
+
+        Class Animal
+        {
+            Var name: String;
+            Var age: Int;
+            Constructor(newName : String ; newAge : Int)
+            {
+                Self.name = newName;
+                Self.age = newAge;
+            }
+            getName()
+            {
+                Return Self.name;
+            }
+        }
+        Class People
+        {
+            Var name: String;
+            Var $favoriteAnimal : Animal = New Animal("Dog", 5);
+            Constructor(newName : String)
+            {
+                Self.name = newName;
+            }
+        }
+        Class Program
+        {
+            main()
+            {
+                Var BorrisJohnson: People = New People ("Johnson");
+                Var favoriteAnimal: String = People::$favoriteAnimal.getName();
+                Var JoeBiden : People = New People ("Biden", "Capitalism");
+            }
+        }

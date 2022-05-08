@@ -1,0 +1,10 @@
+
+        Class Program
+        {
+            Val $myAnimal : Array[String, 3] = Array("Cow", "Bird", "Alligator");
+            main()
+            {
+                Var favoriteAnimal : String = Program::$myAnimal[1];
+                Program::$myAnimal[1] = "Parrot";
+            }
+        }

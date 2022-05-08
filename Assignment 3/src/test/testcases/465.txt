@@ -6,13 +6,13 @@
             Constructor(newName: String; newID : Int)
             {
                 Self.name = newName;
-                Self.Id = newID;
+                Self.ID = newID;
             }
         }
         Class Program
         {
             main()
             {
-                Var myStudent: Student = New Student (); # Error not enough argument
+                Var myStudent: Student = New Student ();
             }
         }

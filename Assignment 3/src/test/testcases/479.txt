@@ -1,0 +1,13 @@
+
+        Class Colors
+        {
+            Val $colors : Array[String, 4] = Array("Red", "Blue", "Green", "Yellow");
+        }
+        Class Program
+        {
+            main()
+            {
+                Var myColor : String = Colors::$colors[1];
+                Var myNextColor : String = Colors::$colors[1][2];
+            }
+        }

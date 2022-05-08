@@ -1,0 +1,10 @@
+
+        Class Program
+        {
+            main()
+            {
+                Var myArray : Array[Int, 4] = Array(1,2,3,4);
+                Var myFloat : Float = myArray[1];
+                Val result : Float = myFloat;
+            }
+        }

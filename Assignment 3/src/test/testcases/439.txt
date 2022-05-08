@@ -1,9 +1,9 @@
 
         Class Program
         {
-            
+
                 Val $Color : Array[String, 3] = Array("Red", "Blue", "Yellow");
-                Var $score : Array[Float, 3] = Array(1,2, 3.4, 5);    
-            
+                Var $score : Array[Float, 3] = Array(1,2, 3.4, 5);
+
         }
         

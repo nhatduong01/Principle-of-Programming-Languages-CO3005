@@ -1,0 +1,1 @@
+Type Mismatch In Statement: VarDecl(Id(nextInt),IntType,ArrayCell(Id(myArray),[IntLit(2)]))

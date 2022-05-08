@@ -1,0 +1,24 @@
+
+        Class Animal
+        {
+            Var name: String;
+            Var age: Int;
+            Var $maxAge: Int = 0;
+            Constructor(newName : String ; newAge : Int)
+            {
+                If(newAge > Animal::$maxAge)
+                {
+                    Animal::$maxAge = newAge;
+                }
+                Self.name = newName;
+                Self.age = newAge;
+            }
+        }
+        Class Program
+        {
+            main()
+            {
+                Var myPig : Animal = New Animal ("Pig", 5);
+                Var myOwl : Animal = New Animal ("Owl", 5.6);
+            }
+        }

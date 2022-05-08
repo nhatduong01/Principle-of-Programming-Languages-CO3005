@@ -626,10 +626,10 @@ class CheckerSuite(unittest.TestCase):
         input = """
         Class Program
         {
-            
+
                 Val $Color : Array[String, 3] = Array("Red", "Blue", "Yellow");
-                Var $score : Array[Float, 3] = Array(1,2, 3.4, 5);    
-            
+                Var $score : Array[Float, 3] = Array(1,2, 3.4, 5);
+
         }
         """
         expect = """Type Mismatch In Statement: VarDecl(Id($score),ArrayType(3,FloatType),[IntLit(1),IntLit(2),FloatLit(3.4),IntLit(5)])"""
@@ -682,7 +682,7 @@ class CheckerSuite(unittest.TestCase):
         }"""
         expect = """No Entry Point"""
         self.assertTrue(TestChecker.test(input, expect, 442))
-    
+
     def test_44(self):
         input = """
         Class Program
@@ -722,7 +722,7 @@ class CheckerSuite(unittest.TestCase):
         }"""
         expect = """Type Mismatch In Statement: VarDecl(Id($myArray),ArrayType(2,ArrayType(2,ArrayType(5,IntType))),[[[IntLit(1),IntLit(2),IntLit(3),IntLit(4)],[IntLit(1),IntLit(2),IntLit(3),IntLit(4)]],[[IntLit(1),IntLit(2),IntLit(3),IntLit(4)],[IntLit(1),IntLit(2),IntLit(3),IntLit(4)]]])"""
         self.assertTrue(TestChecker.test(input, expect, 444))
-    
+
     def test_46(self):
         input = """
         Class Program
@@ -740,7 +740,7 @@ class CheckerSuite(unittest.TestCase):
         }"""
         expect = """Type Mismatch In Statement: VarDecl(Id($myArray),ArrayType(3,ArrayType(2,ArrayType(4,IntType))),[[[IntLit(1),IntLit(2),IntLit(3),IntLit(4)],[IntLit(1),IntLit(2),IntLit(3),IntLit(4)]],[[IntLit(1),IntLit(2),IntLit(3),IntLit(4)],[IntLit(1),IntLit(2),IntLit(3),IntLit(4)]]])"""
         self.assertTrue(TestChecker.test(input, expect, 445))
-    
+
     def test_47(self):
         input = """
         Class Program
@@ -758,7 +758,7 @@ class CheckerSuite(unittest.TestCase):
         }"""
         expect = """Illegal Array Literal: [[[IntLit(1),IntLit(2),IntLit(3),IntLit(4)],[IntLit(5),IntLit(6),IntLit(7),IntLit(8)]],[[UnaryOp(-,IntLit(1)),UnaryOp(-,IntLit(2)),UnaryOp(-,IntLit(3)),UnaryOp(-,IntLit(4))],[UnaryOp(-,IntLit(5)),UnaryOp(-,IntLit(6)),UnaryOp(-,IntLit(7)),BooleanLit(False)]]]"""
         self.assertTrue(TestChecker.test(input, expect, 446))
-    
+
     def test_48(self):
         input = """
         Class Program
@@ -785,7 +785,7 @@ class CheckerSuite(unittest.TestCase):
         }"""
         expect = """Type Mismatch In Statement: [[IntLit(1),IntLit(2),IntLit(3),IntLit(4)],[IntLit(5),IntLit(6),IntLit(7),IntLit(8)]]"""
         self.assertTrue(TestChecker.test(input, expect, 448))
-    
+
     def test_50(self):
         input = """
         Class Student
@@ -806,7 +806,7 @@ class CheckerSuite(unittest.TestCase):
         }"""
         expect = """Illegal Member Access: CallExpr(Id(myStudent),Id($getNumStudent),[])"""
         self.assertTrue(TestChecker.test(input, expect, 449))
-    
+
     def test_51(self):
         input = """
         Class Foo
@@ -827,7 +827,7 @@ class CheckerSuite(unittest.TestCase):
         """
         expect = """Illegal Member Access: Call(Id(myFoo),Id($foo),[])"""
         self.assertTrue(TestChecker.test(input, expect, 450))
-    
+
     def test_52(self):
         input = """
         Class Flower
@@ -848,7 +848,7 @@ class CheckerSuite(unittest.TestCase):
         }"""
         expect = """Illegal Member Access: CallExpr(Id(Flower),Id(getPrice),[IntLit(5),IntLit(4)])"""
         self.assertTrue(TestChecker.test(input, expect, 451))
-    
+
     def test_53(self):
         input = """
         Class SonTungMTP
@@ -867,7 +867,7 @@ class CheckerSuite(unittest.TestCase):
         }"""
         expect = """Illegal Member Access: Call(Id(SonTungMTP),Id(compose),[])"""
         self.assertTrue(TestChecker.test(input, expect, 452))
-    
+
     def test_54(self):
         input = """
         Class Base
@@ -891,7 +891,7 @@ class CheckerSuite(unittest.TestCase):
         }"""
         expect = """No Entry Point"""
         self.assertTrue(TestChecker.test(input, expect, 453))
-    
+
     def test_55(self):
         input = """
         Class Person
@@ -915,7 +915,7 @@ class CheckerSuite(unittest.TestCase):
         }"""
         expect = """Undeclared Method: $goPooing"""
         self.assertTrue(TestChecker.test(input, expect, 454))
-    
+
     def test_56(self):
         input = """
         Class Program
@@ -928,7 +928,7 @@ class CheckerSuite(unittest.TestCase):
         }"""
         expect = """Type Mismatch In Statement: FieldAccess(Id(a),Id(maxSize))"""
         self.assertTrue(TestChecker.test(input, expect, 455))
-    
+
     def test_57(self):
         input = """
         Class Rectangle
@@ -951,7 +951,7 @@ class CheckerSuite(unittest.TestCase):
         }"""
         expect = """Type Mismatch In Statement: VarDecl(Id(b),IntType,CallExpr(Id(myShape),Id(getArea),[]))"""
         self.assertTrue(TestChecker.test(input, expect, 456))
-    
+
     def test_58(self):
         input = """
         Class Butterfly
@@ -975,7 +975,7 @@ class CheckerSuite(unittest.TestCase):
         }"""
         expect = """Illegal Member Access: FieldAccess(Id(myButterfly),Id($maxPrice))"""
         self.assertTrue(TestChecker.test(input, expect, 457))
-    
+
     def test_59(self):
         input = """
         Class Animal
@@ -993,7 +993,7 @@ class CheckerSuite(unittest.TestCase):
         }"""
         expect = """Type Mismatch In Expression: BinaryOp(+,FieldAccess(Self(),Id(limbs)),FieldAccess(Self(),Id(hasWings)))"""
         self.assertTrue(TestChecker.test(input, expect, 458))
-    
+
     def test_60(self):
         input = """
         Class Student
@@ -1011,7 +1011,7 @@ class CheckerSuite(unittest.TestCase):
         }"""
         expect = """Illegal Constant Expression: FieldAccess(Id(Student),Id($Size))"""
         self.assertTrue(TestChecker.test(input, expect, 459))
-    
+
     def test_61(self):
         input = """
         Class People
@@ -1038,7 +1038,7 @@ class CheckerSuite(unittest.TestCase):
         }"""
         expect = """Illegal Constant Expression: FieldAccess(Id(myPeople),Id(name))"""
         self.assertTrue(TestChecker.test(input, expect, 460))
-    
+
     def test_62(self):
         input = """
         Class Student
@@ -1053,7 +1053,7 @@ class CheckerSuite(unittest.TestCase):
         }"""
         expect = """Type Mismatch In Statement: AssignStmt(FieldAccess(Self(),Id(name)),Id(newName))"""
         self.assertTrue(TestChecker.test(input, expect, 461))
-    
+
     def test_63(self):
         input = """
         Class Program
@@ -1067,7 +1067,7 @@ class CheckerSuite(unittest.TestCase):
         }"""
         expect = """Cannot Assign To Constant: AssignStmt(Id(sizeOfPeople),IntLit(6))"""
         self.assertTrue(TestChecker.test(input, expect, 462))
-    
+
     def test_64(self):
         input = """
         Class Cities
@@ -1091,7 +1091,7 @@ class CheckerSuite(unittest.TestCase):
         }"""
         expect = """Cannot Assign To Constant: AssignStmt(FieldAccess(Id(Cities),Id($numCities)),BinaryOp(+,FieldAccess(Id(Cities),Id($numCities)),IntLit(1)))"""
         self.assertTrue(TestChecker.test(input, expect, 463))
-    
+
     def test_65(self):
         input = """
         Class Student
@@ -1110,29 +1110,29 @@ class CheckerSuite(unittest.TestCase):
         }"""
         expect = """Undeclared Attribute: height"""
         self.assertTrue(TestChecker.test(input, expect, 464))
-    
-    # def test_66(self):
-    #     input = """
-    #     Class Student
-    #     {
-    #         Var name: String;
-    #         Var ID: Int;
-    #         Constructor(newName: String; newID : Int)
-    #         {
-    #             Self.name = newName;
-    #             Self.Id = newID;
-    #         }
-    #     }
-    #     Class Program
-    #     {
-    #         main()
-    #         {
-    #             Var myStudent: Student = New Student (); # Error not enough argument
-    #         }
-    #     }"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 465))
-    
+
+    def test_66(self):
+        input = """
+        Class Student
+        {
+            Var name: String;
+            Var ID: Int;
+            Constructor(newName: String; newID : Int)
+            {
+                Self.name = newName;
+                Self.ID = newID;
+            }
+        }
+        Class Program
+        {
+            main()
+            {
+                Var myStudent: Student = New Student ();
+            }
+        }"""
+        expect = """Type Mismatch In Expression: NewExpr(Id(Student),[])"""
+        self.assertTrue(TestChecker.test(input, expect, 465))
+
     def test_67(self):
         input = """
         Class Program
@@ -1148,7 +1148,7 @@ class CheckerSuite(unittest.TestCase):
         }"""
         expect = """Type Mismatch In Statement: If(BinaryOp(+,Id(a),IntLit(12)),Block([AssignStmt(Id(a),BinaryOp(+,Id(a),IntLit(1)))]))"""
         self.assertTrue(TestChecker.test(input, expect, 466))
-    
+
     def test_68(self):
         input = """
         Class Program
@@ -1161,7 +1161,7 @@ class CheckerSuite(unittest.TestCase):
                     Val num : Int = 12;
                     {
                         Var num: String = "duong";
-                    } 
+                    }
                 }
                 Else
                 {
@@ -1172,7 +1172,7 @@ class CheckerSuite(unittest.TestCase):
         }"""
         expect = """Cannot Assign To Constant: AssignStmt(Id(num),BinaryOp(*,Id(num),IntLit(10)))"""
         self.assertTrue(TestChecker.test(input, expect, 467))
-    
+
     def test_69(self):
         input = """
         Class Program
@@ -1204,7 +1204,7 @@ class CheckerSuite(unittest.TestCase):
         }"""
         expect = """Redeclared Variable: a"""
         self.assertTrue(TestChecker.test(input, expect, 468))
-    
+
     def test_70(self):
         input = """
         Class Program
@@ -1212,7 +1212,7 @@ class CheckerSuite(unittest.TestCase):
             main()
             {
                 Var a: Int = 6;
-                Foreach (i In 1 .. a By True) 
+                Foreach (i In 1 .. a By True)
                 {
                     Var a:Boolean = True;
                 }
@@ -1220,7 +1220,7 @@ class CheckerSuite(unittest.TestCase):
         }"""
         expect = """Type Mismatch In Statement: For(Id(i),IntLit(1),Id(a),BooleanLit(True),Block([VarDecl(Id(a),BoolType,BooleanLit(True))])])"""
         self.assertTrue(TestChecker.test(input, expect, 469))
-    
+
     def test_71(self):
         input = """
         Class Program
@@ -1238,7 +1238,7 @@ class CheckerSuite(unittest.TestCase):
         }"""
         expect = """Illegal Constant Expression: BinaryOp(+,Id(counter),IntLit(2))"""
         self.assertTrue(TestChecker.test(input, expect, 470))
-    
+
     def test_72(self):
         input = """
         Class Program
@@ -1273,7 +1273,7 @@ class CheckerSuite(unittest.TestCase):
         }"""
         expect = """Redeclared Variable: i"""
         self.assertTrue(TestChecker.test(input, expect, 472))
-    
+
     def test_74(self):
         input = """
         Class Program
@@ -1288,7 +1288,7 @@ class CheckerSuite(unittest.TestCase):
         }"""
         expect = """Illegal Constant Expression: BinaryOp(+,BinaryOp(*,Id(a),Id(c)),Id(b))"""
         self.assertTrue(TestChecker.test(input, expect, 473))
-    
+
     def test_75(self):
         input = """
         Class Program
@@ -1313,7 +1313,7 @@ class CheckerSuite(unittest.TestCase):
         }"""
         expect = """Illegal Constant Expression: BinaryOp(*,Id(sum),IntLit(2))"""
         self.assertTrue(TestChecker.test(input, expect, 474))
-    
+
     def test_76(self):
         input = """
         Class Program
@@ -1333,51 +1333,194 @@ class CheckerSuite(unittest.TestCase):
         }"""
         expect = """Break Not In Loop"""
         self.assertTrue(TestChecker.test(input, expect, 475))
-    #
-    # def test_77(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 476))
-    #
-    # def test_78(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 477))
-    #
-    # def test_79(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 478))
-    #
-    # def test_80(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 479))
-    #
-    # def test_81(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 480))
-    #
-    # def test_82(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 481))
-    #
-    # def test_83(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 482))
-    #
-    # def test_84(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 483))
-    #
-    # def test_85(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 484))
+
+    def test_77(self):
+        input = """
+        Class Animal
+        {
+            Var name: String;
+            Var age: Int;
+            Var $maxAge: Int = 0;
+            Constructor(newName : String ; newAge : Int)
+            {
+                If(newAge > Animal::$maxAge)
+                {
+                    Animal::$maxAge = newAge;
+                }
+                Self.name = newName;
+                Self.age = newAge;
+            }
+        }
+        Class Program
+        {
+            main()
+            {
+                Var myPig : Animal = New Animal ("Pig", 5);
+                Var myOwl : Animal = New Animal ("Owl", 5.6);
+            }
+        }"""
+        expect = """Type Mismatch In Expression: NewExpr(Id(Animal),[StringLit(Owl),FloatLit(5.6)])"""
+        self.assertTrue(TestChecker.test(input, expect, 476))
+
+    def test_78(self):
+        input = """
+        Class Animal
+        {
+            Var name: String;
+            Var age: Int;
+            Constructor(newName : String ; newAge : Int)
+            {
+                Self.name = newName;
+                Self.age = newAge;
+            }
+            getName()
+            {
+                Return Self.name;
+            }
+        }
+        Class People
+        {
+            Var name: String;
+            Var $favoriteAnimal : Animal = New Animal("Dog", 5);
+            Constructor(newName : String)
+            {
+                Self.name = newName;
+            }
+        }
+        Class Program
+        {
+            main()
+            {
+                Var BorrisJohnson: People = New People ("Johnson");
+                Var favoriteAnimal: String = People::$favoriteAnimal.getName();
+                Var JoeBiden : People = New People ("Biden", "Capitalism");
+            }
+        }"""
+        expect = """Type Mismatch In Expression: NewExpr(Id(People),[StringLit(Biden),StringLit(Capitalism)])"""
+        self.assertTrue(TestChecker.test(input, expect, 477))
+
+    def test_79(self):
+        input = """
+        Class Program
+        {
+            main()
+            {
+                Var myArray : Array[Int, 4] = Array(1,2,3,4);
+                Var myFloat : Float = myArray[1];
+                Val result : Float = myFloat;
+            }
+        }"""
+        expect = """Illegal Constant Expression: Id(myFloat)"""
+        self.assertTrue(TestChecker.test(input, expect, 478))
+
+    def test_80(self):
+        input = """
+        Class Colors
+        {
+            Val $colors : Array[String, 4] = Array("Red", "Blue", "Green", "Yellow");
+        }
+        Class Program
+        {
+            main()
+            {
+                Var myColor : String = Colors::$colors[1];
+                Var myNextColor : String = Colors::$colors[1][2];
+            }
+        }"""
+        expect = """Type Mismatch In Expression: ArrayCell(FieldAccess(Id(Colors),Id($colors)),[IntLit(1),IntLit(2)])"""
+        self.assertTrue(TestChecker.test(input, expect, 479))
+
+    def test_81(self):
+        input = """
+        Class Program
+        {
+            main()
+            {
+                Var myArray: Array[Array[Int, 2], 2] = Array(
+                    Array(1,2),
+                    Array(3,4)
+                );
+                Var myInt : Int = myArray[1][1];
+                Var nextInt : Int = myArray[2];
+            }
+        }
+        """
+        expect = """Type Mismatch In Statement: VarDecl(Id(nextInt),IntType,ArrayCell(Id(myArray),[IntLit(2)]))"""
+        self.assertTrue(TestChecker.test(input, expect, 480))
+
+    def test_82(self):
+        input = """
+        Class Program
+        {
+            main()
+            {
+                Var myList : Array [String, 3] = Array ("I", "support", "Ukraine");
+                myList[3] = "Russia";
+                Val myArray: Array[Float, 3] = Array(1.0, 3.4, 5.6);
+                myArray[1] = 5;
+            }
+        }"""
+        expect = """Cannot Assign To Constant: AssignStmt(ArrayCell(Id(myArray),[IntLit(1)]),IntLit(5))"""
+        self.assertTrue(TestChecker.test(input, expect, 481))
+
+    def test_83(self):
+        input = """
+        Class Program
+        {
+            Val $myAnimal : Array[String, 3] = Array("Cow", "Bird", "Alligator");
+            main()
+            {
+                Var favoriteAnimal : String = Program::$myAnimal[1];
+                Program::$myAnimal[1] = "Parrot";
+            }
+        }"""
+        expect = """Cannot Assign To Constant: AssignStmt(ArrayCell(FieldAccess(Id(Program),Id($myAnimal)),[IntLit(1)]),StringLit(Parrot))"""
+        self.assertTrue(TestChecker.test(input, expect, 482))
+
+    def test_84(self):
+        input = """
+        Class Program
+        {
+            main()
+            {
+                Var firstArray : Array[Array[Int ,2], 3] = Array(
+                    Array(1,2),
+                    Array(3,4),
+                    Array(5,6)
+                );
+                Var secondArray : Array[Int , 2] = firstArray[1];
+                Var thirdArray : Array[Int, 2] = firstArray;
+            }
+        }"""
+        expect = """Type Mismatch In Statement: VarDecl(Id(thirdArray),ArrayType(2,IntType),Id(firstArray))"""
+        self.assertTrue(TestChecker.test(input, expect, 483))
+
+    def test_85(self):
+        input = """
+        Class Program
+        {
+            main ()
+            {
+                Var myArray: Array[Array[Array[Int,4],2],2] = Array(
+                        Array(
+                            Array(1,2,3,4),
+                            Array(1,2,3,4)
+                        ),
+                        Array(
+                            Array(1,2,3,4),
+                            Array(1,2,3,4)
+                        )
+                    );
+                Var nextArray : Array[Array[Int,4],2] = myArray[1];
+                Var value : Int = myArray[1][1][1];
+                If (value)
+                {
+                    Var value : Boolean = True;
+                }
+            }
+        }"""
+        expect = """Type Mismatch In Statement: If(Id(value),Block([VarDecl(Id(value),BoolType,BooleanLit(True))]))"""
+        self.assertTrue(TestChecker.test(input, expect, 484))
     #
     # def test_86(self):
     #     input = """"""
