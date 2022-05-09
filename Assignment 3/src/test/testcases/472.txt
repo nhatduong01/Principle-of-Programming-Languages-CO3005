@@ -3,9 +3,9 @@
         {
             main()
             {
+                Val i : Int = 10;
                 Foreach(i In 1 .. 100)
                 {
-                    Var i : Int = 10;
                 }
             }
         }

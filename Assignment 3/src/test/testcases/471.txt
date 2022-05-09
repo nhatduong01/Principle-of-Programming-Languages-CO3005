@@ -3,6 +3,7 @@
         {
             main()
             {
+                Var i : Int;
                 Foreach(i In 1 .. 100)
                 {
                     {

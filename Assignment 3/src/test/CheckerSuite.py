@@ -1228,6 +1228,7 @@ class CheckerSuite(unittest.TestCase):
             main()
             {
                 Var counter : Int = 0;
+                Var my_index: Int;
                 Foreach (my_index In 1 .. 8)
                 {
                     counter = counter + 1;
@@ -1245,6 +1246,7 @@ class CheckerSuite(unittest.TestCase):
         {
             main()
             {
+                Var i : Int;
                 Foreach(i In 1 .. 100)
                 {
                     {
@@ -1256,7 +1258,7 @@ class CheckerSuite(unittest.TestCase):
                 Return i;
             }
         }"""
-        expect = """Type Mismatch In Statement: Return(Id(i))"""
+        expect = """Redeclared Variable: i"""
         self.assertTrue(TestChecker.test(input, expect, 471))
 
     def test_73(self):
@@ -1265,13 +1267,13 @@ class CheckerSuite(unittest.TestCase):
         {
             main()
             {
+                Val i : Int = 10;
                 Foreach(i In 1 .. 100)
                 {
-                    Var i : Int = 10;
                 }
             }
         }"""
-        expect = """Redeclared Variable: i"""
+        expect = """Cannot Assign To Constant: AssignStmt(Id(i),IntLit(1))"""
         self.assertTrue(TestChecker.test(input, expect, 472))
 
     def test_74(self):
@@ -1297,6 +1299,7 @@ class CheckerSuite(unittest.TestCase):
             {
                 Var sum: Int = 0;
                 Var myArray: Array[Int, 5] = Array(1,2,3,4,5);
+                Var i:Int;
                 Foreach(i In 1 .. 5)
                 {
                     If(sum >= 5)
@@ -1320,6 +1323,7 @@ class CheckerSuite(unittest.TestCase):
         {
             main()
             {
+                Var i: Int;
                 Foreach (i In 1 .. 100)
                 {
                     Foreach(i In 1 .. 5)

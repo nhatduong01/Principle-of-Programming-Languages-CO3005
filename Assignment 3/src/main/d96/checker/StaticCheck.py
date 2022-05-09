@@ -737,15 +737,23 @@ class StaticChecker(BaseVisitor):
         if (type(expr1Type) is not IntType or type(expr2Type) is not IntType
                 or type(expr3Type) is not IntType):
             raise TypeMismatchInStatement(ast)
-        scopeStack.append(len(varStack))
-        param.pop()
-        param.append(True)
-        varStack.append(ast.id.name)
-        symbolStack.append([ast.id.name, IntType(), 0, False])
-        self.visit(ast.loop, param)
-        param[2] = varStack[: scopeStack[-1]]
-        param[1] = symbolStack[: scopeStack[-1]]
-        scopeStack.pop()
+        self.isInAssignment = True
+        myID = self.visit(ast.id, param)
+        self.isInAssignment = False
+        if self.foundConstant == True:
+            errorAssignment = Assign(ast.id, ast.expr1)
+            raise CannotAssignToConstant(errorAssignment)
+        if not self.checkAssignment(programContext, myID, expr1Type):
+            raise TypeMismatchInStatement(ast)
+        # scopeStack.append(len(varStack))
+        # param.pop()
+        # param.append(True)
+        # varStack.append(ast.id.name)
+        # symbolStack.append([ast.id.name, IntType(), 0, False])
+        # self.visit(ast.loop, param)
+        # param[2] = varStack[: scopeStack[-1]]
+        # param[1] = symbolStack[: scopeStack[-1]]
+        # scopeStack.pop()
         self.numOfLoops.pop()
 
     def visitBreak(self, ast: Break, param):
