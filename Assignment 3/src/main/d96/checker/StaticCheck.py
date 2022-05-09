@@ -3,7 +3,7 @@
 """
 from AST import *
 from Visitor import *
-from Utils import Utils
+#from Utils import Utils
 from StaticError import *
 
 
@@ -20,7 +20,7 @@ class Symbol:
         self.value = value
 
 
-class StaticChecker(BaseVisitor, Utils):
+class StaticChecker(BaseVisitor):
     global_envi = [
         Symbol("getInt", MType([], IntType())),
         Symbol("putIntLn", MType([IntType()], VoidType()))
@@ -66,7 +66,7 @@ class StaticChecker(BaseVisitor, Utils):
         for i in range(len(varStack))[::-1]:
             if varStack[i] == symbols:
                 return i
-        raise Undeclared(Variable(), symbols)
+        raise Undeclared(Identifier(), symbols)
 
     def lookUpInstance(self, varStack, symbols):
         for i in range(len(varStack))[::-1]:
@@ -688,7 +688,7 @@ class StaticChecker(BaseVisitor, Utils):
         className = param[0][1]
         methodName = param[0][2]
         if className == "Program" and methodName == "main" and ast.expr is not None:
-            raise NoEntryPoint
+            raise TypeMismatchInStatement(ast)
         programContext[className][methodName][1] = returnedType
 
     def visitAssign(self, ast: Assign, param):

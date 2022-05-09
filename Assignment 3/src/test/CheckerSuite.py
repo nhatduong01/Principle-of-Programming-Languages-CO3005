@@ -467,7 +467,7 @@ class CheckerSuite(unittest.TestCase):
                 Return myArea;
             }
         }"""
-        expect = """No Entry Point"""
+        expect = """Type Mismatch In Statement: Return(Id(myArea))"""
         self.assertTrue(TestChecker.test(input, expect, 431))
 
     def test_33(self):
@@ -581,7 +581,7 @@ class CheckerSuite(unittest.TestCase):
                 Return b;
             }
         }"""
-        expect = """No Entry Point"""
+        expect = """Type Mismatch In Statement: Return(Id(b))"""
         self.assertTrue(TestChecker.test(input, expect, 436))
 
     def test_38(self):
@@ -680,7 +680,7 @@ class CheckerSuite(unittest.TestCase):
                 Return a;
             }
         }"""
-        expect = """No Entry Point"""
+        expect = """Type Mismatch In Statement: Return(Id(a))"""
         self.assertTrue(TestChecker.test(input, expect, 442))
 
     def test_44(self):
@@ -889,7 +889,7 @@ class CheckerSuite(unittest.TestCase):
                 Return value;
             }
         }"""
-        expect = """No Entry Point"""
+        expect = """Type Mismatch In Statement: Return(Id(value))"""
         self.assertTrue(TestChecker.test(input, expect, 453))
 
     def test_55(self):
@@ -1256,7 +1256,7 @@ class CheckerSuite(unittest.TestCase):
                 Return i;
             }
         }"""
-        expect = """No Entry Point"""
+        expect = """Type Mismatch In Statement: Return(Id(i))"""
         self.assertTrue(TestChecker.test(input, expect, 471))
 
     def test_73(self):
