@@ -159,8 +159,10 @@ class StaticChecker(BaseVisitor):
                         param.append(varType)
                         typeVarInit = self.visit(
                             attributeObject.decl.varInit, (param, ast))
-                        if not isinstance(typeVarInit, ArrayLiteral):
+                        if not isinstance(typeVarInit, ArrayType):
                             raise TypeMismatchInStatement(ast)
+                else:
+                    varType = self.visit(ast.varType, param)
             # TODO: If it is an instance variable but It has init value, what is
             # the error then
         elif len(param) == 5:
@@ -182,12 +184,14 @@ class StaticChecker(BaseVisitor):
                     if type(ast.varInit) is ArrayLiteral:
                         param.append(ast.varType)
                         varInitType = self.visit(ast.varInit, (param, ast))
-                        if not isinstance(varInitType, ArrayLiteral):
+                        if not isinstance(varInitType, ArrayType):
                             raise TypeMismatchInStatement(ast)
                     else:
                         varInitType = self.visit(ast.varInit, param)
                         if not self.checkAssignment(programContext, varType, varInitType):
                             raise TypeMismatchInStatement(ast)
+            else:
+                varType = self.visit(ast.varType, param[0])
             varStack.append(ast.variable.name)
             symbolStack.append(
                 (ast.variable.name, ast.varType, ast.varInit, False))
@@ -216,7 +220,7 @@ class StaticChecker(BaseVisitor):
                 else:
                     param.append(constType)
                     typeValue = self.visit(ast.value, (param, ast))
-                    if type(typeValue) is not ArrayLiteral:
+                    if type(typeValue) is not ArrayType:
                         raise TypeMismatchInConstant(ast)
         elif len(param) == 5:
             """
@@ -244,7 +248,7 @@ class StaticChecker(BaseVisitor):
                     if type(ast.value) is ArrayLiteral:
                         param.append(constType)
                         valueType = self.visit(ast.value, (param, ast))
-                        if type(valueType) is not ArrayLiteral:
+                        if type(valueType) is not ArrayType:
                             raise TypeMismatchInConstant(ast)
                     else:
                         valueType = self.visit(ast.value, param)
@@ -363,12 +367,14 @@ class StaticChecker(BaseVisitor):
             else:
                 eachEleType = self.visit(eachEle, param[0][:-1])
                 if not type(eachEleType) is type(first_ele):
-                    if type(stmt) is ConstDecl:
-                        raise IllegalArrayLiteral(stmt.value)
-                    else:
+                    if type(stmt) is Assign:
+                        raise IllegalArrayLiteral(stmt.exp)
+                    elif type(stmt) is VarDecl:
                         raise IllegalArrayLiteral(stmt.varInit)
+                    else:
+                        raise IllegalArrayLiteral(stmt.value)
         param[0].pop()
-        return ast
+        return arrayType
 
     def visitClassType(self, ast: ClassType, param):
         programContext = param[0][-1]
@@ -508,6 +514,10 @@ class StaticChecker(BaseVisitor):
             return ClassType(ast.classname)
 
     def visitArrayCell(self, ast: ArrayCell, param):
+        for eachEle in ast.idx:
+            typeEle = self.visit(eachEle, param)
+            if type(typeEle) is not IntType:
+                raise TypeMismatchInExpression(ast)
         myArray = self.visit(ast.arr, param)
         if type(myArray) is int:
             return -1
@@ -711,7 +721,11 @@ class StaticChecker(BaseVisitor):
             self.isInAssignment = False
             if type(lhsType) is int:
                 raise CannotAssignToConstant(ast)
-        rhsType = self.visit(ast.exp, param)
+        if type(ast.exp) is ArrayLiteral and type(lhsType) is ArrayType:
+            param.append(lhsType)
+            rhsType = self.visit(ast.exp, (param, ast))
+        else:
+            rhsType = self.visit(ast.exp, param)
         if not self.checkAssignment(programContext, lhsType, rhsType):
             raise TypeMismatchInStatement(ast)
 

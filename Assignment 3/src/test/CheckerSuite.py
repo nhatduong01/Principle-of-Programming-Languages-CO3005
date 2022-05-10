@@ -1525,78 +1525,319 @@ class CheckerSuite(unittest.TestCase):
         }"""
         expect = """Type Mismatch In Statement: If(Id(value),Block([VarDecl(Id(value),BoolType,BooleanLit(True))]))"""
         self.assertTrue(TestChecker.test(input, expect, 484))
-    #
-    # def test_86(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 485))
-    #
-    # def test_87(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 486))
-    #
-    # def test_88(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 487))
-    #
-    # def test_89(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 488))
-    #
-    # def test_90(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 489))
-    #
-    # def test_91(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 490))
-    #
-    # def test_92(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 491))
-    #
-    # def test_93(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 492))
-    #
-    # def test_94(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 493))
-    #
-    # def test_95(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 494))
-    #
-    # def test_96(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 495))
-    #
-    # def test_97(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 496))
-    #
-    # def test_98(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 497))
-    #
-    # def test_99(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 498))
-    #
-    # def test_100(self):
-    #     input = """"""
-    #     expect = """"""
-    #     self.assertTrue(TestChecker.test(input, expect, 499))
+
+    def test_86(self):
+        input = """
+                    Class C{
+                        e(){
+                            Var c:Float = --------1.22;
+                            Var d:Boolean = !((("abc" +. "def") ==. "ghi") || False);
+                            Var e:Float = !!!!--1.22;
+                        }
+                    }"""
+        expect = "Type Mismatch In Expression: UnaryOp(!,UnaryOp(-,UnaryOp(-,FloatLit(1.22))))"
+        self.assertTrue(TestChecker.test(input, expect, 485))
+
+    def test_87(self):
+        input = """
+                        Class B{
+                            Var b:Int = 1;
+                            c(g:Int; h:Float){
+                                Return 1;
+                            }
+                            d(){}
+                        }
+                        Class C{
+                            e(){
+                                Var a:B;
+                                Var d:Float = a.c(1,2);
+                                Var e:String = a.c(1.1,2);
+                            }
+                        }"""
+        expect = "Type Mismatch In Expression: CallExpr(Id(a),Id(c),[FloatLit(1.1),IntLit(2)])"
+        self.assertTrue(TestChecker.test(input, expect, 486))
+
+    def test_88(self):
+        input = """
+                        Class B{
+                            Var b:Int = 1;
+                            c(g:Int; h:Float){
+                                Return 1;
+                            }
+                            d(x:Int; y:Float; z:String){}
+                        }
+                        Class A{}
+                        Class C{
+                            e(){
+                                Var a:B = New B();
+                                a = New A();
+                            }
+                        }"""
+        expect = "Type Mismatch In Statement: AssignStmt(Id(a),NewExpr(Id(A),[]))"
+        self.assertTrue(TestChecker.test(input, expect, 487))
+
+    def test_89(self):
+        input = """
+                        Class C{
+                            e(){
+                                Var a:Int = 1;
+                                Var b:Int = 1;
+                                If (True){
+                                    Var a:Int = 2;
+                                }
+                                Elseif(True){
+                                    Var a:Int = 2;
+                                }
+                                Else{
+                                    Var a:Int = 2;
+                                }
+                                Var b:Int = 2 ;
+                            }
+                        }"""
+        expect = "Redeclared Variable: b"
+        self.assertTrue(TestChecker.test(input, expect, 488))
+
+    def test_90(self):
+        input = """
+                        Class C{
+                            e(){
+                                Var i:Int = 0;
+                                Foreach(i In 1 .. 10 By 1){
+                                    Var a:Int = 1;
+                                    Break;
+                                    If (True){
+                                        Var a:Int = 1;
+                                        Continue;
+                                    }
+                                }
+                                Continue;
+                            }
+                        }"""
+        expect = "Continue Not In Loop"
+        self.assertTrue(TestChecker.test(input, expect, 489))
+
+    def test_91(self):
+        input = """
+        Class A{
+            Var $a:Int = 5;
+            Var b:Int = 4;
+        }
+        Class B{
+        func(){
+            Var b:Int = A::$a;
+            b = A.b;
+        }
+        }"""
+        expect = "Illegal Member Access: FieldAccess(Id(A),Id(b))"
+        self.assertTrue(TestChecker.test(input, expect, 490))
+
+    def test_92(self):
+        input = """
+                        Class A{
+                            $a(){
+                                Return 1;
+                            }
+                            b(){
+                                Return 1;
+                            }
+                        }
+                        Class B{
+                        func(){
+                            Var b:A = New A();
+                            Var c:Int = A::$a();
+                            c = b.b();
+                            c = b::$a();
+                        }
+                        }"""
+        expect = "Illegal Member Access: CallExpr(Id(b),Id($a),[])"
+        self.assertTrue(TestChecker.test(input, expect, 491))
+
+    def test_93(self):
+        input = """
+        Class B{
+        Var x:Int = 1;
+        foo(){
+            Return 1;
+        }
+        func (){
+            Var a:Int = Self.x;
+            a = Self.foo();
+            Var b:String = Self.foo();
+        }
+        } """
+        expect = "Type Mismatch In Statement: VarDecl(Id(b),StringType,CallExpr(Self(),Id(foo),[]))"
+        self.assertTrue(TestChecker.test(input, expect, 492))
+
+    def test_94(self):
+        input = """
+        Class A {
+            Var a:Int = 1;
+            foo(){
+                Return 1;
+            }
+        }
+        Class B{
+            Var b:A = New A();
+            foo(){
+                Return New A();
+            }
+        }
+        Class C{
+            foo(){
+                Var c:B = New B();
+                Var e:Int = c.b.a;
+                e = c.b.foo();
+                e = c.foo().a;
+                e = c.foo().foo();
+                Var f:Int = c.foo();
+            }
+        }"""
+        expect = "Type Mismatch In Statement: VarDecl(Id(f),IntType,CallExpr(Id(c),Id(foo),[]))"
+        self.assertTrue(TestChecker.test(input, expect, 493))
+
+    def test_95(self):
+        input = """
+        Class A {
+            Var a:Int = 1;
+            fooExp(x:Float; y:String){
+                Return 1;
+            }
+            fooCall(x:Float; y:String){}
+        }
+        Class B{
+            Var b:A = New A();
+            foo(){
+                Return New A();
+            }
+            foo2(){
+                Var e:Int = Self.b.a;
+                e = Self.b.fooExp(1, "a");
+                e = Self.foo().a;
+                e = Self.foo().fooExp(1, "a");
+                Self.b.fooCall(1, "a");
+                Self.foo().fooCall(1, "a");
+                Self.g().fooCall(1, "a");
+            }
+        }"""
+        expect = "Undeclared Method: g"
+        self.assertTrue(TestChecker.test(input, expect, 494))
+
+    def test_96(self):
+        input = """
+            Class A {
+                Var a:Int = 1;
+                $fooExp1(x:Float; y:String){
+                    Return Self.a;
+                }
+                $fooExp2(x:Float; y:String){
+                    Return x;
+                }
+                $fooExp3(x:Float; y:String){
+                    Return y;
+                }
+            }
+            Class B{
+                foo2(){
+                    Var e:Float = (New A()).a;
+                    e = A::$fooExp1(1, "a");
+                    e = A::$fooExp2(1, "a");
+                    Var f:String = A::$fooExp3(1, "a");
+                    Var g:Float = A::$fooExp3(1, "a");
+                }
+            }"""
+        expect = "Type Mismatch In Statement: VarDecl(Id(g),FloatType,CallExpr(Id(A),Id($fooExp3),[IntLit(1),StringLit(a)]))"
+        self.assertTrue(TestChecker.test(input, expect, 495))
+
+    def test_97(self):
+        input = """
+        Class A {
+           $fooExp1(){
+                Var a: Array[Array[Int, 2],2] = Array(Array(1,1),Array(1,1));
+                a[1] = Array(1,1);
+                a[1][1] = 1;
+                a = 1;
+           }
+        }"""
+        expect = "Type Mismatch In Statement: AssignStmt(Id(a),IntLit(1))"
+        self.assertTrue(TestChecker.test(input, expect, 496))
+
+    def test_98(self):
+        input = """     
+        Class A {
+            Var a:Int = 1;
+            $fooExp1(x:Float; y:String){
+                    Return Self.a;
+            } 
+            $fooExp2(x:Float; y:String){
+                    Return x;
+            }  
+            $fooExp3(x:Float; y:String){
+                    Return y;
+            }               
+            }                        
+            Class BB{
+                foo2(){
+                    Var e:Float = (New A()).a - 7;
+                    e = A::$fooExp1(1, "a") +2 - -----5;
+                    e = A::$fooExp2(1, "a") + 1;
+                    Var f:String = A::$fooExp3(1, "a") +. "abc";
+                    Var g:String = A::$fooExp3(1, "a") + 1;
+                }
+            }"""
+        expect = "Type Mismatch In Expression: BinaryOp(+,CallExpr(Id(A),Id($fooExp3),[IntLit(1),StringLit(a)]),IntLit(1))"
+        self.assertTrue(TestChecker.test(input, expect, 484))
+        self.assertTrue(TestChecker.test(input, expect, 497))
+
+    def test_99(self):
+        input = """     
+        Class A {
+            Var a:Int = 1;
+            fooExp(x:Float; y:String){
+                Return 1;
+            }  
+            fooCall(x:Float; y:String){}                    
+        }                        
+        Class B{ 
+            Var b:A = New A();
+            foo(){
+                Return New A();
+            }
+            foo2(){
+                Var e:Int = Self.b.a;
+                e = Self.b.fooExp(1, "a");
+                e = Self.foo().a;
+                e = Self.foo().fooExp(1, "a");
+                Self.b.fooCall(1, "a");
+                Self.foo().fooCall(1, "a");
+                Self.g().fooCall(1, "a");
+            }
+        }"""
+        expect = "Undeclared Method: g"
+        self.assertTrue(TestChecker.test(input, expect, 498))
+
+    def test_100(self):
+        input = """     
+        Class A {
+            Var a:Int = 1;
+            fooExp(x:Float; y:String){
+                Return 1;
+            }  
+            fooCall(x:Float; y:String){}                    
+        }                        
+        Class B{ 
+            Var b:A = New A();
+            foo(){
+                Return New A();
+            }
+            foo2(){
+                Var e:Int = Self.b.a;
+                e = Self.b.fooExp(1, "a");
+                e = Self.foo().a;
+                e = Self.foo().fooExp(1, "a");
+                Self.b.fooCall(1, "a");
+                Self.foo().fooCall(1, "a");
+                Self.g().fooCall(1, "a");
+            }
+        }"""
+        expect = "Undeclared Method: g"
+        self.assertTrue(TestChecker.test(input, expect, 499))
