@@ -18,17 +18,26 @@ class CodeGenerator(Utils):
         self.libName = "io"
 
     def init(self):
-        return [Symbol("getInt", MType(list(), IntType()), CName(self.libName)),
-                Symbol("putInt", MType([IntType()],
+        return [Symbol("readInt", MType(list(), IntType()), CName(self.libName)),
+                Symbol("writeInt", MType([IntType()],
                        VoidType()), CName(self.libName)),
-                Symbol("putIntLn", MType([IntType()],
-                       VoidType()), CName(self.libName))
-
+                Symbol("readFloat", MType(list(), FloatType()),
+                       CName(self.libName)),
+                Symbol("writeFloat", MType([FloatType()],
+                                           VoidType()), CName(self.libName)),
+                Symbol("readBool", MType(list(), BoolType()),
+                       CName(self.libName)),
+                Symbol("writeBool", MType([BoolType()],
+                       VoidType()), CName(self.libName)),
+                Symbol("readStr", MType(list(), StringType()),
+                       CName(self.libName)),
+                Symbol("writeStr", MType([StringType()],
+                       VoidType()), CName(self.libName)),
                 ]
 
     def gen(self, ast, dir_):
-        #ast: AST
-        #dir_: String
+        # ast: AST
+        # dir_: String
 
         gl = self.init()
         gc = CodeGenVisitor(ast, gl, dir_)
@@ -46,7 +55,7 @@ class StringType(Type):
 
 class ArrayPointerType(Type):
     def __init__(self, ctype):
-        #cname: String
+        # cname: String
         self.eleType = ctype
 
     def __str__(self):
@@ -69,8 +78,8 @@ class ClassType(Type):
 
 class SubBody():
     def __init__(self, frame, sym):
-        #frame: Frame
-        #sym: List[Symbol]
+        # frame: Frame
+        # sym: List[Symbol]
 
         self.frame = frame
         self.sym = sym
@@ -78,10 +87,10 @@ class SubBody():
 
 class Access():
     def __init__(self, frame, sym, isLeft, isFirst):
-        #frame: Frame
-        #sym: List[Symbol]
-        #isLeft: Boolean
-        #isFirst: Boolean
+        # frame: Frame
+        # sym: List[Symbol]
+        # isLeft: Boolean
+        # isFirst: Boolean
 
         self.frame = frame
         self.sym = sym
@@ -95,23 +104,23 @@ class Val(ABC):
 
 class Index(Val):
     def __init__(self, value):
-        #value: Int
+        # value: Int
 
         self.value = value
 
 
 class CName(Val):
     def __init__(self, value):
-        #value: String
+        # value: String
 
         self.value = value
 
 
 class CodeGenVisitor(BaseVisitor, Utils):
     def __init__(self, astTree, env, dir_):
-        #astTree: AST
-        #env: List[Symbol]
-        #dir_: File
+        # astTree: AST
+        # env: List[Symbol]
+        # dir_: File
 
         self.astTree = astTree
         self.env = env
@@ -119,5 +128,48 @@ class CodeGenVisitor(BaseVisitor, Utils):
         self.path = dir_
         self.emit = Emitter(self.path + "/" + self.className + ".j")
 
-    def visitProgram(self, ast, c):
+    def visitProgram(self, ast: Program, c):
+        e = SubBody(None, self.env)
+        for eachClass in ast.decl:
+            e = self.visit(eachClass, e)
+        self.emit.emitEPILOG()
+        return []
+
+    def visitClassDecl(self, ast: ClassDecl, c):
+        # TODO: I just make for only class program
+        self.emit = Emitter(self.path + "/" + self.className + ".j")
+        self.emit.printout(self.emit.emitPROLOG(
+            self.className, "java.lang.Object"))
+        [self.visit(eachDecl, SubBody(None, [])) for eachDecl in ast.memlist]
+        self.emit.emitEPILOG()
+
+    def visitAttributeDecl(self, ast: AttributeDecl, c):
         pass
+
+    def visitMethodDecl(self, ast: MethodDecl, c):
+        frame = Frame(ast.name.name, VoidType())
+        # TODO: When it is False?
+        frame.enterScope(True)
+        isStatic = True if isinstance(ast.kind, Static) else False
+        if ast.name.name == "main":
+            mtype = MType([ArrayPointerType(StringType())], VoidType())
+        else:
+            inType = []
+            for eachParam in ast.param:
+                inType.append(self.visit(eachParam, c))
+            mtype = MType(inType, VoidType())
+        self.emit.printout(self.emit.emitMETHOD(
+            ast.name.name, mtype, isStatic, frame))
+        if ast.name.name == "main":
+            self.emit.printout(self.emit.emitVAR(frame.getCurrIndex(), "arg" + str(frame.getCurrIndex()), ArrayPointerType(StringType()), frame.getStartLabel(),
+                                                 frame.getEndLabel(), frame))
+        else:
+            for idx in len(inType):
+                self.emit.printout(self.emit.emitVAR(frame.getNewIndex(), "arg" + str(frame.getCurrIndex()),
+                                                     inType[idx], frame.getStartLabel(), frame.getEndLabel()), frame)
+        self.emit.printout(self.emit.emitLABEL(frame.getStartLabel(), frame))
+        # TODO: visit the body
+        self.emit.printout(self.emit.emitLABEL(frame.getEndLabel(), frame))
+        self.emit.printout(self.emit.emitRETURN(VoidType(), frame))
+        self.emit.printout(self.emit.emitENDMETHOD(frame))
+        frame.exitScope()
