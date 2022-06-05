@@ -132,7 +132,6 @@ class CodeGenVisitor(BaseVisitor, Utils):
         e = SubBody(None, self.env)
         for eachClass in ast.decl:
             e = self.visit(eachClass, e)
-        self.emit.emitEPILOG()
         return []
 
     def visitClassDecl(self, ast: ClassDecl, c):
@@ -144,7 +143,9 @@ class CodeGenVisitor(BaseVisitor, Utils):
         self.emit.emitEPILOG()
 
     def visitAttributeDecl(self, ast: AttributeDecl, c):
-        pass
+        name, type = self.visit(ast.decl, c)
+        isStatic = True if isinstance(ast.kind, Static) else False
+        self.emit.printout(self.emit.emitATTRIBUTE(name, type, isStatic))
 
     def visitMethodDecl(self, ast: MethodDecl, c):
         frame = Frame(ast.name.name, VoidType())
@@ -162,14 +163,24 @@ class CodeGenVisitor(BaseVisitor, Utils):
             ast.name.name, mtype, isStatic, frame))
         if ast.name.name == "main":
             self.emit.printout(self.emit.emitVAR(frame.getCurrIndex(), "arg" + str(frame.getCurrIndex()), ArrayPointerType(StringType()), frame.getStartLabel(),
-                                                 frame.getEndLabel(), frame))
+                                                 frame.getEndLabel()))
         else:
-            for idx in len(inType):
+            for idx in range(len(inType)):
                 self.emit.printout(self.emit.emitVAR(frame.getNewIndex(), "arg" + str(frame.getCurrIndex()),
-                                                     inType[idx], frame.getStartLabel(), frame.getEndLabel()), frame)
+                                                     inType[idx], frame.getStartLabel(), frame.getEndLabel()))
         self.emit.printout(self.emit.emitLABEL(frame.getStartLabel(), frame))
         # TODO: visit the body
         self.emit.printout(self.emit.emitLABEL(frame.getEndLabel(), frame))
         self.emit.printout(self.emit.emitRETURN(VoidType(), frame))
         self.emit.printout(self.emit.emitENDMETHOD(frame))
         frame.exitScope()
+
+    def visitVarDecl(self, ast: VarDecl, c):
+        type = self.visit(ast.varType, c)
+        return type
+
+    def visitIntType(self, ast: IntType, c):
+        return ast
+
+    def visitFloatType(self, ast: FloatType, c):
+        return ast
